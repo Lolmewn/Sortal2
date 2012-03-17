@@ -1,0 +1,32 @@
+###Sortal - Sign Based Teleportation###
+###Made by Lolmewn###
+###Latest DEV-version: http://77.251.20.228:8080/ ###
+###Issue management: http://dev.bukkit.org/server-mods/sortal/tickets/ ###
+
+##Use MySQL or Flatfile##
+useMySQL: false
+
+##If useMySQL is set to true, fill this in##
+MySQL-User: root
+MySQL-Password: p4ssw0rd
+MySQL-Host: localhost
+MySQL-Port: 3306
+MySQL-Database: minecraft
+MySQL-Prefix: Sortal_
+
+###If both are set to 0, no economy plugin will be used###
+##The cost to create a warp (/sortal warp)##
+warpCreatePrice: 0
+##The cost to use a warp (default cost)##
+warpUsePrice: 0
+
+
+##If the sign has this on it, it will be seen as a [Sortal] sign##
+signContains: [Sortal]
+
+
+##Misc##
+update: true
+version: 5.0
+debug: false
+

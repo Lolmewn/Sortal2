@@ -1,0 +1,17 @@
+###Sortal - Sign Based Teleportation###
+###Made by Lolmewn###
+###In this file, you can change the messages to your own language###
+
+noPlayer: You have to be a player to do this!
+noPermissions: You don't have permissions to do that!
+
+commands:
+  createNameForgotten: Please specify a name for this warp!
+  deleteNameForgotten: Please specify the name of the warp!
+  nameInUse: Warp $WARP already exists!
+  warpCreated: Warp $WARP created!
+  warpDeleted: Warp $WARP deleted!
+  warpNotFound: Warp $WARP not found!
+
+paymentComplete: You've payed $MONEY!
+noMoney: You need $MONEY to do this!
