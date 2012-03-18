@@ -51,4 +51,8 @@ public class Main extends JavaPlugin{
     protected String getWarpTable(){
         return this.getSettings().getDbPrefix() + "warps";
     }
+    
+    public void saveData(){
+        this.getWarpManager().saveData();
+    }
 }

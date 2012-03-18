@@ -5,8 +5,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.bukkit.Location;
+import org.bukkit.configuration.file.YamlConfiguration;
 
 /**
  *
@@ -15,6 +15,9 @@ import org.bukkit.Location;
 public class WarpManager {
     
     private Main plugin;
+    
+     File warpFile = new File("plugins" + File.separator + 
+                "Sortal" + File.separator + "warps.yml");
     
     private HashMap<String, Warp> warps = new HashMap<String, Warp>();
     
@@ -49,9 +52,14 @@ public class WarpManager {
             }
             return;
         }
-        File warpFile = new File("plugins" + File.separator + 
-                "Sortal" + File.separator + "warps.txt");
-        
+       
+        YamlConfiguration c = YamlConfiguration.loadConfiguration(warpFile);
+        for(String key : c.getConfigurationSection("").getKeys(false)){
+            this.addWarp(key, new Location(this.getPlugin().getServer().getWorld(c.getString(key + ".world"))
+                    , c.getDouble("x"), c.getDouble("y"), c.getDouble("z"), 
+                    (float)c.getDouble("yaw"), (float)c.getDouble("pitch")));
+        }
+        this.getPlugin().getLogger().info("Warps loaded: " + this.warps.size());
     }
 
     private void loadSigns() {
@@ -59,7 +67,7 @@ public class WarpManager {
     }
     
     public void addWarp(String name, Location loc){
-        
+        this.warps.put(name, new Warp(loc));
     }
     
     public void removeWarp(String name){
@@ -72,6 +80,19 @@ public class WarpManager {
     
     public Warp getWarp(String name){
         return this.warps.get(name);
+    }
+    
+    public void savaData(){
+        YamlConfiguration c = YamlConfiguration.loadConfiguration(this.warpFile);
+        for(String warp : this.warps.keySet()){
+            Location loc = this.warps.get(warp).getLocation();
+            c.set(warp + ".x", loc.getX());
+            c.set(warp + ".y", loc.getY());
+            c.set(warp + ".z", loc.getZ());
+            c.set(warp + ".yaw", (double)loc.getYaw()); //Make double because of loading is double
+            c.set(warp + ".pitch", (double)loc.getPitch());
+            
+        }
     }
     
 }
