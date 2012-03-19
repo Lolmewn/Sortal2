@@ -62,7 +62,7 @@ public class WarpManager {
                     , c.getDouble("x"), c.getDouble("y"), c.getDouble("z"), 
                     (float)c.getDouble("yaw"), (float)c.getDouble("pitch")));
         }
-        this.getPlugin().getLogger().log(Level.INFO, "Warps loaded: {0}", this.warps.size());
+        this.getPlugin().getLogger().log(Level.INFO, "Warps loaded: [{0}]", this.warps.size());
     }
 
     private void loadSigns() {
