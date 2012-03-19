@@ -1,7 +1,5 @@
 package nl.lolmewn.sortal;
 
-import java.util.logging.Level;
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -99,7 +97,7 @@ class SortalExecutor implements CommandExecutor {
                 }
             }
             sender.sendMessage("===Sortal Warps===");
-            sender.sendMessage("Page " + page + "/" + this.getPlugin().getWarpManager().getWarps().size() / 8 + 1);
+            sender.sendMessage("Page " + page + "/" + (this.getPlugin().getWarpManager().getWarps().size() / 8 + 1));
             int count = -1;
             for(Warp warp : this.getPlugin().getWarpManager().getWarps()){
                 count++;

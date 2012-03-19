@@ -88,8 +88,8 @@ public class Localisation {
     }
 
     public String getNoMoney(String money) {
-        if(this.nameInUse.contains("$WARP") && money != null && !money.equals("")){
-            return nameInUse.replace("$MONEY", money);
+        if(this.noMoney.contains("$WARP") && money != null && !money.equals("")){
+            return noMoney.replace("$MONEY", money);
         }
         return noMoney;
     }
@@ -103,29 +103,29 @@ public class Localisation {
     }
 
     public String getPaymentComplete(String money) {
-        if(this.nameInUse.contains("$WARP") && money != null && !money.equals("")){
-            return nameInUse.replace("$WARP", money);
+        if(this.paymentComplete.contains("$WARP") && money != null && !money.equals("")){
+            return paymentComplete.replace("$WARP", money);
         }
         return paymentComplete;
     }
 
     public String getWarpCreated(String warp) {
-        if(this.nameInUse.contains("$WARP") && warp != null && !warp.equals("")){
-            return nameInUse.replace("$WARP", warp);
+        if(this.warpCreated.contains("$WARP") && warp != null && !warp.equals("")){
+            return warpCreated.replace("$WARP", warp);
         }
         return warpCreated;
     }
 
     public String getWarpDeleted(String warp) {
-        if(this.nameInUse.contains("$WARP") && warp != null && !warp.equals("")){
-            return nameInUse.replace("$WARP", warp);
+        if(this.warpDeleted.contains("$WARP") && warp != null && !warp.equals("")){
+            return warpDeleted.replace("$WARP", warp);
         }
         return warpDeleted;
     }
 
     public String getWarpNotFound(String warp) {
-        if(this.nameInUse.contains("$WARP") && warp != null && !warp.equals("")){
-            return nameInUse.replace("$WARP", warp);
+        if(this.warpNotFound.contains("$WARP") && warp != null && !warp.equals("")){
+            return warpNotFound.replace("$WARP", warp);
         }
         return warpNotFound;
     }
