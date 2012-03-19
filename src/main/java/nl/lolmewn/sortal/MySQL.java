@@ -25,10 +25,10 @@ public class MySQL {
         try {
             Class.forName("com.mysql.jdbc.Driver");
             String url = "jdbc:mysql://" + this.host + ":" + this.port + "/" + this.database;
-            System.out.println("[Skillz] Connecting to database on " + url);
+            System.out.println("[Sortal] Connecting to database on " + url);
             this.con = DriverManager.getConnection(url, this.username, this.password);
             this.st = con.createStatement();
-            System.out.println("[Skillz] MySQL initiated succesfully!");
+            System.out.println("[Sortal] MySQL initiated succesfully!");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
             this.setFault(true);
@@ -37,7 +37,7 @@ public class MySQL {
             this.setFault(true);
         } finally {
             if (this.fault) {
-                System.out.println("[Skillz] MySQL initialisation failed!");
+                System.out.println("[Sortal] MySQL initialisation failed!");
             }
         }
     }
