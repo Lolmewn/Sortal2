@@ -34,7 +34,7 @@ public class Localisation {
     private void checkFile() {
         if(!this.localisation.exists()){
             try {
-            Bukkit.getLogger().info("Trying to create default language file...");
+            Bukkit.getLogger().info("[Sortal] Trying to create default language file...");
             try {
                 InputStream in = this.getClass().
                         getClassLoader().getResourceAsStream("localisation.yml");
@@ -47,10 +47,10 @@ public class Localisation {
                 out.flush();
                 out.close();
                 in.close();
-                Bukkit.getLogger().info("Default language file created succesfully!");
+                Bukkit.getLogger().info("[Sortal] Default language file created succesfully!");
             } catch (Exception e) {
                 e.printStackTrace();
-                Bukkit.getLogger().warning("Error creating language file! Using default settings!");
+                Bukkit.getLogger().warning("[Sortal] Error creating language file! Using default settings!");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -69,7 +69,7 @@ public class Localisation {
         this.warpCreated = c.getString("commands.warpCreated");
         this.warpDeleted = c.getString("commands.warpDeleted");
         this.warpNotFound = c.getString("commands.warpNotFound");
-        Bukkit.getLogger().info("Localisation loaded!");
+        Bukkit.getLogger().info("[Sortal] Localisation loaded!");
     }
 
     public String getCreateNameForgot() {

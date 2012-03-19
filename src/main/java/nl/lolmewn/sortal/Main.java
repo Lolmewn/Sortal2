@@ -46,7 +46,7 @@ public class Main extends JavaPlugin{
             this.getSettings().setWarpCreatePrice(0);
             this.getSettings().setWarpUsePrice(0);
         }
-        this.getLogger().log(Level.INFO, "Version [{0}] build [{1}] loaded!", new Object[]{this.getSettings().getVersion(), this.getDescription().getVersion()});
+        this.getLogger().log(Level.INFO, String.format("Version %s build %s loaded!", this.getSettings().getVersion(), this.getDescription().getVersion()));
     }
 
     public Settings getSettings() {
