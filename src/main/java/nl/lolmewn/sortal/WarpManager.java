@@ -4,6 +4,8 @@ import java.io.File;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.logging.Level;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -39,6 +41,7 @@ public class WarpManager {
                 this.getPlugin().getLogger().severe("Something is wrong with your MySQL database!");
                 this.getPlugin().getLogger().severe("Plugin is disabling!");
                 this.getPlugin().getServer().getPluginManager().disablePlugin(this.getPlugin());
+                return;
             }
             try {
                 while(set.next()){
@@ -59,19 +62,27 @@ public class WarpManager {
                     , c.getDouble("x"), c.getDouble("y"), c.getDouble("z"), 
                     (float)c.getDouble("yaw"), (float)c.getDouble("pitch")));
         }
-        this.getPlugin().getLogger().info("Warps loaded: " + this.warps.size());
+        this.getPlugin().getLogger().log(Level.INFO, "Warps loaded: {0}", this.warps.size());
     }
 
     private void loadSigns() {
         
     }
     
-    public void addWarp(String name, Location loc){
-        this.warps.put(name, new Warp(loc));
+    public Warp addWarp(String name, Location loc){
+        return this.warps.put(name, new Warp(name, loc));
     }
     
-    public void removeWarp(String name){
-        
+    public Warp removeWarp(String name){
+        if(!this.hasWarp(name)){
+            return null;
+        }
+        if(this.getPlugin().getSettings().useMySQL()){
+            this.warps.get(name).delete(this.getPlugin().getMySQL(), this.getPlugin().getWarpTable());
+        }else{
+            this.warps.get(name).delete(this.warpFile);
+        }
+        return this.warps.remove(name);
     }
     
     public boolean hasWarp(String name){
@@ -82,17 +93,23 @@ public class WarpManager {
         return this.warps.get(name);
     }
     
-    public void savaData(){
-        YamlConfiguration c = YamlConfiguration.loadConfiguration(this.warpFile);
-        for(String warp : this.warps.keySet()){
-            Location loc = this.warps.get(warp).getLocation();
-            c.set(warp + ".x", loc.getX());
-            c.set(warp + ".y", loc.getY());
-            c.set(warp + ".z", loc.getZ());
-            c.set(warp + ".yaw", (double)loc.getYaw()); //Make double because of loading is double
-            c.set(warp + ".pitch", (double)loc.getPitch());
-            
+    public void saveData(){
+        for(String name : this.warps.keySet()){
+            if(this.getPlugin().getSettings().useMySQL()){
+                this.warps.get(name).save(this.getPlugin().getMySQL()
+                        , this.getPlugin().getWarpTable());
+            }else{
+                this.warps.get(name).save(warpFile);
+            }
         }
+    }
+    
+    public Set<Warp> getWarps(){
+        Set<Warp> warps = new HashSet<Warp>();
+        for(String warp : this.warps.keySet()){
+            warps.add(this.warps.get(warp));
+        }
+        return warps;
     }
     
 }

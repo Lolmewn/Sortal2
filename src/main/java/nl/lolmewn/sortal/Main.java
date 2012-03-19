@@ -1,5 +1,9 @@
 package nl.lolmewn.sortal;
 
+import java.util.logging.Level;
+import net.milkbowl.vault.economy.Economy;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -11,6 +15,7 @@ public class Main extends JavaPlugin{
     private WarpManager warpManager;
     private Settings settings;
     private MySQL mysql;
+    private Economy eco; //Vault
     
     @Override
     public void onDisable(){
@@ -32,8 +37,14 @@ public class Main extends JavaPlugin{
             this.getSettings().setUseMySQL(false);
         }
         this.warpManager = new WarpManager(this);
-        this.getLogger().info("Version " + this.getSettings().getVersion() + 
-                " build " + this.getDescription().getVersion() + " loaded!");
+        this.getCommand("sortal").setExecutor(new SortalExecutor(this));
+        this.getServer().getPluginManager().registerEvents(new EventListener(this), this);
+        if(!this.initVault()){
+            this.getLogger().info("Vault error, setting costs to 0!");
+            this.getSettings().setWarpCreatePrice(0);
+            this.getSettings().setWarpUsePrice(0);
+        }
+        this.getLogger().log(Level.INFO, "Version {0} build {1} loaded!", new Object[]{this.getSettings().getVersion(), this.getDescription().getVersion()});
     }
 
     public Settings getSettings() {
@@ -54,5 +65,40 @@ public class Main extends JavaPlugin{
     
     public void saveData(){
         this.getWarpManager().saveData();
+    }
+    
+    public boolean pay(Player p, int amount){
+        if(amount == 0){
+            return true;
+        }
+        if(initVault()){
+            if(!this.eco.has(p.getName(), amount)){
+                //Doesn't have enough money
+                p.sendMessage(this.getSettings().getLocalisation().getNoMoney(Integer.toString(amount)));
+                return false;
+            }
+            this.eco.withdrawPlayer(p.getName(), amount);
+            p.sendMessage(this.getSettings().getLocalisation().getPaymentComplete(Integer.toString(amount)));
+            return true;
+        }
+        //Either vault isn't found or Economy isn't found.
+        return true;
+    }
+
+    private boolean initVault() {
+        if(this.eco != null){
+            return true;
+        }
+        RegisteredServiceProvider<Economy> rsp = this.getServer().getServicesManager().getRegistration(Economy.class);
+        if(rsp == null && (this.getSettings().getWarpCreatePrice() != 0 || this.getSettings().getWarpUsePrice() != 0)){
+            //Vault not found
+            return false;
+        }
+        this.eco = rsp.getProvider();
+        if(this.eco == null && (this.getSettings().getWarpCreatePrice() != 0 || this.getSettings().getWarpUsePrice() != 0)){
+            return false;
+        }
+        this.getLogger().info("Hooked into Vault and Economy plugin succesfully!");
+        return true;
     }
 }

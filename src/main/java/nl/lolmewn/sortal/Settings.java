@@ -88,6 +88,14 @@ public class Settings {
     protected void setUseMySQL(boolean use){
         this.useMySQL = use;
     }
+
+    public void setWarpCreatePrice(int warpCreatePrice) {
+        this.warpCreatePrice = warpCreatePrice;
+    }
+
+    public void setWarpUsePrice(int warpUsePrice) {
+        this.warpUsePrice = warpUsePrice;
+    }
     
     /*
      * Constructor

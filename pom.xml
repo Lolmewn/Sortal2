@@ -4,8 +4,8 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>nl.lolmewn.Sortal</groupId>
-    <artifactId>Sortal2</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <artifactId>Sortal</artifactId>
+    <version>0.0.2-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Sortal2</name>
@@ -21,12 +21,6 @@
         </repository>
     </repositories>
     <dependencies>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>3.8.1</version>
-            <scope>test</scope>
-        </dependency>
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>craftbukkit</artifactId>
