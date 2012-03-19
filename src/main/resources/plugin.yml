@@ -1,0 +1,10 @@
+name: Sortal
+version: 5.0
+author: Lolmewn
+website: http://metrics.griefcraft.com/plugin/Sortal/
+main: nl.lolmewn.sortal.Main
+description: Sign based teleportation!
+commands:
+  sortal:
+    description: Just the Sortal command
+    usage: /<command>
