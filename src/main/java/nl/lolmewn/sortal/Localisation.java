@@ -36,9 +36,9 @@ public class Localisation {
 
     private void checkFile() {
         if(!this.localisation.exists()){
-            try {
             Bukkit.getLogger().info("[Sortal] Trying to create default language file...");
             try {
+                this.localisation.getParentFile().mkdirs();
                 InputStream in = this.getClass().
                         getClassLoader().getResourceAsStream("localisation.yml");
                 OutputStream out = new BufferedOutputStream(
@@ -55,9 +55,6 @@ public class Localisation {
                 e.printStackTrace();
                 Bukkit.getLogger().warning("[Sortal] Error creating language file! Using default settings!");
             }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         }
     }
 
