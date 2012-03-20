@@ -74,7 +74,8 @@ public class WarpManager {
     }
     
     public Warp addWarp(String name, Location loc, int price){
-        Warp w = this.warps.put(name, new Warp(name, loc, price));
+        this.warps.put(name, new Warp(name, loc, price));
+        Warp w = this.getWarp(name);
         if(this.getPlugin().getSettings().useMySQL()){
             w.save(this.getPlugin().getMySQL(), this.getPlugin().getWarpTable());
         }else{
