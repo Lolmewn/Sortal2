@@ -2,9 +2,6 @@
 ###Made by Lolmewn###
 ###In this file, you can change the messages to your own language###
 
-noPlayer: You have to be a player to do this!
-noPermissions: You don't have permissions to do that!
-
 commands:
   createNameForgotten: Please specify a name for this warp!
   deleteNameForgotten: Please specify the name of the warp!
@@ -16,3 +13,8 @@ commands:
 
 paymentComplete: You've payed $MONEY!
 noMoney: You need $MONEY to do this!
+noPlayer: You have to be a player to do this!
+noPermissions: You don't have permissions to do that!
+
+signError: There's something wrong with this sign!
+playerTeleported: You've teleported to $DEST!

@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -18,10 +17,12 @@ public class Warp {
     
     private String name;
     private Location loc;
-
-    public Warp(String name, Location loc) {
+    private int price;
+    
+    public Warp(String name, Location loc, int price){
         this.name = name;
         this.loc = loc;
+        this.price = price;
     }
     
     public String getName(){
@@ -30,6 +31,14 @@ public class Warp {
     
     public Location getLocation(){
         return this.loc;
+    }
+
+    public int getPrice() {
+        return price;
+    }
+
+    public void setPrice(int price) {
+        this.price = price;
     }
     
     public String getLocationToString(){

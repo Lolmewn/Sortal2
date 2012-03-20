@@ -108,7 +108,7 @@ class SortalExecutor implements CommandExecutor {
             }
             if(count == -1){
                 //no warps found!
-                
+                sender.sendMessage(this.getLocalisation().getNoWarpsFound());
             }
             return true;
         }
@@ -121,6 +121,7 @@ class SortalExecutor implements CommandExecutor {
         if(args[0].equalsIgnoreCase("register")){
             //TODO register
         }
+        
         sender.sendMessage("Unknown syntax, /sortal help for commands");
         return true;
     }
