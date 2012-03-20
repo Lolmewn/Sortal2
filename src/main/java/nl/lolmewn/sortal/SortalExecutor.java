@@ -106,6 +106,10 @@ class SortalExecutor implements CommandExecutor {
                 }
                 sender.sendMessage(warp.getName() + ": " + warp.getLocationToString());
             }
+            if(count == -1){
+                //no warps found!
+                
+            }
             return true;
         }
         if(args[0].equalsIgnoreCase("version")){

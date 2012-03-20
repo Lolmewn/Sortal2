@@ -25,6 +25,7 @@ public class Localisation {
     private String warpNotFound;
     private String paymentComplete;
     private String noMoney;
+    private String noWarpsFound;
 
     public Localisation() {
         this.checkFile();
@@ -69,6 +70,7 @@ public class Localisation {
         this.warpCreated = c.getString("commands.warpCreated");
         this.warpDeleted = c.getString("commands.warpDeleted");
         this.warpNotFound = c.getString("commands.warpNotFound");
+        this.setNoWarpsFound(c.getString("commands.noWarpsFound"));
         Bukkit.getLogger().info("[Sortal] Localisation loaded!");
     }
 
@@ -128,6 +130,14 @@ public class Localisation {
             return warpNotFound.replace("$WARP", warp);
         }
         return warpNotFound;
+    }
+
+    public String getNoWarpsFound() {
+        return noWarpsFound;
+    }
+
+    public void setNoWarpsFound(String noWarpsFound) {
+        this.noWarpsFound = noWarpsFound;
     }
 
     void addOld(HashMap<String, String> local) {
