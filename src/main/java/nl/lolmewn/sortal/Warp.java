@@ -80,6 +80,7 @@ public class Warp {
     
     public void save(File f){
         YamlConfiguration c = YamlConfiguration.loadConfiguration(f);
+        c.set(name + ".world", loc.getWorld().getName());
         c.set(name + ".x", loc.getX());
         c.set(name + ".y", loc.getY());
         c.set(name + ".z", loc.getZ());
