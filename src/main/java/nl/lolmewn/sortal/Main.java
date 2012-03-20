@@ -46,6 +46,11 @@ public class Main extends JavaPlugin{
             this.getSettings().setWarpCreatePrice(0);
             this.getSettings().setWarpUsePrice(0);
         }
+        this.getServer().getScheduler().scheduleAsyncRepeatingTask(this, new Runnable(){
+            public void run() {
+                new Thread(new Runnable(){public void run() {saveData();getLogger().info("Data saved!");}}).start();
+                }
+        }, 36000L, 36000L);
         this.getLogger().log(Level.INFO, String.format("Version %s build %s loaded!", this.getSettings().getVersion(), this.getDescription().getVersion()));
     }
 

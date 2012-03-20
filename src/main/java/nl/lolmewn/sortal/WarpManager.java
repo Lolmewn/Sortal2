@@ -70,7 +70,13 @@ public class WarpManager {
     }
     
     public Warp addWarp(String name, Location loc){
-        return this.warps.put(name, new Warp(name, loc));
+        Warp w = this.warps.put(name, new Warp(name, loc));
+        if(this.getPlugin().getSettings().useMySQL()){
+            w.save(this.getPlugin().getMySQL(), this.getPlugin().getWarpTable());
+        }else{
+            w.save(this.warpFile);
+        }
+        return w;
     }
     
     public Warp removeWarp(String name){
@@ -105,11 +111,11 @@ public class WarpManager {
     }
     
     public Set<Warp> getWarps(){
-        Set<Warp> warps = new HashSet<Warp>();
+        Set<Warp> warpSet = new HashSet<Warp>();
         for(String warp : this.warps.keySet()){
-            warps.add(this.warps.get(warp));
+            warpSet.add(this.warps.get(warp));
         }
-        return warps;
+        return warpSet;
     }
     
 }
