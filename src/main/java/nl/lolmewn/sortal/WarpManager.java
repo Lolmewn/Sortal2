@@ -106,6 +106,9 @@ public class WarpManager {
 
     public void saveData() {
         for (String name : this.warps.keySet()) {
+            if(this.getPlugin().getSettings().isDebug()){
+                this.getPlugin().getLogger().info("[Debug] Saving warp " + name);
+            }
             if (this.getPlugin().getSettings().useMySQL()) {
                 this.warps.get(name).save(this.getPlugin().getMySQL(), this.getPlugin().getWarpTable());
             } else {
