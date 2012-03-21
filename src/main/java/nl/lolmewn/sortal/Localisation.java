@@ -91,7 +91,7 @@ public class Localisation {
     }
 
     public String getNoMoney(String money) {
-        if(this.noMoney.contains("$WARP") && money != null && !money.equals("")){
+        if(this.noMoney.contains("$MONEY") && money != null && !money.equals("")){
             return noMoney.replace("$MONEY", money);
         }
         return noMoney;
@@ -106,8 +106,8 @@ public class Localisation {
     }
 
     public String getPaymentComplete(String money) {
-        if(this.paymentComplete.contains("$WARP") && money != null && !money.equals("")){
-            return paymentComplete.replace("$WARP", money);
+        if(this.paymentComplete.contains("$MONEY") && money != null && !money.equals("")){
+            return paymentComplete.replace("$MONEY", money);
         }
         return paymentComplete;
     }
