@@ -8,7 +8,7 @@ useMySQL: false
 
 ##If useMySQL is set to true, fill this in##
 MySQL-User: root
-MySQL-Password: p4ssw0rd
+MySQL-Pass: p4ssw0rd
 MySQL-Host: localhost
 MySQL-Port: 3306
 MySQL-Database: minecraft

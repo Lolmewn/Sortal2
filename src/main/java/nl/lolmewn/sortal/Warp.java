@@ -50,7 +50,7 @@ public class Warp {
     
     public void save(MySQL m, String table){
         ResultSet set = m.executeQuery("SELECT * FROM " + table + 
-                " WHERE warp='" + name + "'");
+                " WHERE name='" + name + "'");
         if(set == null){
             //dafuq? 
             System.out.println("[Sortal] ERR: ResultSet returned null");
