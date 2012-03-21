@@ -47,7 +47,7 @@ public class MySQL {
             return;
         }
         this.executeStatement("CREATE TABLE IF NOT EXISTS " + this.prefix + "warps"
-                + "(name varchar(255), "
+                + "(name varchar(255) PRIMARY KEY, "
                 + "world varchar(255), "
                 + "x int, "
                 + "y int, "

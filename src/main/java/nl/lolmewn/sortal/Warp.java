@@ -79,6 +79,13 @@ public class Warp {
     }
     
     public void save(File f){
+        if(!f.exists()){
+            try {
+                f.createNewFile();
+            } catch (IOException ex) {
+                Bukkit.getLogger().log(Level.SEVERE, null, ex);
+            }
+        }
         YamlConfiguration c = YamlConfiguration.loadConfiguration(f);
         c.set(name + ".world", loc.getWorld().getName());
         c.set(name + ".x", loc.getX());
