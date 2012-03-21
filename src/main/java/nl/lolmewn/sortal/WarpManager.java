@@ -60,8 +60,8 @@ public class WarpManager {
 
         YamlConfiguration c = YamlConfiguration.loadConfiguration(warpFile);
         for (String key : c.getConfigurationSection("").getKeys(false)) {
-            this.addWarp(key, new Location(this.getPlugin().getServer().getWorld(c.getString(key + ".world")), c.getDouble(key + "x"), c.getDouble(key + "y"), c.getDouble(key + "z"),
-                    (float) c.getDouble(key + "yaw"), (float) c.getDouble(key + "pitch")));
+            this.addWarp(key, new Location(this.getPlugin().getServer().getWorld(c.getString(key + ".world")), c.getDouble(key + ".x"), c.getDouble(key + ".y"), c.getDouble(key + ".z"),
+                    (float) c.getDouble(key + ".yaw"), (float) c.getDouble(key + ".pitch")));
         }
         this.getPlugin().getLogger().log(Level.INFO, String.format("Warps loaded: %s", this.warps.size()));
     }

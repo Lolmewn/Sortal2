@@ -139,7 +139,7 @@ public class Settings {
 
     private void extractSettings() {
         try {
-            Bukkit.getLogger().info("Trying to create default config...");
+            Bukkit.getLogger().info("[Sortal] Trying to create default config...");
             try {
                 InputStream in = this.getClass().
                         getClassLoader().getResourceAsStream("settings.yml");
@@ -152,10 +152,10 @@ public class Settings {
                 out.flush();
                 out.close();
                 in.close();
-                Bukkit.getLogger().info("Default config created succesfully!");
+                Bukkit.getLogger().info("[Sortal] Default config created succesfully!");
             } catch (Exception e) {
                 e.printStackTrace();
-                Bukkit.getLogger().warning("Error creating settings file! Using default settings!");
+                Bukkit.getLogger().warning("[Sortal] Error creating settings file! Using default settings!");
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -164,7 +164,7 @@ public class Settings {
 
     private void printSettings(YamlConfiguration c) {
         for(String path : c.getConfigurationSection("").getKeys(true)){
-            Bukkit.getLogger().info("[Sortal - Debug] CONFIG: " + path + ":" + c.get(path, null));
+            Bukkit.getLogger().info("[Sortal] [Debug] CONFIG: " + path + ":" + c.get(path, null));
         }
     }
 
@@ -201,18 +201,18 @@ public class Settings {
         this.getLocalisation().addOld(local);
         
         if(this.settingsFile.delete()){
-            Bukkit.getLogger().info("Old Config deleted, values stored..");
+            Bukkit.getLogger().info("[Sortal] Old Config deleted, values stored..");
             this.extractSettings();
             this.addSettingsToConfig(settingsFile, values);
         }else{
-            Bukkit.getLogger().warning("Couldn't delete old settings file! Using all defaults");
-            Bukkit.getLogger().warning("Deleting as soon as possible!");
+            Bukkit.getLogger().warning("[Sortal] Couldn't delete old settings file! Using all defaults");
+            Bukkit.getLogger().warning("[Sortal] Deleting as soon as possible!");
             new Thread(new Runnable(){
                 public void run() {
                     while(!settingsFile.delete()){
                         //keep trying
                     }
-                    Bukkit.getLogger().info("Old setting file deleted, creating new one..");
+                    Bukkit.getLogger().info("[Sortal] Old setting file deleted, creating new one..");
                     extractSettings();
                     addSettingsToConfig(settingsFile, values);
                 }
@@ -230,6 +230,6 @@ public class Settings {
         } catch (IOException ex) {
             Bukkit.getLogger().log(Level.SEVERE, null, ex);
         }
-        Bukkit.getLogger().info("Saved old settings in new settings file!");
+        Bukkit.getLogger().info("[Sortal] Saved old settings in new settings file!");
     }
 }
