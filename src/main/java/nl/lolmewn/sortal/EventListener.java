@@ -63,8 +63,8 @@ public class EventListener implements Listener {
                 if (event.getAction().equals(Action.LEFT_CLICK_BLOCK)) {
                     if (sortalSign(s, event.getPlayer())) {
                         event.setCancelled(true);
-                        return;
                     }
+                    return;
                 }
                 int found = -1;
                 for (int i = 0; i < s.getLines().length; i++) {
