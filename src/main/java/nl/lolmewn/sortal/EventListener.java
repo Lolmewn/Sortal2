@@ -200,14 +200,8 @@ public class EventListener implements Listener {
                 player.sendMessage("Sign is now pointing to " + sign.getWarp());
                 return true;
             }
-            for(String line : s.getLines()){
-                if(line.contains("[Sortal]") || line.contains(this.getPlugin().getSettings().getSignContains())){
-                    this.getPlugin().getWarpManager().addSign(s.getLocation()).setWarp(this.getPlugin().register.remove(player.getName()));
-                    player.sendMessage("Sign is now pointing to " + this.getPlugin().getWarpManager().getSign(s.getLocation()).getWarp());
-                    return true;
-                }
-            }
-            player.sendMessage("This is not a valid sortal sign!");
+            this.getPlugin().getWarpManager().addSign(s.getLocation()).setWarp(this.getPlugin().register.remove(player.getName()));
+            player.sendMessage("Sign is now pointing to " + this.getPlugin().getWarpManager().getSign(s.getLocation()).getWarp());
             return true;
         }
         return false;

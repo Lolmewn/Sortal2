@@ -127,14 +127,6 @@ public class SortalExecutor implements CommandExecutor {
                 sender.sendMessage(this.getLocalisation().getNoPerms());
                 return true;
             }
-            if(this.getPlugin().setcost.containsKey(sender.getName())){
-                sender.sendMessage("Please finish setting a cost first! (cancel is /sortal setprice)");
-                return true;
-            }
-            if(this.getPlugin().register.containsKey(sender.getName())){
-                sender.sendMessage("Please finish registering first! (cancel is /sortal register)");
-                return true;
-            }
             if(args.length == 1){
                 if(this.getPlugin().register.containsKey(sender.getName())){
                     this.getPlugin().register.remove(sender.getName());
@@ -142,6 +134,14 @@ public class SortalExecutor implements CommandExecutor {
                     return true;
                 }
                 sender.sendMessage("Correct usage: /sortal register <warp>");
+                return true;
+            }
+            if(this.getPlugin().setcost.containsKey(sender.getName())){
+                sender.sendMessage("Please finish setting a cost first! (cancel is /sortal setprice)");
+                return true;
+            }
+            if(this.getPlugin().register.containsKey(sender.getName())){
+                sender.sendMessage("Please finish registering first! (cancel is /sortal register)");
                 return true;
             }
             String warp = args[1];
@@ -162,14 +162,6 @@ public class SortalExecutor implements CommandExecutor {
                 sender.sendMessage(this.getLocalisation().getNoPerms());
                 return true;
             }
-            if(this.getPlugin().setcost.containsKey(sender.getName())){
-                sender.sendMessage("Please finish setting a cost first! (cancel is /sortal setprice)");
-                return true;
-            }
-            if(this.getPlugin().register.containsKey(sender.getName())){
-                sender.sendMessage("Please finish registering first! (cancel is /sortal register)");
-                return true;
-            }
             if(args.length == 1){
                 if(this.getPlugin().setcost.containsKey(sender.getName())){
                     this.getPlugin().setcost.remove(sender.getName());
@@ -178,6 +170,14 @@ public class SortalExecutor implements CommandExecutor {
                 }
                 sender.sendMessage("Correct usages: /sortal " + args[0] + " <cost>");
                 sender.sendMessage("Or /sortal " + args[0] + " warp <warpname> <cost>");
+                return true;
+            }
+            if(this.getPlugin().setcost.containsKey(sender.getName())){
+                sender.sendMessage("Please finish setting a cost first! (cancel is /sortal setprice)");
+                return true;
+            }
+            if(this.getPlugin().register.containsKey(sender.getName())){
+                sender.sendMessage("Please finish registering first! (cancel is /sortal register)");
                 return true;
             }
             if(args[1].equalsIgnoreCase("warp")){
