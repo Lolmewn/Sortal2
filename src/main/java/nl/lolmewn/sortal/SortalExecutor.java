@@ -9,7 +9,7 @@ import org.bukkit.entity.Player;
  *
  * @author Lolmewn
  */
-class SortalExecutor implements CommandExecutor {
+public class SortalExecutor implements CommandExecutor {
 
     private Main plugin;
     
@@ -119,9 +119,102 @@ class SortalExecutor implements CommandExecutor {
             return true;
         }
         if(args[0].equalsIgnoreCase("register")){
-            //TODO register
+            if(!(sender instanceof Player)){
+                sender.sendMessage(this.getLocalisation().getNoPlayer());
+                return true;
+            }
+            if(!sender.hasPermission("sortal.register")){
+                sender.sendMessage(this.getLocalisation().getNoPerms());
+                return true;
+            }
+            if(this.getPlugin().setcost.containsKey(sender.getName())){
+                sender.sendMessage("Please finish setting a cost first! (cancel is /sortal setprice)");
+                return true;
+            }
+            if(this.getPlugin().register.containsKey(sender.getName())){
+                sender.sendMessage("Please finish registering first! (cancel is /sortal register)");
+                return true;
+            }
+            if(args.length == 1){
+                if(this.getPlugin().register.containsKey(sender.getName())){
+                    this.getPlugin().register.remove(sender.getName());
+                    sender.sendMessage("No longer registering!");
+                    return true;
+                }
+                sender.sendMessage("Correct usage: /sortal register <warp>");
+                return true;
+            }
+            String warp = args[1];
+            if(!this.getPlugin().getWarpManager().hasWarp(warp)){
+                sender.sendMessage(this.getLocalisation().getWarpNotFound(warp));
+                return true;
+            }
+            this.getPlugin().register.put(sender.getName(), warp);
+            sender.sendMessage("Now punch the sign you wish to be pointing to " + warp);
+            return true;
         }
-        
+        if(args[0].equalsIgnoreCase("setprice") || args[0].equalsIgnoreCase("setcost") || args[0].equalsIgnoreCase("price")){
+            if(!(sender instanceof Player)){
+                sender.sendMessage(this.getLocalisation().getNoPlayer());
+                return true;
+            }
+            if(!sender.hasPermission("sortal.setprice")){
+                sender.sendMessage(this.getLocalisation().getNoPerms());
+                return true;
+            }
+            if(this.getPlugin().setcost.containsKey(sender.getName())){
+                sender.sendMessage("Please finish setting a cost first! (cancel is /sortal setprice)");
+                return true;
+            }
+            if(this.getPlugin().register.containsKey(sender.getName())){
+                sender.sendMessage("Please finish registering first! (cancel is /sortal register)");
+                return true;
+            }
+            if(args.length == 1){
+                if(this.getPlugin().setcost.containsKey(sender.getName())){
+                    this.getPlugin().setcost.remove(sender.getName());
+                    sender.sendMessage("No longer setting a cost!");
+                    return true;
+                }
+                sender.sendMessage("Correct usages: /sortal " + args[0] + " <cost>");
+                sender.sendMessage("Or /sortal " + args[0] + " warp <warpname> <cost>");
+                return true;
+            }
+            if(args[1].equalsIgnoreCase("warp")){
+               if(args.length == 2){
+                   sender.sendMessage("Correct usage: /sortal " + args[0] + " warp <warpname> <cost>");
+                   return true;
+               }
+               if(args.length == 3){
+                   sender.sendMessage("Correct usage: /sortal " + args[0] + " warp " + args[2] + " <cost>");
+                   return true;
+               }
+               try{
+                   int price = Integer.parseInt(args[2]);
+                   String warp = args[1];
+                   if(!this.getPlugin().getWarpManager().hasWarp(warp)){
+                       sender.sendMessage(this.getLocalisation().getWarpNotFound(warp));
+                       return true;
+                   }
+                   this.getPlugin().getWarpManager().getWarp(warp).setPrice(price);
+                   sender.sendMessage(this.getLocalisation().getCostSet(Integer.toString(price)));
+                   return true;
+               }catch(NumberFormatException e){
+                   sender.sendMessage("Expected int, got string. <price> should be int!");
+                   return true;
+               }
+            }// End of args[1] = warp
+            try{
+                int price = Integer.parseInt(args[1]);
+                this.getPlugin().setcost.put(sender.getName(), price);
+                sender.sendMessage("Now punch the sign you want to be costing " + price);
+                return true;
+            }catch(NumberFormatException e){
+                sender.sendMessage("Expected int, got string.");
+                sender.sendMessage("Correct usage: /sortal " + args[0] + " <price>");
+                return true;
+            }
+        }
         sender.sendMessage("Unknown syntax, /sortal help for commands");
         return true;
     }

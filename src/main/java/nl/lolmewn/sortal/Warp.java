@@ -60,7 +60,10 @@ public class Warp {
             while(set.next()){
                 //a warp already is in the database, gotta update it
                 if(set.getDouble("x") == this.loc.getX() && 
-                        set.getString("world").equals(this.loc.getWorld().getName())){
+                        set.getString("world").equals(this.loc.getWorld().getName()) &&
+                        set.getDouble("y") == this.loc.getY() && 
+                        set.getDouble("z") == this.loc.getZ() && 
+                        set.getInt("price") == this.getPrice()){
                     //no need to update anything
                     return;
                 }
@@ -70,7 +73,8 @@ public class Warp {
                         + "y=" + this.loc.getY() + ", "
                         + "z=" + this.loc.getZ() + ", "
                         + "yaw=" + (double)this.loc.getYaw() + ", "
-                        + "pitch=" + (double)this.loc.getPitch() 
+                        + "pitch=" + (double)this.loc.getPitch() + ", "
+                        + "price=" + this.getPrice()
                         + " WHERE name='" + this.name + "'");
             }
         } catch (SQLException ex) {

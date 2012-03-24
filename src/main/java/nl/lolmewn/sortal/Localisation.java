@@ -28,6 +28,7 @@ public class Localisation {
     private String noWarpsFound;
     private String errorInSign;
     private String playerTeleported;
+    private String costSet;
 
     public Localisation() {
         this.checkFile();
@@ -52,8 +53,7 @@ public class Localisation {
                 in.close();
                 Bukkit.getLogger().info("[Sortal] Default language file created succesfully!");
             } catch (Exception e) {
-                e.printStackTrace();
-                Bukkit.getLogger().warning("[Sortal] Error creating language file! Using default settings!");
+                Bukkit.getLogger().log(Level.WARNING, "[Sortal] Error creating language file! Using default settings!", e);
             }
         }
     }
@@ -72,6 +72,7 @@ public class Localisation {
         this.noWarpsFound = c.getString("commands.noWarpsFound");
         this.errorInSign = c.getString("signError");
         this.playerTeleported = c.getString("playerTeleported");
+        this.costSet = c.getString("commands.costSet");
         Bukkit.getLogger().info("[Sortal] Localisation loaded!");
     }
 
@@ -146,6 +147,13 @@ public class Localisation {
             return playerTeleported.replace("$DEST", dest);
         }
         return playerTeleported;
+    }
+
+    public String getCostSet(String cost) {
+        if(this.playerTeleported.contains("$COST") && cost != null && !cost.equals("")){
+            return playerTeleported.replace("$COST", cost);
+        }
+        return costSet;
     }
 
     void addOld(HashMap<String, String> local) {

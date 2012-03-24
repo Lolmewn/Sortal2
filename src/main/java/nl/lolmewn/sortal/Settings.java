@@ -179,7 +179,7 @@ public class Settings {
         values.put("update", c.getBoolean("auto-update", true));
         values.put("debug", c.getBoolean("debug", false));
         values.put("useMySQL", c.getBoolean("useMySQL", false));
-        if(useMySQL){
+        if(c.getBoolean("useMySQL")){
             values.put("MySQL-User", c.getString("MySQL.username", "root"));
             values.put("MySQL-Pass", c.getString("MySQL.password", "p4ssw0rd"));
             values.put("MySQL-Database", c.getString("MySQL.database", "minecraft"));

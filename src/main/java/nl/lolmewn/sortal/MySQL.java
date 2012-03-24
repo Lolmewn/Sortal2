@@ -53,7 +53,16 @@ public class MySQL {
                 + "y int, "
                 + "z int, "
                 + "yaw float, "
-                + "pitch float)");
+                + "pitch float, "
+                + "price int)");
+        this.executeStatement("CREATE TABLE IF NOT EXISTS " + this.prefix + "signs"
+                + "(id INT NOT NULL AUTO_INCREMENT PRIMARY KEY"
+                + "world varchar(255), "
+                + "x int, "
+                + "y int, "
+                + "z int, "
+                + "warp varchar(255), "
+                + "price int)");
     }
 
     public boolean isFault() {

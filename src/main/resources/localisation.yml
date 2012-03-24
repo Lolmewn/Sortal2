@@ -10,6 +10,7 @@ commands:
   warpDeleted: Warp $WARP deleted!
   warpNotFound: Warp $WARP not found!
   noWarpsFound: There are no warps yet!
+  costSet: Cost set to $COST!
 
 paymentComplete: You've payed $MONEY!
 noMoney: You need $MONEY to do this!

@@ -1,5 +1,6 @@
 package nl.lolmewn.sortal;
 
+import java.util.HashMap;
 import java.util.logging.Level;
 import net.milkbowl.vault.economy.Economy;
 import org.bukkit.entity.Player;
@@ -17,9 +18,14 @@ public class Main extends JavaPlugin{
     private MySQL mysql;
     private Economy eco; //Vault
     
+    protected HashMap<String, Integer> setcost = new HashMap<String, Integer>();
+    protected HashMap<String, String> register = new HashMap<String, String>();
+    
     @Override
     public void onDisable(){
-        
+        this.saveData();
+        this.getServer().getScheduler().cancelTasks(this);
+        this.getLogger().info("Disabled!");
     }
     
     @Override
@@ -68,6 +74,10 @@ public class Main extends JavaPlugin{
     
     protected String getWarpTable(){
         return this.getSettings().getDbPrefix() + "warps";
+    }
+    
+    protected String getSignTable(){
+        return this.getSettings().getDbPrefix() + "signs";
     }
     
     public void saveData(){
