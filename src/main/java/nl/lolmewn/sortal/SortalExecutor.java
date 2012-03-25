@@ -52,6 +52,9 @@ public class SortalExecutor implements CommandExecutor {
                     sender.sendMessage(this.getLocalisation().getNameInUse(warp));
                     return true;
                 }
+                if(sender instanceof Player && !this.getPlugin().pay((Player)sender, this.getPlugin().getSettings().getWarpCreatePrice())){
+                    return true; 
+                }
                 this.getPlugin().getWarpManager().addWarp(warp, ((Player)sender).getLocation());
                 sender.sendMessage(this.getLocalisation().getWarpCreated(warp));
                 return true;
