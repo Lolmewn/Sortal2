@@ -79,10 +79,10 @@ public class SignInfo {
         try {
             while(set.next()){
                 //a warp already is in the database, gotta update it
-                if(set.getDouble("x") == this.x && 
+                if(set.getInt("x") == this.x && 
                         set.getString("world").equals(this.world) &&
-                        set.getDouble("y") == this.y && 
-                        set.getDouble("z") == this.z && 
+                        set.getInt("y") == this.y && 
+                        set.getInt("z") == this.z && 
                         set.getInt("price") == this.getPrice() && 
                         set.getString("warp").equals(this.warp)){
                     //no need to update anything
