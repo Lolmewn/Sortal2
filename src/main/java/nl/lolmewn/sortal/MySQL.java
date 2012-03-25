@@ -56,7 +56,7 @@ public class MySQL {
                 + "pitch float, "
                 + "price int)");
         this.executeStatement("CREATE TABLE IF NOT EXISTS " + this.prefix + "signs"
-                + "(id INT NOT NULL AUTO_INCREMENT PRIMARY KEY"
+                + "(id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, "
                 + "world varchar(255), "
                 + "x int, "
                 + "y int, "
