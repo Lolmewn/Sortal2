@@ -55,10 +55,14 @@ public class WarpManager {
                             this.getPlugin().getServer().getWorld(set.getString("world")),
                             set.getInt("x"), set.getInt("y"), set.getInt("z"),
                             set.getFloat("yaw"), set.getFloat("pitch")));
+                    if(this.getPlugin().getSettings().isDebug()){
+                        this.getPlugin().getLogger().log(Level.INFO, "Warp loaded: %s", set.getString("name"));
+                    }
                 }
             } catch (SQLException ex) {
                 this.getPlugin().getLogger().log(Level.SEVERE, null, ex);
             }
+            this.getPlugin().getLogger().log(Level.INFO, String.format("Warps loaded: %s", this.warps.size()));
             return;
         }
         if (!this.warpFile.exists()) {
@@ -108,6 +112,7 @@ public class WarpManager {
             } catch (SQLException ex) {
                 this.getPlugin().getLogger().log(Level.SEVERE, null, ex);
             }
+            this.getPlugin().getLogger().log(Level.INFO, String.format("Signs loaded: %s", this.signs.size()));
             return;
         }
         if(!this.signFile.exists()){

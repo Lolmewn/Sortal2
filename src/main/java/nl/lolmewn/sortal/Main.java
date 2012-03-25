@@ -29,17 +29,17 @@ public class Main extends JavaPlugin{
     }
     
     @Override
-    public void onEnable(){
+    public void onEnable() {
         this.settings = new Settings(); //Also loads Localisation
-            if(this.getSettings().useMySQL()){
-                this.mysql = new MySQL(
-                    this.getSettings().getDbHost(), 
+        if (this.getSettings().useMySQL()) {
+            this.mysql = new MySQL(
+                    this.getSettings().getDbHost(),
                     this.getSettings().getDbPort(),
                     this.getSettings().getDbUser(),
                     this.getSettings().getDbPass(),
                     this.getSettings().getDbDatabase(),
                     this.getSettings().getDbPrefix());
-            if(this.getMySQL().isFault()){
+            if (this.getMySQL().isFault()) {
                 this.getLogger().severe("Something is wrong with the MySQL database, switching to flatfile!");
                 this.getSettings().setUseMySQL(false);
             }
