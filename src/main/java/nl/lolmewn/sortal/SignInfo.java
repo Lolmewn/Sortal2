@@ -93,6 +93,12 @@ public class SignInfo {
                         + "price=" + this.getPrice()
                         + " WHERE x=" + x + " AND y=" + y + " AND z=" + z + " AND world='" + this.world + "'");
             }
+            //It's not in the table at all
+            m.executeQuery("INSERT INTO " + table + "(world, x, y, z, warp, price) VALUES ("
+                    + "'" + this.world + "', "
+                    + "'" + this.x + "', " 
+                    + this.y + ", " + this.z
+                    + ", " + this.warp + ", " + this.getPrice() + ")");
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, null, ex);
         }

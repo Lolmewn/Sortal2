@@ -76,7 +76,15 @@ public class Warp {
                         + "pitch=" + (double)this.loc.getPitch() + ", "
                         + "price=" + this.getPrice()
                         + " WHERE name='" + this.name + "'");
+                return;
             }
+            //It's not in the table at all
+            m.executeQuery("INSERT INTO " + table + "(name, world, x, y, z, yaw, pitch, price) VALUES ("
+                    + "'" + this.getName() + "', "
+                    + "'" + this.getLocation().getWorld().getName() + "', " 
+                    + this.getLocation().getX() + ", " + this.getLocation().getY()
+                    + ", " + this.getLocation().getZ() + ", " + this.getLocation().getYaw()
+                    + ", " + this.getLocation().getPitch() + ", " + this.getPrice() + ")");
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, null, ex);
         }
