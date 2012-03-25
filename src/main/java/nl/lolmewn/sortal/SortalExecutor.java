@@ -193,8 +193,8 @@ public class SortalExecutor implements CommandExecutor {
                    return true;
                }
                try{
-                   int price = Integer.parseInt(args[2]);
-                   String warp = args[1];
+                   int price = Integer.parseInt(args[3]);
+                   String warp = args[2];
                    if(!this.getPlugin().getWarpManager().hasWarp(warp)){
                        sender.sendMessage(this.getLocalisation().getWarpNotFound(warp));
                        return true;
