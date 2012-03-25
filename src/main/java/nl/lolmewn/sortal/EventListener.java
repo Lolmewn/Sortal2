@@ -190,7 +190,7 @@ public class EventListener implements Listener {
                 return true;
             }
             for(String line : s.getLines()){
-                if(line.contains("[Sortal]") || line.contains(this.getPlugin().getSettings().getSignContains())){
+                if(line.toLowerCase().contains("[sortal]") || line.contains(this.getPlugin().getSettings().getSignContains())){
                     this.getPlugin().getWarpManager().addSign(s.getLocation()).setPrice(this.getPlugin().setcost.remove(player.getName()));
                     player.sendMessage("Price set to " + this.getPlugin().getWarpManager().getSign(s.getLocation()).getPrice() + " for this sign!");
                     return true;
