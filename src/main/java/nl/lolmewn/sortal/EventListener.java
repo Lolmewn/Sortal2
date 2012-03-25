@@ -86,9 +86,16 @@ public class EventListener implements Listener {
                     }
                     SignInfo sign = this.getPlugin().getWarpManager().getSign(s.getLocation());
                     if (sign.hasWarp()) {
-                        if (!this.getPlugin().pay(event.getPlayer(), sign.getPrice())) {
-                            event.setCancelled(true);
-                            return;
+                        if(sign.hasPrice()){
+                            if (!this.getPlugin().pay(event.getPlayer(), sign.getPrice())) {
+                                event.setCancelled(true);
+                                return;
+                            }
+                        }else{
+                            if(!this.getPlugin().pay(event.getPlayer(), this.getPlugin().getWarpManager().getWarp(sign.getWarp()).getPrice())){
+                                event.setCancelled(true);
+                                return;
+                            }
                         }
                         Warp w = this.getPlugin().getWarpManager().getWarp(sign.getWarp());
                         event.getPlayer().teleport(w.getLocation(), TeleportCause.PLUGIN);
