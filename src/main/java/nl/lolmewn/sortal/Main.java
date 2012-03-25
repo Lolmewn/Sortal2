@@ -32,14 +32,7 @@ public class Main extends JavaPlugin{
     public void onEnable() {
         this.settings = new Settings(); //Also loads Localisation
         if (this.getSettings().useMySQL()) {
-            this.mysql = new MySQL(
-                    this.getSettings().getDbHost(),
-                    this.getSettings().getDbPort(),
-                    this.getSettings().getDbUser(),
-                    this.getSettings().getDbPass(),
-                    this.getSettings().getDbDatabase(),
-                    this.getSettings().getDbPrefix());
-            if (this.getMySQL().isFault()) {
+            if (!this.initMySQL()) {
                 this.getLogger().severe("Something is wrong with the MySQL database, switching to flatfile!");
                 this.getSettings().setUseMySQL(false);
             }
@@ -58,6 +51,17 @@ public class Main extends JavaPlugin{
                 }
         }, 36000L, 36000L);
         this.getLogger().log(Level.INFO, String.format("Version %s build %s loaded!", this.getSettings().getVersion(), this.getDescription().getVersion()));
+    }
+    
+    protected boolean initMySQL(){
+        this.mysql = new MySQL(
+                    this.getSettings().getDbHost(),
+                    this.getSettings().getDbPort(),
+                    this.getSettings().getDbUser(),
+                    this.getSettings().getDbPass(),
+                    this.getSettings().getDbDatabase(),
+                    this.getSettings().getDbPrefix());
+        return this.mysql.isFault();
     }
 
     public Settings getSettings() {

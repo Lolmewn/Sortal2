@@ -1,5 +1,6 @@
 package nl.lolmewn.sortal;
 
+import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -217,6 +218,48 @@ public class SortalExecutor implements CommandExecutor {
                 sender.sendMessage("Correct usage: /sortal " + args[0] + " <price>");
                 return true;
             }
+        }
+        if(args[0].equalsIgnoreCase("convert")){
+            if(!sender.isOp()){
+                sender.sendMessage(this.getLocalisation().getNoPerms());
+                return true;
+            }
+            this.getPlugin().getSettings().setUseMySQL(!this.getPlugin().getSettings().useMySQL());
+            if(this.getPlugin().getSettings().useMySQL()){
+                if(!this.getPlugin().initMySQL()){
+                    sender.sendMessage("Something went wrong while enabling MySQL! Please check the logs. Using flatfile now.");
+                    return true;
+                }
+                this.getPlugin().saveData();
+                sender.sendMessage("All data should have been saved to the MySQL table!");
+                return true;
+            }
+            this.getPlugin().saveData();
+            sender.sendMessage("All data should have been saved to flatfiles!");
+            return true;
+        }
+        if(args[0].equalsIgnoreCase("help")){
+            sender.sendMessage("===Sortal Help Page===");
+            if(sender.hasPermission("sortal.createwarp")){
+                sender.sendMessage("/sortal warp <name> - Creates a warp at your location");
+            }
+            if(sender.hasPermission("sortal.delwarp")){
+                sender.sendMessage("/sortal delwarp <name> - Deletes warp <name>");
+            }
+            if(sender.hasPermission("sortal.list")){
+                sender.sendMessage("/sortal list (page) - lists all available warps");
+            }
+            if(sender.hasPermission("sortal.setprice")){
+                sender.sendMessage("/sortal setprice <cost> - Set a price for a sign");
+                sender.sendMessage("/sortal setprice warp <warp> <cost> - Set a price for a warp");
+            }
+            if(sender.hasPermission("sortal.register")){
+                sender.sendMessage("/sortal register <warp> - Register a sign to TP to <warp>");
+            }
+            if(sender.isOp()){
+                sender.sendMessage("/sortal convert - Converts from flat-MySQL or back");
+            }
+            sender.sendMessage("/sortal version - Tells you the version you are using");
         }
         sender.sendMessage("Unknown syntax, /sortal help for commands");
         return true;

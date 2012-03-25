@@ -10,6 +10,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
@@ -214,5 +215,30 @@ public class EventListener implements Listener {
             return true;
         }
         return false;
+    }
+    
+    @EventHandler
+    public void onBlockBreak(BlockBreakEvent event){
+        Block b = event.getBlock();
+        if(b.getType().equals(Material.SIGN) || b.getType().equals(Material.SIGN_POST)
+                || b.getType().equals(Material.WALL_SIGN)){
+            Sign s = (Sign)b.getState();
+            for(String line : s.getLines()){
+                if(line.toLowerCase().contains("[sortal]") || line.toLowerCase().contains(this.getPlugin().getSettings().getSignContains())){
+                    if(!event.getPlayer().hasPermission("sortal.breaksign")){
+                        event.getPlayer().sendMessage(this.getLocalisation().getNoPerms());
+                        event.setCancelled(true);
+                        return;
+                    }
+                }
+            }
+            //no [Sortal] or whatever on sign, maybe registered?
+            if(this.getPlugin().getWarpManager().isSortalSign(b.getLocation())){
+                if(!event.getPlayer().hasPermission("sortal.breaksign")){
+                    event.getPlayer().sendMessage(this.getLocalisation().getNoPerms());
+                    event.setCancelled(true);
+                }
+            }
+        }
     }
 }
