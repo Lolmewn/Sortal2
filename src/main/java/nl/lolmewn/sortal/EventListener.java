@@ -200,8 +200,10 @@ public class EventListener implements Listener {
                 player.sendMessage("Sign is now pointing to " + sign.getWarp());
                 return true;
             }
-            this.getPlugin().getWarpManager().addSign(s.getLocation()).setWarp(this.getPlugin().register.remove(player.getName()));
-            player.sendMessage("Sign is now pointing to " + this.getPlugin().getWarpManager().getSign(s.getLocation()).getWarp());
+            SignInfo sign = this.getPlugin().getWarpManager().addSign(s.getLocation());
+            String warp = this.getPlugin().register.remove(player.getName());
+            sign.setWarp(warp);
+            player.sendMessage("Sign is now pointing to " + warp);
             return true;
         }
         return false;
