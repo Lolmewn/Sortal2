@@ -39,10 +39,6 @@ public class WarpManager {
         }
     }
 
-    public SignInfo getSign(Location loc) {
-        return this.signs.get(loc.getWorld().getName() + "," + loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ());
-    }
-
     private void loadWarps() {
         if (this.getPlugin().getSettings().useMySQL()) {
             ResultSet set = this.getPlugin().getMySQL().executeQuery("SELECT * FROM "
@@ -165,7 +161,7 @@ public class WarpManager {
     }
 
     public SignInfo addSign(Location loc) {
-        return this.signs.put(loc.getWorld().getName() + "," + 
+        this.signs.put(loc.getWorld().getName() + "," + 
                 loc.getBlockX() + "," + 
                 loc.getBlockY() + "," + 
                 loc.getBlockZ(), new SignInfo(
@@ -173,6 +169,14 @@ public class WarpManager {
                 loc.getBlockX(), 
                 loc.getBlockY(),
                 loc.getBlockZ()));
+        return this.getSign(loc);
+    }
+    
+    public SignInfo getSign(Location loc) {
+        return this.signs.get(loc.getWorld().getName() + "," + 
+                loc.getBlockX() + "," + 
+                loc.getBlockY() + "," + 
+                loc.getBlockZ());
     }
 
     public Warp removeWarp(String name) {
@@ -220,6 +224,16 @@ public class WarpManager {
                 this.warps.get(name).save(this.getPlugin().getMySQL(), this.getPlugin().getWarpTable());
             } else {
                 this.warps.get(name).save(warpFile);
+            }
+        }
+        for (String loc : this.signs.keySet()) {
+            if (this.getPlugin().getSettings().isDebug()) {
+                this.getPlugin().getLogger().log(Level.INFO, String.format("[Debug] Saving sign at %s", loc));
+            }
+            if (this.getPlugin().getSettings().useMySQL()) {
+                this.signs.get(loc).save(this.getPlugin().getMySQL(), this.getPlugin().getSignTable());
+            } else {
+                this.signs.get(loc).save(this.signFile);
             }
         }
     }
