@@ -1,7 +1,6 @@
 package nl.lolmewn.sortal;
 
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
 import java.util.HashMap;
 import java.util.logging.Level;
 import org.bukkit.Bukkit;
@@ -107,7 +106,7 @@ public class Settings {
      */
     public Settings(Main main) {
         this.plugin = main;
-        this.localisation = new Localisation(main);
+        this.localisation = new Localisation();
         this.checkFile();
         this.loadSettings();
     }
@@ -144,11 +143,8 @@ public class Settings {
     }
 
     private void extractSettings() {
-        this.getPlugin().saveResource("settings.yml", false);
-        this.getPlugin().getLogger().info("Default settings file created!");
-        /*
         try {
-            Bukkit.getLogger().info("[Sortal] Trying to create default config...");
+            this.getPlugin().getLogger().info("Trying to create default config...");
             try {
                 InputStream in = this.getClass().
                         getClassLoader().getResourceAsStream("settings.yml");
@@ -161,14 +157,14 @@ public class Settings {
                 out.flush();
                 out.close();
                 in.close();
-                Bukkit.getLogger().info("[Sortal] Default config created succesfully!");
+                this.getPlugin().getLogger().info("Default config created succesfully!");
             } catch (Exception e) {
                 e.printStackTrace();
-                Bukkit.getLogger().warning("[Sortal] Error creating settings file! Using default settings!");
+                this.getPlugin().getLogger().warning("Error creating settings file! Using default settings!");
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }*/
+        }
     }
 
     private void printSettings(YamlConfiguration c) {
