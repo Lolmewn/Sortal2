@@ -119,6 +119,7 @@ public class Main extends JavaPlugin{
                     return getWarpManager().getSigns().size();
                 }
             });
+            this.metrics.start();
         } catch (IOException ex) {
             this.getLogger().log(Level.WARNING, null, ex);
         }
