@@ -18,11 +18,19 @@ public class Warp {
     private String name;
     private Location loc;
     private int price;
+    private boolean hasPrice;
     
-    public Warp(String name, Location loc, int price){
+    public Warp(String name, Location loc){
         this.name = name;
         this.loc = loc;
-        this.price = price;
+    }
+
+    public boolean hasPrice() {
+        return hasPrice;
+    }
+
+    public void setHasPrice(boolean hasPrice) {
+        this.hasPrice = hasPrice;
     }
     
     public String getName(){

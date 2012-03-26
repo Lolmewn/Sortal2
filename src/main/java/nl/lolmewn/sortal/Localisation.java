@@ -30,13 +30,16 @@ public class Localisation {
     private String playerTeleported;
     private String costSet;
 
-    public Localisation() {
-        this.checkFile();
+    public Localisation(Main m) {
+        this.checkFile(m);
         this.loadFile();
     }
 
-    private void checkFile() {
+    private void checkFile(Main m) {
         if(!this.localisation.exists()){
+            m.saveResource("localisation.yml", false);
+            m.getLogger().info("Default language file created!");
+            /*
             Bukkit.getLogger().info("[Sortal] Trying to create default language file...");
             try {
                 this.localisation.getParentFile().mkdirs();
@@ -54,7 +57,7 @@ public class Localisation {
                 Bukkit.getLogger().info("[Sortal] Default language file created succesfully!");
             } catch (Exception e) {
                 Bukkit.getLogger().log(Level.WARNING, "[Sortal] Error creating language file! Using default settings!", e);
-            }
+            }*/
         }
     }
 

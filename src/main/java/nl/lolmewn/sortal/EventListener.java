@@ -87,18 +87,23 @@ public class EventListener implements Listener {
                     }
                     SignInfo sign = this.getPlugin().getWarpManager().getSign(s.getLocation());
                     if (sign.hasWarp()) {
+                        Warp w = this.getPlugin().getWarpManager().getWarp(sign.getWarp());
                         if(sign.hasPrice()){
                             if (!this.getPlugin().pay(event.getPlayer(), sign.getPrice())) {
                                 event.setCancelled(true);
                                 return;
                             }
-                        }else{
+                        }else if(w.hasPrice()){
                             if(!this.getPlugin().pay(event.getPlayer(), this.getPlugin().getWarpManager().getWarp(sign.getWarp()).getPrice())){
                                 event.setCancelled(true);
                                 return;
                             }
+                        }else{
+                            if(!this.getPlugin().pay(event.getPlayer(), this.getPlugin().getSettings().getWarpUsePrice())){
+                                event.setCancelled(true);
+                                return;
+                            }
                         }
-                        Warp w = this.getPlugin().getWarpManager().getWarp(sign.getWarp());
                         event.getPlayer().teleport(w.getLocation(), TeleportCause.PLUGIN);
                         event.getPlayer().sendMessage(this.getLocalisation().getPlayerTeleported(w.getName()));
                         event.setCancelled(true); //Cancel, don't place block.

@@ -1,6 +1,7 @@
 package nl.lolmewn.sortal;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.logging.Level;
 import org.bukkit.Bukkit;
@@ -12,6 +13,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
  */
 public class Settings {
 
+    private Main plugin;
     private boolean useMySQL;
     private boolean update;
     private double version;
@@ -97,11 +99,15 @@ public class Settings {
         this.warpUsePrice = warpUsePrice;
     }
     
+    private Main getPlugin(){
+        return this.plugin;
+    }
     /*
      * Constructor
      */
-    public Settings() {
-        this.localisation = new Localisation();
+    public Settings(Main main) {
+        this.plugin = main;
+        this.localisation = new Localisation(main);
         this.checkFile();
         this.loadSettings();
     }
@@ -138,6 +144,9 @@ public class Settings {
     }
 
     private void extractSettings() {
+        this.getPlugin().saveResource("settings.yml", false);
+        this.getPlugin().getLogger().info("Default settings file created!");
+        /*
         try {
             Bukkit.getLogger().info("[Sortal] Trying to create default config...");
             try {
@@ -159,7 +168,7 @@ public class Settings {
             }
         } catch (Exception e) {
             e.printStackTrace();
-        }
+        }*/
     }
 
     private void printSettings(YamlConfiguration c) {

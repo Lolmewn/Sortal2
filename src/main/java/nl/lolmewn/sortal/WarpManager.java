@@ -1,13 +1,14 @@
 package nl.lolmewn.sortal;
 
-import java.io.File;
-import java.io.IOException;
+import com.google.common.io.Files;
+import java.io.*;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -32,6 +33,7 @@ public class WarpManager {
     public WarpManager(Main m) {
         this.plugin = m;
         try {
+            this.checkOldVersion();
             this.loadWarps();
             this.loadSigns();
         } catch (Exception e) {
@@ -55,7 +57,7 @@ public class WarpManager {
                             this.getPlugin().getServer().getWorld(set.getString("world")),
                             set.getInt("x"), set.getInt("y"), set.getInt("z"),
                             set.getFloat("yaw"), set.getFloat("pitch")));
-                    if(this.getPlugin().getSettings().isDebug()){
+                    if (this.getPlugin().getSettings().isDebug()) {
                         this.getPlugin().getLogger().log(Level.INFO, "Warp loaded: %s", set.getString("name"));
                     }
                 }
@@ -115,7 +117,7 @@ public class WarpManager {
             this.getPlugin().getLogger().log(Level.INFO, String.format("Signs loaded: %s", this.signs.size()));
             return;
         }
-        if(!this.signFile.exists()){
+        if (!this.signFile.exists()) {
             try {
                 this.signFile.createNewFile();
             } catch (IOException ex) {
@@ -127,7 +129,7 @@ public class WarpManager {
         YamlConfiguration c = YamlConfiguration.loadConfiguration(this.signFile);
         for (String key : c.getConfigurationSection("").getKeys(false)) {
             //Key is location
-            if(!key.contains(",")){
+            if (!key.contains(",")) {
                 //dafuq?
                 continue;
             }
@@ -137,7 +139,7 @@ public class WarpManager {
                     Integer.parseInt(splot[2]),
                     Integer.parseInt(splot[3]));
             String extra = c.getString(key);
-            if(extra.contains(",")){
+            if (extra.contains(",")) {
                 String warp = extra.split(",")[0];
                 int price = Integer.parseInt(extra.split(",")[1]);
                 this.addSign(loc);
@@ -145,17 +147,13 @@ public class WarpManager {
                 this.getSign(loc).setWarp(warp);
                 continue;
             }
-            this.addSign(loc).setWarp(extra); 
+            this.addSign(loc).setWarp(extra);
         }
         this.getPlugin().getLogger().log(Level.INFO, String.format("Signs loaded: %s", this.signs.size()));
     }
 
     public Warp addWarp(String name, Location loc) {
-        return this.addWarp(name, loc, this.getPlugin().getSettings().getWarpUsePrice());
-    }
-
-    public Warp addWarp(String name, Location loc, int price) {
-        this.warps.put(name, new Warp(name, loc, price));
+        this.warps.put(name, new Warp(name, loc));
         Warp w = this.getWarp(name);
         if (this.getPlugin().getSettings().useMySQL()) {
             w.save(this.getPlugin().getMySQL(), this.getPlugin().getWarpTable());
@@ -165,23 +163,29 @@ public class WarpManager {
         return w;
     }
 
+    public Warp addWarp(String name, Location loc, int price) {
+        Warp w = this.addWarp(name, loc);
+        w.setPrice(price);
+        return w;
+    }
+
     public SignInfo addSign(Location loc) {
-        this.signs.put(loc.getWorld().getName() + "," + 
-                loc.getBlockX() + "," + 
-                loc.getBlockY() + "," + 
-                loc.getBlockZ(), new SignInfo(
-                loc.getWorld().getName(), 
-                loc.getBlockX(), 
+        this.signs.put(loc.getWorld().getName() + ","
+                + loc.getBlockX() + ","
+                + loc.getBlockY() + ","
+                + loc.getBlockZ(), new SignInfo(
+                loc.getWorld().getName(),
+                loc.getBlockX(),
                 loc.getBlockY(),
                 loc.getBlockZ()));
         return this.getSign(loc);
     }
-    
+
     public SignInfo getSign(Location loc) {
-        return this.signs.get(loc.getWorld().getName() + "," + 
-                loc.getBlockX() + "," + 
-                loc.getBlockY() + "," + 
-                loc.getBlockZ());
+        return this.signs.get(loc.getWorld().getName() + ","
+                + loc.getBlockX() + ","
+                + loc.getBlockY() + ","
+                + loc.getBlockZ());
     }
 
     public Warp removeWarp(String name) {
@@ -249,5 +253,120 @@ public class WarpManager {
             warpSet.add(this.warps.get(warp));
         }
         return warpSet;
+    }
+    
+    public Set<SignInfo> getSigns() {
+        Set<SignInfo> warpSet = new HashSet<SignInfo>();
+        for (String warp : this.signs.keySet()) {
+            warpSet.add(this.signs.get(warp));
+        }
+        return warpSet;
+    }
+
+    private void checkOldVersion() {
+        File old = new File("plugins" + File.separator + "Sortal" + File.separator + "warps.txt");
+        if (old.exists()) {
+            BufferedReader in1 = null;
+            try {
+                //Old version!
+                this.getPlugin().getLogger().log(Level.INFO, "Old Sortal saving system found, converting!");
+                in1 = new BufferedReader(new FileReader(old));
+                String str;
+                while ((str = in1.readLine()) != null) {
+                    if (str.startsWith("#")) {
+                        continue;
+                    }
+                    String warp = "unknownWarp";
+                    try {
+                        String[] split = str.split("=");
+                        warp = split[0];
+                        String[] rest = split[1].split(",");
+                        Warp w = this.addWarp(warp, new Location(
+                                this.getPlugin().getServer().getWorld(rest[0]),
+                                Double.parseDouble(rest[1]),
+                                Double.parseDouble(rest[2]),
+                                Double.parseDouble(rest[3])));
+                        if (rest.length == 5) {
+                            //Also has a price
+                            w.setPrice(Integer.parseInt(rest[4]));
+                        }
+                        this.getPlugin().getLogger().log(Level.INFO, String.format("Converted warp %s", warp));
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        this.getPlugin().getLogger().info(String.format("Warp %s couldn't be converted : Too little arguments!", warp));
+                    }
+                }
+            } catch (IOException ex) {
+                this.getPlugin().getLogger().log(Level.SEVERE, null, ex);
+            } finally {
+                try {
+                    in1.close();
+                } catch (IOException ex) {
+                    this.getPlugin().getLogger().log(Level.WARNING, null, ex);
+                }
+            }
+            try {
+                Files.move(old, new File(old.getParentFile(), "warps_old.txt"));
+            } catch (IOException ex) {
+                this.getPlugin().getLogger().log(Level.WARNING, null, ex);
+            }
+        }
+        File oldSigns = new File(old.getParentFile(), "signs.txt");
+        if (oldSigns.exists()) {
+            try {
+                BufferedReader in1 = new BufferedReader(new FileReader(oldSigns));
+                String str;
+                while ((str = in1.readLine()) != null) {
+                    if (str.startsWith("#")) {
+                        continue;
+                    }
+                    if (!str.contains("=")) {
+                        continue;
+                    }
+                    String[] split = str.split("=");
+                    String warp = split[1];
+                    String[] rest = split[0].split(",");
+                    if (rest.length == 3) {
+                        if (isInt(rest[0]) && isInt(rest[1]) && isInt(rest[2])) {
+                            SignInfo s = this.addSign(new Location(this.getPlugin().getServer().getWorlds().get(0), Integer.parseInt(rest[0]), Integer.parseInt(rest[1]), Integer.parseInt(rest[2])));
+                            s.setWarp(warp);
+                            continue;
+                        }
+                        continue;
+                    }
+                    if (rest.length == 4) {
+                        if (isInt(rest[0]) && isInt(rest[1]) && isInt(rest[2])) {
+                            SignInfo s = this.addSign(new Location(this.getPlugin().getServer().getWorld(rest[3]), Integer.parseInt(rest[0]), Integer.parseInt(rest[1]), Integer.parseInt(rest[2])));
+                            s.setWarp(warp);
+                            continue;
+                        } else if (isInt(rest[3]) && isInt(rest[1]) && isInt(rest[2])) {
+                            this.addSign(new Location(this.getPlugin().getServer().getWorld(rest[0]), Integer.parseInt(rest[1]), Integer.parseInt(rest[2]), Integer.parseInt(rest[3])));
+                            continue;
+                        } else {
+                            continue;
+                        }
+                    }
+                }
+                in1.close();
+                this.getPlugin().getLogger().log(Level.INFO, "Managed to save %s signs!", this.warps.size());
+            } catch (FileNotFoundException e) {
+                this.getPlugin().getLogger().log(Level.WARNING, null, e);
+            } catch (IOException e) {
+                this.getPlugin().getLogger().log(Level.WARNING, null, e);
+            }
+            try {
+                Files.move(oldSigns, new File(oldSigns.getParentFile(), "signs_old.txt"));
+            } catch (IOException ex) {
+                this.getPlugin().getLogger().log(Level.WARNING, null, ex);
+            }
+        }
+    }
+
+    public boolean isInt(String str) {
+        try {
+            Integer.parseInt(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 }

@@ -1,8 +1,16 @@
 package nl.lolmewn.sortal;
 
+import java.io.*;
+import java.net.MalformedURLException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import net.milkbowl.vault.economy.Economy;
+import nl.lolmewn.sortal.Metrics.Graph;
+import nl.lolmewn.sortal.Metrics.Plotter;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -17,20 +25,59 @@ public class Main extends JavaPlugin{
     private Settings settings;
     private MySQL mysql;
     private Economy eco; //Vault
+    private Metrics metrics;
     
     protected HashMap<String, Integer> setcost = new HashMap<String, Integer>();
     protected HashMap<String, String> register = new HashMap<String, String>();
+    
+    private boolean willUpdate;
+    private double newVersion;
+    
+    private File settingsFile = new File("plugins" + File.separator + "Sortal"
+            + File.separator + "settings.yml");
     
     @Override
     public void onDisable(){
         this.saveData();
         this.getServer().getScheduler().cancelTasks(this);
+        if(this.willUpdate){
+            this.getLogger().log(Level.INFO, String.format("Updating Sortal to version %s, please wait..", newVersion));
+            this.update();
+        }
         this.getLogger().info("Disabled!");
+    }
+    
+    private void update(){
+        try {
+            BufferedInputStream in = new BufferedInputStream(new URL("http://dl.dropbox.com/u/7365249/Sortal.jar").openStream());
+            FileOutputStream fout = new FileOutputStream(this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
+            byte data[] = new byte[1024]; //Download 1 KB at a time
+            int count;
+            while ((count = in.read(data, 0, 1024)) != -1) {
+                fout.write(data, 0, count);
+            }
+            in.close();
+            fout.close();
+            YamlConfiguration c = new YamlConfiguration();
+            try {
+                c.load(this.settingsFile);
+                c.set("version", this.newVersion);
+                c.save(this.settingsFile);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } catch (MalformedURLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
     }
     
     @Override
     public void onEnable() {
-        this.settings = new Settings(); //Also loads Localisation
+        this.settings = new Settings(this); //Also loads Localisation
         if (this.getSettings().useMySQL()) {
             if (!this.initMySQL()) {
                 this.getLogger().severe("Something is wrong with the MySQL database, switching to flatfile!");
@@ -50,7 +97,31 @@ public class Main extends JavaPlugin{
                 new Thread(new Runnable(){public void run() {saveData();getLogger().info("Data saved!");}}).start();
                 }
         }, 36000L, 36000L);
+        this.startMetrics();
+        this.checkUpdate();
         this.getLogger().log(Level.INFO, String.format("Version %s build %s loaded!", this.getSettings().getVersion(), this.getDescription().getVersion()));
+    }
+    
+    protected void startMetrics(){
+        try {
+            this.metrics = new Metrics(this);
+            Graph g = this.metrics.createGraph("Custom Data for Sortal");
+            g.addPlotter(new Plotter() {
+                @Override
+                public int getValue() {
+                    return getWarpManager().getWarps().size();
+                }
+            });
+            g.addPlotter(new Plotter() {
+
+                @Override
+                public int getValue() {
+                    return getWarpManager().getSigns().size();
+                }
+            });
+        } catch (IOException ex) {
+            this.getLogger().log(Level.WARNING, null, ex);
+        }
     }
     
     protected boolean initMySQL(){
@@ -121,5 +192,30 @@ public class Main extends JavaPlugin{
         }
         this.getLogger().info("Hooked into Vault and Economy plugin succesfully!");
         return true;
+    }
+
+    private void checkUpdate() {
+        if(!this.getSettings().isUpdate()){
+            return;
+        }
+        try {
+            URL url = new URL("http://dl.dropbox.com/u/7365249/sortal.txt");
+            BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
+            String str;
+            while ((str = in.readLine()) != null) {
+                if (this.getSettings().getVersion() < Double.parseDouble(str)) {
+                    this.newVersion = Double.parseDouble(str);
+                    this.willUpdate = true;
+                    this.getLogger().info(String.format("An update is available! Will be downloaded on Disable! New version: %s", str));
+                }
+            }
+            in.close();
+        } catch (MalformedURLException e) {
+            this.getLogger().log(Level.WARNING, null, e);
+        } catch (IOException e) {
+            this.getLogger().log(Level.WARNING, null, e);
+        } catch (Exception e) {
+            this.getLogger().log(Level.WARNING, null, e);
+        }
     }
 }
