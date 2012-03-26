@@ -106,13 +106,13 @@ public class Main extends JavaPlugin{
         try {
             this.metrics = new Metrics(this);
             Graph g = this.metrics.createGraph("Custom Data for Sortal");
-            g.addPlotter(new Plotter() {
+            g.addPlotter(new Plotter("Warps") {
                 @Override
                 public int getValue() {
                     return getWarpManager().getWarps().size();
                 }
             });
-            g.addPlotter(new Plotter() {
+            g.addPlotter(new Plotter("Signs") {
 
                 @Override
                 public int getValue() {
