@@ -196,10 +196,10 @@ public class Settings {
         local.put("commands.createNameForgotten", c.getString("warpCreateNameForgotten"));
         local.put("commands.deleteNameForgotten", c.getString("warpDeleteNameForgotten"));
         local.put("commands.nameInUse", c.getString("nameInUse"));
-        local.put("paymentComplete", c.getString("moneyPayed"));
-        local.put("commands.warpCreated", c.getString("warpCreated"));
+        local.put("paymentComplete", c.getString("moneyPayed").replace("MONEY", "$MONEY"));
+        local.put("commands.warpCreated", c.getString("warpCreated").replace("WARPNAME", "$WARP"));
         local.put("noMoney", c.getString("notEnoughMoney"));
-        local.put("commands.warpDeleted", c.getString("warpDeleted"));
+        local.put("commands.warpDeleted", c.getString("warpDeleted").replace("WARPNAME", "$WARP"));
         local.put("commands.warpNotFound", c.getString("warpDoesNotExist"));
         local.put("noPlayer", c.getString("notAplayer"));
         
