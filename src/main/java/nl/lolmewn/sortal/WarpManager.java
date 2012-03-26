@@ -339,7 +339,8 @@ public class WarpManager {
                             s.setWarp(warp);
                             continue;
                         } else if (isInt(rest[3]) && isInt(rest[1]) && isInt(rest[2])) {
-                            this.addSign(new Location(this.getPlugin().getServer().getWorld(rest[0]), Integer.parseInt(rest[1]), Integer.parseInt(rest[2]), Integer.parseInt(rest[3])));
+                            SignInfo s = this.addSign(new Location(this.getPlugin().getServer().getWorld(rest[0]), Integer.parseInt(rest[1]), Integer.parseInt(rest[2]), Integer.parseInt(rest[3])));
+                            s.setWarp(warp);
                             continue;
                         } else {
                             continue;
@@ -347,7 +348,7 @@ public class WarpManager {
                     }
                 }
                 in1.close();
-                this.getPlugin().getLogger().log(Level.INFO, "Managed to save %s signs!", this.warps.size());
+                this.getPlugin().getLogger().log(Level.INFO, String.format("Managed to save %s signs!", this.warps.size()));
             } catch (FileNotFoundException e) {
                 this.getPlugin().getLogger().log(Level.WARNING, null, e);
             } catch (IOException e) {
@@ -358,6 +359,7 @@ public class WarpManager {
             } catch (IOException ex) {
                 this.getPlugin().getLogger().log(Level.WARNING, null, ex);
             }
+            this.saveData();
         }
     }
 
