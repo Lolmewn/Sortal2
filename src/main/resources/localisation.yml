@@ -1,6 +1,6 @@
-###Sortal - Sign Based Teleportation###
-###Made by Lolmewn###
-###In this file, you can change the messages to your own language###
+# Sortal - Sign Based Teleportation #
+# Made by Lolmewn #
+# In this file, you can change the messages to your own language #
 
 commands:
   createNameForgotten: Please specify a name for this warp!
