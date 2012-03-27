@@ -65,6 +65,7 @@ public class Localisation {
         this.nameInUse = c.getString("commands.nameInUse");
         this.noMoney = c.getString("noMoney");
         this.noPerms = c.getString("noPermissions");
+        this.noPlayer = c.getString("noPlayer");
         this.paymentComplete = c.getString("paymentComplete");
         this.warpCreated = c.getString("commands.warpCreated");
         this.warpDeleted = c.getString("commands.warpDeleted");

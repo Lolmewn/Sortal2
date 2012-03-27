@@ -6,7 +6,6 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import net.milkbowl.vault.economy.Economy;
 import nl.lolmewn.sortal.Metrics.Graph;
 import nl.lolmewn.sortal.Metrics.Plotter;
