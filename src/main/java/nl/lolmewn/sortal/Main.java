@@ -5,6 +5,7 @@ import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.logging.Level;
 import net.milkbowl.vault.economy.Economy;
 import nl.lolmewn.sortal.Metrics.Graph;
@@ -28,6 +29,8 @@ public class Main extends JavaPlugin{
     
     protected HashMap<String, Integer> setcost = new HashMap<String, Integer>();
     protected HashMap<String, String> register = new HashMap<String, String>();
+    protected HashSet<String> unregister = new HashSet<String>();
+    protected HashMap<String, Integer> setuses = new HashMap<String, Integer>();
     
     private boolean willUpdate;
     private double newVersion;
@@ -63,14 +66,14 @@ public class Main extends JavaPlugin{
                 c.set("version", this.newVersion);
                 c.save(this.settingsFile);
             } catch (Exception e) {
-                e.printStackTrace();
+                this.getLogger().log(Level.WARNING, null, e);
             }
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            this.getLogger().log(Level.WARNING, null, e);
         } catch (IOException e) {
-            e.printStackTrace();
+            this.getLogger().log(Level.WARNING, null, e);
         } catch (URISyntaxException e) {
-            e.printStackTrace();
+            this.getLogger().log(Level.WARNING, null, e);
         }
     }
     
@@ -87,9 +90,11 @@ public class Main extends JavaPlugin{
         this.getCommand("sortal").setExecutor(new SortalExecutor(this));
         this.getServer().getPluginManager().registerEvents(new EventListener(this), this);
         if(!this.initVault()){
-            this.getLogger().info("Vault error, setting costs to 0!");
+            this.getLogger().info("Vault error or not found, setting costs to 0!");
             this.getSettings().setWarpCreatePrice(0);
             this.getSettings().setWarpUsePrice(0);
+        }else{
+            this.getLogger().info("Hooked into Vault and Economy plugin succesfully!");
         }
         this.getServer().getScheduler().scheduleAsyncRepeatingTask(this, new Runnable(){
             public void run() {
@@ -181,6 +186,10 @@ public class Main extends JavaPlugin{
         if(this.eco != null){
             return true;
         }
+        if(this.getServer().getPluginManager().getPlugin("Vault") == null){
+            //Vault not found
+            return false;
+        }
         RegisteredServiceProvider<Economy> rsp = this.getServer().getServicesManager().getRegistration(Economy.class);
         if(rsp == null && (this.getSettings().getWarpCreatePrice() != 0 || this.getSettings().getWarpUsePrice() != 0)){
             //Vault not found
@@ -190,7 +199,6 @@ public class Main extends JavaPlugin{
         if(this.eco == null && (this.getSettings().getWarpCreatePrice() != 0 || this.getSettings().getWarpUsePrice() != 0)){
             return false;
         }
-        this.getLogger().info("Hooked into Vault and Economy plugin succesfully!");
         return true;
     }
 

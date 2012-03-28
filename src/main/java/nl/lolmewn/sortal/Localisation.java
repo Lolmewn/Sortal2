@@ -151,8 +151,8 @@ public class Localisation {
     }
 
     public String getCostSet(String cost) {
-        if(this.playerTeleported.contains("$COST") && cost != null && !cost.equals("")){
-            return playerTeleported.replace("$COST", cost);
+        if(this.costSet.contains("$COST") && cost != null && !cost.equals("")){
+            return costSet.replace("$COST", cost);
         }
         return costSet;
     }

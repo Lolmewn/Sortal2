@@ -122,6 +122,49 @@ public class SortalExecutor implements CommandExecutor {
                     " build " + this.getPlugin().getDescription().getVersion());
             return true;
         }
+        if(args[0].equalsIgnoreCase("unregister")){
+            if(!(sender instanceof Player)){
+                sender.sendMessage(this.getLocalisation().getNoPlayer());
+                return true;
+            }
+            if(!sender.hasPermission("sortal.unregister")){
+                sender.sendMessage(this.getLocalisation().getNoPerms());
+                return true;
+            }
+            if(this.getPlugin().unregister.contains(sender.getName())){
+                this.getPlugin().unregister.remove(sender.getName());
+                sender.sendMessage("No longer unregistering!");
+                return true;
+            }
+            if(this.getPlugin().setcost.containsKey(sender.getName())){
+                sender.sendMessage("Please finish setting a cost first! (cancel is /sortal setprice)");
+                return true;
+            }
+            if(this.getPlugin().register.containsKey(sender.getName())){
+                sender.sendMessage("Please finish registering first! (cancel is /sortal register)");
+                return true;
+            }
+            this.getPlugin().unregister.add(sender.getName());
+            sender.sendMessage("Now punch the sign you wish to be unregistered!");
+            return true;
+        }
+        if(args[0].equalsIgnoreCase("setuses") || args[0].equalsIgnoreCase("uses")){
+            if(!(sender instanceof Player)){
+                sender.sendMessage(this.getLocalisation().getNoPlayer());
+                return true;
+            }
+            if(!sender.hasPermission("sortal.setuses")){
+                sender.sendMessage(this.getLocalisation().getNoPerms());
+                return true;
+            }
+            if(args.length == 1){
+                if(this.getPlugin().setuses.containsKey(sender.getName())){
+                    this.getPlugin().setuses.remove(sender.getName());
+                    sender.sendMessage("No longer setting uses!");
+                    return true;
+                }
+            }
+        }
         if(args[0].equalsIgnoreCase("register")){
             if(!(sender instanceof Player)){
                 sender.sendMessage(this.getLocalisation().getNoPlayer());
@@ -146,6 +189,10 @@ public class SortalExecutor implements CommandExecutor {
             }
             if(this.getPlugin().register.containsKey(sender.getName())){
                 sender.sendMessage("Please finish registering first! (cancel is /sortal register)");
+                return true;
+            }
+            if(this.getPlugin().unregister.contains(sender.getName())){
+                sender.sendMessage("Please finish unregistering first! (cancel is /sortal unregister)");
                 return true;
             }
             String warp = args[1];
@@ -182,6 +229,10 @@ public class SortalExecutor implements CommandExecutor {
             }
             if(this.getPlugin().register.containsKey(sender.getName())){
                 sender.sendMessage("Please finish registering first! (cancel is /sortal register)");
+                return true;
+            }
+            if(this.getPlugin().unregister.contains(sender.getName())){
+                sender.sendMessage("Please finish unregistering first! (cancel is /sortal unregister)");
                 return true;
             }
             if(args[1].equalsIgnoreCase("warp")){

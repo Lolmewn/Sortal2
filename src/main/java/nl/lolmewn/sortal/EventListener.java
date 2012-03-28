@@ -219,6 +219,35 @@ public class EventListener implements Listener {
             player.sendMessage("Sign is now pointing to " + warp);
             return true;
         }
+        if (this.getPlugin().unregister.contains(player.getName())){
+            if (!this.getPlugin().getWarpManager().isSortalSign(s.getLocation())){
+                player.sendMessage("This sign isn't registered, please hit a registered sign to unregister!");
+                return true;
+            }
+            SignInfo sign = this.getPlugin().getWarpManager().getSign(s.getLocation());
+            if(!sign.hasWarp()){
+                player.sendMessage("This sign isn't pointing to a warp!");
+                return true;
+            }
+            if(!sign.hasPrice()){
+                //Sign doesn't have a price and warp gets removed, remove whole sign info
+                if(this.getPlugin().getSettings().useMySQL()){
+                    sign.delete(this.getPlugin().getMySQL(), this.getPlugin().getSignTable());
+                }else{
+                    sign.delete(this.getPlugin().getWarpManager().signFile);
+                }
+                player.sendMessage("Unregistered sign! No data left for sign, removing..");
+                this.getPlugin().unregister.remove(player.getName());
+                return true;
+            }
+            sign.setWarp(null);
+            this.getPlugin().unregister.remove(player.getName());
+            player.sendMessage("Sign unregistered!");
+            return true;
+        }
+        if(this.getPlugin().setuses.containsKey(player.getName())){
+            
+        }
         return false;
     }
     
