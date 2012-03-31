@@ -113,17 +113,21 @@ public class Warp {
                         + "z=" + this.loc.getZ() + ", "
                         + "yaw=" + (double)this.loc.getYaw() + ", "
                         + "pitch=" + (double)this.loc.getPitch() + ", "
-                        + "price=" + this.getPrice()
+                        + "price=" + this.getPrice() + ", "
+                        + "uses=" + this.uses + ", "
+                        + "used=" + this.used + ", "
+                        + "owner='" + this.owner + "'"
                         + " WHERE name='" + this.name + "'");
                 return;
             }
             //It's not in the table at all
-            m.executeQuery("INSERT INTO " + table + "(name, world, x, y, z, yaw, pitch, price) VALUES ("
+            m.executeQuery("INSERT INTO " + table + "(name, world, x, y, z, yaw, pitch, price, uses, used, owner) VALUES ("
                     + "'" + this.getName() + "', "
                     + "'" + this.getLocation().getWorld().getName() + "', " 
                     + this.getLocation().getX() + ", " + this.getLocation().getY()
                     + ", " + this.getLocation().getZ() + ", " + this.getLocation().getYaw()
-                    + ", " + this.getLocation().getPitch() + ", " + this.getPrice() + ")");
+                    + ", " + this.getLocation().getPitch() + ", " + this.getPrice() + ", "
+                    + this.uses + ", " + this.used + ", '" + this.owner + "')");
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, null, ex);
         }
@@ -144,6 +148,9 @@ public class Warp {
         c.set(name + ".z", loc.getZ());
         c.set(name + ".yaw", (double)loc.getYaw());
         c.set(name + ".pitch", (double)loc.getPitch());
+        c.set(name + ".uses", this.uses);
+        c.set(name + ".used", this.used);
+        c.set(name + ".owner", this.owner);
         try {
             c.save(f);
         } catch (IOException ex) {
