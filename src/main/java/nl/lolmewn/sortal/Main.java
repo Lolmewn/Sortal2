@@ -137,7 +137,7 @@ public class Main extends JavaPlugin{
                     this.getSettings().getDbPass(),
                     this.getSettings().getDbDatabase(),
                     this.getSettings().getDbPrefix());
-        return this.mysql.isFault();
+        return !this.mysql.isFault();
     }
 
     public Settings getSettings() {
