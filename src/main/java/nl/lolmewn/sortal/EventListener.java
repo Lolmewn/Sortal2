@@ -217,7 +217,9 @@ public class EventListener implements Listener {
             }
             for(String line : s.getLines()){
                 if(line.toLowerCase().contains("[sortal]") || line.contains(this.getPlugin().getSettings().getSignContains())){
-                    this.getPlugin().getWarpManager().addSign(s.getLocation()).setPrice(this.getPlugin().setcost.remove(player.getName()));
+                    SignInfo sign = this.getPlugin().getWarpManager().addSign(s.getLocation());
+                    sign.setPrice(this.getPlugin().setcost.remove(player.getName()));
+                    sign.setOwner(player.getName());
                     player.sendMessage("Price set to " + this.getPlugin().getWarpManager().getSign(s.getLocation()).getPrice() + " for this sign!");
                     return true;
                 }
@@ -236,6 +238,7 @@ public class EventListener implements Listener {
             SignInfo sign = this.getPlugin().getWarpManager().addSign(s.getLocation());
             String warp = this.getPlugin().register.remove(player.getName());
             sign.setWarp(warp);
+            sign.setOwner(player.getName());
             player.sendMessage("Sign is now pointing to " + warp);
             return true;
         }

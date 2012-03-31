@@ -353,6 +353,27 @@ public class SortalExecutor implements CommandExecutor {
             sender.sendMessage(this.getLocalisation().getPlayerTeleported(w.getName()));
             return true;
         }
+        if(args[0].equalsIgnoreCase("setuses") || args[0].equalsIgnoreCase("uses")){
+            if(!sender.hasPermission("sortal.setuses")){
+                sender.sendMessage(this.getLocalisation().getNoPerms());
+                return true;
+            }
+            if(args.length == 1){
+                sender.sendMessage("Correct usage: /sortal " + args[0] + " <amount> OR /sortal " + args[0] + " warp <warp> <amount>");
+                return true;
+            }
+            if(args.length == 2){
+                try{
+                    int uses = Integer.parseInt(args[1]);
+                    this.getPlugin().setuses.put(sender.getName(), uses);
+                    sender.sendMessage("Now punch the sign you wish to be usable " + uses + " times!");
+                    return true;
+                }catch(NumberFormatException e){
+                    sender.sendMessage("ERR: Int expected, got string!");
+                    return true;
+                }
+            }
+        }
         sender.sendMessage("Unknown syntax, /sortal help for commands");
         return true;
     }
