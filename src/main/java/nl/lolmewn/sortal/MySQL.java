@@ -1,6 +1,8 @@
 package nl.lolmewn.sortal;
 
 import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MySQL {
 
@@ -19,6 +21,7 @@ public class MySQL {
         this.port = port;
         this.connect();
         this.setupDatabase();
+        this.validateTables();
     }
 
     private void connect() {
@@ -55,7 +58,9 @@ public class MySQL {
                 + "yaw float, "
                 + "pitch float, "
                 + "price int, "
-                + "usesleft int)");
+                + "uses int,"
+                + "used int,"
+                + "owner varchar(255))");
         this.executeStatement("CREATE TABLE IF NOT EXISTS " + this.prefix + "signs"
                 + "(id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, "
                 + "world varchar(255) NOT NULL, "
@@ -64,7 +69,9 @@ public class MySQL {
                 + "z int NOT NULL, "
                 + "warp varchar(255) NOT NULL, "
                 + "price int,"
-                + "usesleft int)");
+                + "uses int,"
+                + "used int,"
+                + "owner varchar(255))");
         this.executeStatement("CREATE TABLE IF NOT EXISTS " + this.prefix + "users"
                 + "(player varchar(255) NOT NULL,"
                 + "used int NOT NULL,"
@@ -125,6 +132,41 @@ public class MySQL {
             this.con.close();
         } catch (SQLException e) {
             e.printStackTrace();
+        }
+    }
+
+    private void validateTables() {
+        if (this.isFault()) {
+            return;
+        }
+        ResultSet set = this.executeQuery("SELECT * FROM " + this.prefix + "warps LIMIT 1");
+        try {
+            while (set.next()) {
+                set.getInt("uses");
+                set.getInt("used");
+                set.getString("owner");
+            }
+        } catch (SQLException ex) {
+            System.out.println("Error while validating tables, message: " + ex.getMessage());
+            if (ex.getMessage().contains("Unknown column")) {
+                System.out.println("Adding missing columns");
+                this.executeStatement("ALTER TABLE " + this.prefix + "warps ADD COLUMN uses int, ADD COLUMN used int, ADD COLUMN owner varchar(255)");
+            }
+        } finally {
+            ResultSet set2 = this.executeQuery("SELECT * FROM " + this.prefix + "signs LIMIT 1");
+            try {
+                while (set2.next()) {
+                    set2.getInt("uses");
+                    set2.getInt("used");
+                    set2.getString("owner");
+                }
+            } catch (SQLException ex) {
+                System.out.println("Error while validating tables, message: " + ex.getMessage());
+                if (ex.getMessage().contains("Unknown column")) {
+                    System.out.println("Adding missing columns");
+                    this.executeStatement("ALTER TABLE " + this.prefix + "signs ADD COLUMN uses int, ADD COLUMN used int, ADD COLUMN owner varchar(255)");
+                }
+            }
         }
     }
 }

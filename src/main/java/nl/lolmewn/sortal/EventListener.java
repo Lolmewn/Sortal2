@@ -266,7 +266,7 @@ public class EventListener implements Listener {
             return true;
         }
         if(this.getPlugin().setuses.containsKey(player.getName())){
-            
+            //TODO set the uses
         }
         return false;
     }

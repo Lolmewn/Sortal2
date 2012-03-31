@@ -19,6 +19,9 @@ public class SignInfo {
     private int x, y, z;
     private int price;
     private boolean hasPrice = false;
+    private int uses;
+    private int used;
+    private String owner;
     
     public SignInfo(String world, int x, int y, int z){
         this.world = world;
@@ -46,6 +49,34 @@ public class SignInfo {
     
     public boolean hasWarp(){
         return this.warp == null ? false : true;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+    
+    public boolean hasOwner(){
+        return this.owner == null ? false : true;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+
+    public int getUses() {
+        return uses;
+    }
+
+    public void setUses(int uses) {
+        this.uses = uses;
+    }
+
+    public int getUsed() {
+        return used;
+    }
+
+    public void setUsed(int used) {
+        this.used = used;
     }
     
     public boolean isThisSign(String world, int x, int y, int z){
