@@ -146,7 +146,7 @@ public class MySQL {
             }
         } catch (SQLException ex) {
             System.out.println("Error while validating tables, message: " + ex.getMessage());
-            if (ex.getMessage().contains("Unknown column")) {
+            if (ex.getMessage().contains("Column")) {
                 System.out.println("Adding missing columns");
                 this.executeStatement("ALTER TABLE " + this.prefix + "warps ADD COLUMN uses int, ADD COLUMN used int, ADD COLUMN owner varchar(255)");
             }
@@ -160,7 +160,7 @@ public class MySQL {
                 }
             } catch (SQLException ex) {
                 System.out.println("Error while validating tables, message: " + ex.getMessage());
-                if (ex.getMessage().contains("Unknown column")) {
+                if (ex.getMessage().contains("Column")) {
                     System.out.println("Adding missing columns");
                     this.executeStatement("ALTER TABLE " + this.prefix + "signs ADD COLUMN uses int, ADD COLUMN used int, ADD COLUMN owner varchar(255)");
                 }
