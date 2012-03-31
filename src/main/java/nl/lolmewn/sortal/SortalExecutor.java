@@ -328,7 +328,7 @@ public class SortalExecutor implements CommandExecutor {
                 sender.sendMessage(this.getLocalisation().getNoPlayer());
                 return true;
             }
-            if(!sender.hasPermission("sortal.warp")){
+            if(!sender.hasPermission("sortal.directwarp")){
                 sender.sendMessage(this.getLocalisation().getNoPerms());
                 return true;
             }
@@ -338,7 +338,7 @@ public class SortalExecutor implements CommandExecutor {
             }
             String warp = args[1];
             if(this.getPlugin().getSettings().isPerWarpPerm()){
-                if(!sender.hasPermission("sortal.warp." + warp)){
+                if(!sender.hasPermission("sortal.directwarp." + warp)){
                     sender.sendMessage(this.getLocalisation().getNoPerms());
                     return true;
                 }
