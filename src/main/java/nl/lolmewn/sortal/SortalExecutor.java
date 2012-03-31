@@ -4,6 +4,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.player.PlayerTeleportEvent;
 
 /**
  *
@@ -55,7 +56,8 @@ public class SortalExecutor implements CommandExecutor {
                 if(sender instanceof Player && !this.getPlugin().pay((Player)sender, this.getPlugin().getSettings().getWarpCreatePrice())){
                     return true; 
                 }
-                this.getPlugin().getWarpManager().addWarp(warp, ((Player)sender).getLocation());
+                Warp w = this.getPlugin().getWarpManager().addWarp(warp, ((Player)sender).getLocation());
+                w.setOwner(sender.getName());
                 sender.sendMessage(this.getLocalisation().getWarpCreated(warp));
                 return true;
             }
@@ -322,7 +324,34 @@ public class SortalExecutor implements CommandExecutor {
             sender.sendMessage("/sortal version - Tells you the version you are using");
         }
         if(args[0].equalsIgnoreCase("goto") || args[0].equalsIgnoreCase("warpto")){
-            
+            if(!(sender instanceof Player)){
+                sender.sendMessage(this.getLocalisation().getNoPlayer());
+                return true;
+            }
+            if(!sender.hasPermission("sortal.warp")){
+                sender.sendMessage(this.getLocalisation().getNoPerms());
+                return true;
+            }
+            if(args.length == 1){
+                sender.sendMessage("Correct usage: /sortal " + args[0] + " <warp>");
+                return true;
+            }
+            String warp = args[1];
+            if(this.getPlugin().getSettings().isPerWarpPerm()){
+                if(!sender.hasPermission("sortal.warp." + warp)){
+                    sender.sendMessage(this.getLocalisation().getNoPerms());
+                    return true;
+                }
+            }
+            if(!this.getPlugin().getWarpManager().hasWarp(warp)){
+                sender.sendMessage(this.getLocalisation().getWarpNotFound(warp));
+                return true;
+            }
+            Warp w = this.getPlugin().getWarpManager().getWarp(warp);
+            Player p = (Player)sender;
+            p.teleport(w.getLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
+            sender.sendMessage(this.getLocalisation().getPlayerTeleported(w.getName()));
+            return true;
         }
         sender.sendMessage("Unknown syntax, /sortal help for commands");
         return true;

@@ -19,6 +19,9 @@ public class Warp {
     private Location loc;
     private int price;
     private boolean hasPrice;
+    private int uses = 0;
+    private int used;
+    private String owner;
     
     public Warp(String name, Location loc){
         this.name = name;
@@ -47,6 +50,34 @@ public class Warp {
 
     public void setPrice(int price) {
         this.price = price;
+    }
+
+    public String getOwner() {
+        return owner;
+    }
+
+    public void setOwner(String owner) {
+        this.owner = owner;
+    }
+    
+    public boolean hasOwner(){
+        return this.owner == null ? false : true;
+    }
+
+    public int getUsed() {
+        return used;
+    }
+
+    public void setUsed(int used) {
+        this.used = used;
+    }
+
+    public int getUses() {
+        return uses;
+    }
+
+    public void setUses(int uses) {
+        this.uses = uses;
     }
     
     public String getLocationToString(){
