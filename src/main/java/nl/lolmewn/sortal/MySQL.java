@@ -47,22 +47,30 @@ public class MySQL {
             return;
         }
         this.executeStatement("CREATE TABLE IF NOT EXISTS " + this.prefix + "warps"
-                + "(name varchar(255) PRIMARY KEY, "
-                + "world varchar(255), "
-                + "x int, "
-                + "y int, "
-                + "z int, "
+                + "(name varchar(255) PRIMARY KEY NOT NULL, "
+                + "world varchar(255) NOT NULL, "
+                + "x int NOT NULL, "
+                + "y int NOT NULL, "
+                + "z int NOT NULL, "
                 + "yaw float, "
                 + "pitch float, "
-                + "price int)");
+                + "price int, "
+                + "usesleft int)");
         this.executeStatement("CREATE TABLE IF NOT EXISTS " + this.prefix + "signs"
                 + "(id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, "
-                + "world varchar(255), "
-                + "x int, "
-                + "y int, "
-                + "z int, "
-                + "warp varchar(255), "
-                + "price int)");
+                + "world varchar(255) NOT NULL, "
+                + "x int NOT NULL, "
+                + "y int NOT NULL, "
+                + "z int NOT NULL, "
+                + "warp varchar(255) NOT NULL, "
+                + "price int,"
+                + "usesleft int)");
+        this.executeStatement("CREATE TABLE IF NOT EXISTS " + this.prefix + "users"
+                + "(player varchar(255) NOT NULL,"
+                + "used int NOT NULL,"
+                + "warp varchar(255),"
+                + "x int, y int, z int, world varchar(255))");
+                //Example query: [Lolmewn, 2, test, 0,0,0,null], [Lolmewn, 3, null, 50,80,50,world]
     }
 
     public boolean isFault() {

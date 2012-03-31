@@ -1,6 +1,5 @@
 package nl.lolmewn.sortal;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -77,9 +76,19 @@ public class SortalExecutor implements CommandExecutor {
                 if(this.getPlugin().getWarpManager().hasWarp(warp)){
                     this.getPlugin().getWarpManager().removeWarp(warp);
                     sender.sendMessage(this.getLocalisation().getWarpDeleted(warp));
+                    int count = 0;
+                    for(SignInfo s : this.getPlugin().getWarpManager().getSigns()){
+                        if(s.hasWarp() && s.getWarp().equals(warp)){
+                            count++;
+                        }
+                    }
+                    if(count != 0){
+                        sender.sendMessage("You've broken " + count + " signs by deleting warp " + warp);
+                    }
                     continue;
                 }
                 sender.sendMessage(this.getLocalisation().getWarpNotFound(warp));
+                
             }
             return true;
         }
@@ -311,6 +320,9 @@ public class SortalExecutor implements CommandExecutor {
                 sender.sendMessage("/sortal convert - Converts from flat-MySQL or back");
             }
             sender.sendMessage("/sortal version - Tells you the version you are using");
+        }
+        if(args[0].equalsIgnoreCase("goto") || args[0].equalsIgnoreCase("warpto")){
+            
         }
         sender.sendMessage("Unknown syntax, /sortal help for commands");
         return true;

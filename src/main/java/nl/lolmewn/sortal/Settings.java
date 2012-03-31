@@ -3,6 +3,7 @@ package nl.lolmewn.sortal;
 import java.io.*;
 import java.util.HashMap;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -22,6 +23,9 @@ public class Settings {
     private String signContains;
     private String dbUser, dbPass, dbPrefix, dbHost, dbDatabase;
     private int dbPort;
+    
+    private boolean perWarpPerm;
+    
     private File settingsFile = new File("plugins" + File.separator + "Sortal"
             + File.separator + "settings.yml");
     
@@ -82,6 +86,10 @@ public class Settings {
     public double getVersion() {
         return version;
     }
+
+    public boolean isPerWarpPerm() {
+        return perWarpPerm;
+    }
     
     /*
      * Only used if there's an error when starting MySQL
@@ -137,8 +145,13 @@ public class Settings {
         this.update = c.getBoolean("update", true);
         this.version = c.getDouble("version");
         this.debug = c.getBoolean("debug", false);
+        if(!c.contains("perWarpPerm")){
+            this.addSettingToConfig(settingsFile, "perWarpConfig", false);
+        }
+        this.perWarpPerm = c.getBoolean("perWarpPerm", false);
+        
         if(this.isDebug()){
-            this.printSettings(c);
+            this.printSettings(YamlConfiguration.loadConfiguration(this.settingsFile)); //re-init file
         }
     }
 
@@ -169,7 +182,7 @@ public class Settings {
 
     private void printSettings(YamlConfiguration c) {
         for(String path : c.getConfigurationSection("").getKeys(true)){
-            Bukkit.getLogger().info("[Sortal] [Debug] CONFIG: " + path + ":" + c.get(path, null));
+            this.getPlugin().getLogger().info("[Debug] CONFIG: " + path + ":" + c.get(path, null));
         }
     }
 
@@ -206,18 +219,18 @@ public class Settings {
         this.getLocalisation().addOld(local);
         
         if(this.settingsFile.delete()){
-            Bukkit.getLogger().info("[Sortal] Old Config deleted, values stored..");
+            this.getPlugin().getLogger().info("Old Config deleted, values stored..");
             this.extractSettings();
             this.addSettingsToConfig(settingsFile, values);
         }else{
-            Bukkit.getLogger().warning("[Sortal] Couldn't delete old settings file! Using all defaults");
-            Bukkit.getLogger().warning("[Sortal] Deleting as soon as possible!");
+            this.getPlugin().getLogger().warning("Couldn't delete old settings file! Using all defaults");
+            this.getPlugin().getLogger().warning("Deleting as soon as possible!");
             new Thread(new Runnable(){
                 public void run() {
                     while(!settingsFile.delete()){
                         //keep trying
                     }
-                    Bukkit.getLogger().info("[Sortal] Old setting file deleted, creating new one..");
+                    getPlugin().getLogger().info("Old setting file deleted, creating new one..");
                     extractSettings();
                     addSettingsToConfig(settingsFile, values);
                 }
@@ -233,8 +246,18 @@ public class Settings {
         try {
             c.save(f);
         } catch (IOException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, null, ex);
+            this.getPlugin().getLogger().log(Level.SEVERE, null, ex);
         }
-        Bukkit.getLogger().info("[Sortal] Saved old settings in new settings file!");
+        this.getPlugin().getLogger().info("Saved old settings in new settings file!");
+    }
+    
+    private void addSettingToConfig(File f, String path, Object value){
+        YamlConfiguration c = YamlConfiguration.loadConfiguration(f);
+        c.set(path, value);
+        try {
+            c.save(f);
+        } catch (IOException ex) {
+            this.getPlugin().getLogger().log(Level.SEVERE, null, ex);
+        }
     }
 }
