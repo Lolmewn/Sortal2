@@ -97,15 +97,7 @@ public class Warp {
         }
         try {
             while(set.next()){
-                //a warp already is in the database, gotta update it
-                if(set.getDouble("x") == this.loc.getX() && 
-                        set.getString("world").equals(this.loc.getWorld().getName()) &&
-                        set.getDouble("y") == this.loc.getY() && 
-                        set.getDouble("z") == this.loc.getZ() && 
-                        set.getInt("price") == this.getPrice()){
-                    //no need to update anything
-                    return;
-                }
+                //a warp already is in the database, let's just update it for goods sake
                 m.executeStatement("UPDATE " + table + " SET "
                         + "world='" + loc.getWorld().getName() + "', "
                         + "x=" + this.loc.getX() + ", "

@@ -160,6 +160,10 @@ public class Main extends JavaPlugin{
         return this.getSettings().getDbPrefix() + "signs";
     }
     
+    protected String getUserTable(){
+        return this.getSettings().getDbPrefix() + "users";
+    }
+    
     public void saveData(){
         this.getWarpManager().saveData();
     }

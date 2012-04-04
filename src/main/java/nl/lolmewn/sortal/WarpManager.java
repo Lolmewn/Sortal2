@@ -22,8 +22,11 @@ public class WarpManager {
             + "Sortal" + File.separator + "warps.yml");
     File signFile = new File("plugins" + File.separator
             + "Sortal" + File.separator + "signs.yml");
+    File userFile = new File("plugins" + File.separator
+            + "Sortal" + File.separator + "users.yml");
     private HashMap<String, Warp> warps = new HashMap<String, Warp>();
     private HashMap<String, SignInfo> signs = new HashMap<String, SignInfo>();
+    private HashMap<String, UserInfo> users = new HashMap<String, UserInfo>();
 
     private Main getPlugin() {
         return this.plugin;
@@ -35,6 +38,7 @@ public class WarpManager {
             this.checkOldVersion();
             this.loadWarps();
             this.loadSigns();
+            this.loadUsers();
         } catch (Exception e) {
             //Be ready to do stuff, even if loading fails
         }
@@ -150,8 +154,12 @@ public class WarpManager {
         }
         this.getPlugin().getLogger().log(Level.INFO, String.format("Signs loaded: %s", this.signs.size()));
     }
+    
+    private void loadUsers() {
+        
+    }
 
-    public Warp addWarp(String name, Location loc) {
+    protected Warp addWarp(String name, Location loc) {
         this.warps.put(name, new Warp(name, loc));
         Warp w = this.getWarp(name);
         if (this.getPlugin().getSettings().useMySQL()) {
@@ -162,13 +170,13 @@ public class WarpManager {
         return w;
     }
 
-    public Warp addWarp(String name, Location loc, int price) {
+    protected Warp addWarp(String name, Location loc, int price) {
         Warp w = this.addWarp(name, loc);
         w.setPrice(price);
         return w;
     }
 
-    public SignInfo addSign(Location loc) {
+    protected SignInfo addSign(Location loc) {
         this.signs.put(loc.getWorld().getName() + ","
                 + loc.getBlockX() + ","
                 + loc.getBlockY() + ","
@@ -179,15 +187,24 @@ public class WarpManager {
                 loc.getBlockZ()));
         return this.getSign(loc);
     }
+    
+    protected UserInfo addUserInfo(String name){
+        this.users.put(name, new UserInfo(name));
+        return this.getUserInfo(name);
+    }
+    
+    protected UserInfo getUserInfo(String name){
+        return this.users.get(name);
+    }
 
-    public SignInfo getSign(Location loc) {
+    protected SignInfo getSign(Location loc) {
         return this.signs.get(loc.getWorld().getName() + ","
                 + loc.getBlockX() + ","
                 + loc.getBlockY() + ","
                 + loc.getBlockZ());
     }
 
-    public Warp removeWarp(String name) {
+    protected Warp removeWarp(String name) {
         if (!this.hasWarp(name)) {
             return null;
         }
@@ -199,7 +216,7 @@ public class WarpManager {
         return this.warps.remove(name);
     }
 
-    public void removeSign(Location loc) {
+    protected void removeSign(Location loc) {
         SignInfo s = this.getSign(loc);
         if (s == null) {
             return;
@@ -211,12 +228,16 @@ public class WarpManager {
         }
     }
 
-    public boolean hasSignInfo(Location loc) {
+    protected boolean hasSignInfo(Location loc) {
         return this.getSign(loc) == null ? false : true;
     }
 
-    public boolean hasWarp(String name) {
+    protected boolean hasWarp(String name) {
         return this.warps.containsKey(name);
+    }
+    
+    protected boolean hasUserInfo(String user){
+        return this.users.containsKey(user);
     }
 
     public Warp getWarp(String name) {
@@ -231,7 +252,7 @@ public class WarpManager {
             if (this.getPlugin().getSettings().useMySQL()) {
                 this.warps.get(name).save(this.getPlugin().getMySQL(), this.getPlugin().getWarpTable());
             } else {
-                this.warps.get(name).save(warpFile);
+                this.warps.get(name).save(this.warpFile);
             }
         }
         for (String loc : this.signs.keySet()) {
@@ -242,6 +263,16 @@ public class WarpManager {
                 this.signs.get(loc).save(this.getPlugin().getMySQL(), this.getPlugin().getSignTable());
             } else {
                 this.signs.get(loc).save(this.signFile);
+            }
+        }
+        for(String user : this.users.keySet()){
+            if (this.getPlugin().getSettings().isDebug()) {
+                this.getPlugin().getLogger().log(Level.INFO, String.format("[Debug] Saving user %s", user));
+            }
+            if (this.getPlugin().getSettings().useMySQL()) {
+                this.signs.get(user).save(this.getPlugin().getMySQL(), this.getPlugin().getUserTable());
+            } else {
+                this.signs.get(user).save(this.userFile);
             }
         }
     }
@@ -370,4 +401,5 @@ public class WarpManager {
             return false;
         }
     }
+    
 }
