@@ -30,6 +30,7 @@ public class Localisation {
     private String playerTeleported;
     private String costSet;
     private String maxUsesReached;
+    private String maxUsesSet;
 
     public Localisation() {
         this.checkFile();
@@ -76,7 +77,15 @@ public class Localisation {
         this.playerTeleported = c.getString("playerTeleported", "You've teleported to $DEST!");
         this.costSet = c.getString("commands.costSet", "Cost set to $COST!");
         this.maxUsesReached = c.getString("maxUsesReached", "You can't use this sign anymore!");
+        this.maxUsesSet = c.getString("commands.maxUsesSet", "Max Uses set to $AMOUNT!");
         Bukkit.getLogger().info("[Sortal] Localisation loaded!");
+    }
+
+    public String getMaxUsesSet(String uses) {
+        if(this.maxUsesSet.contains("$AMOUNT")){
+            return this.maxUsesSet.replace("$AMOUNT", uses);
+        }
+        return this.maxUsesSet;
     }
 
     public String getMaxUsesReached() {

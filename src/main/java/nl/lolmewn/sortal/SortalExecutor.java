@@ -387,6 +387,7 @@ public class SortalExecutor implements CommandExecutor {
                 try{
                     int uses = Integer.parseInt(args[3]);
                     w.setUses(uses);
+                    sender.sendMessage(this.getLocalisation().getMaxUsesSet(args[3]));
                     return true;
                 }catch(NumberFormatException e){
                     sender.sendMessage("ERR: Int expected, got string!");

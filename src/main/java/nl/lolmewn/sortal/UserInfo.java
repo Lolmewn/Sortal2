@@ -38,8 +38,8 @@ class UserInfo {
         return this.warpUses.get(warp);
     }
     
-    public void addtoUsedWarp(String warp){
-        this.warpUses.put(warp, this.warpUses.get(warp)+1);
+    public void addtoUsedWarp(String warp, int add){
+        this.warpUses.put(warp, this.warpUses.get(warp)+add);
     }
     
     public boolean hasUsedLocation(Location loc){
@@ -50,8 +50,8 @@ class UserInfo {
         return this.locUses.get(loc);
     }
     
-    public void addtoUsedLocation(Location loc){
-        this.locUses.put(loc, this.locUses.get(loc)+1);
+    public void addtoUsedLocation(Location loc, int add){
+        this.locUses.put(loc, this.locUses.get(loc)+add);
     }
     
     public void save(MySQL m, String table){

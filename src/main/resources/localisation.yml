@@ -11,6 +11,7 @@ commands:
   warpNotFound: Warp $WARP not found!
   noWarpsFound: There are no warps yet!
   costSet: Cost set to $COST!
+  maxUsesSet: Max Uses set to $AMOUNT!
 
 paymentComplete: You've payed $MONEY!
 noMoney: You need $MONEY to do this!

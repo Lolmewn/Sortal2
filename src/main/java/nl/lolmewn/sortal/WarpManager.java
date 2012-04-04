@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -156,7 +157,54 @@ public class WarpManager {
     }
     
     private void loadUsers() {
-        
+        if(this.getPlugin().getSettings().useMySQL()){
+            ResultSet set = this.getPlugin().getMySQL().executeQuery("SELECT * FROM " + this.getPlugin().getUserTable());
+            if (set == null) {
+                this.getPlugin().getLogger().severe("Something is wrong with your MySQL database!");
+                this.getPlugin().getLogger().severe("Plugin is disabling!");
+                this.getPlugin().getServer().getPluginManager().disablePlugin(this.getPlugin());
+                return;
+            }
+            try {
+                while(set.next()){
+                    String player = set.getString("player");
+                    UserInfo info;
+                    if(this.hasUserInfo(player)){
+                        info = this.getUserInfo(player);
+                    }else{
+                        info = this.addUserInfo(player);
+                    }
+                    if(set.getString("warp") == null){
+                        //location
+                        info.addtoUsedLocation(new Location(this.getPlugin().getServer().getWorld(set.getString("world")),
+                                set.getInt("x"), set.getInt("y"), set.getInt("z")), set.getInt("used"));
+                        continue;
+                    }
+                    info.addtoUsedWarp(set.getString("warp"), set.getInt("used"));
+                }
+            } catch (SQLException ex) {
+                this.getPlugin().getLogger().log(Level.SEVERE, null, ex);
+            }
+            return;
+        }
+        YamlConfiguration c = YamlConfiguration.loadConfiguration(this.userFile);
+        for (String player : c.getConfigurationSection("").getKeys(false)) {
+            UserInfo info = this.addUserInfo(player);
+            for(String key : c.getConfigurationSection(player).getKeys(false)){
+                if (!key.contains(",")) {
+                    //warp
+                    info.addtoUsedWarp(key, c.getInt(player + "." + key));
+                    continue;
+                }
+                String[] splot = key.split(",");
+                Location loc = new Location(this.getPlugin().getServer().getWorld(splot[0]),
+                        Integer.parseInt(splot[1]),
+                        Integer.parseInt(splot[2]),
+                        Integer.parseInt(splot[3]));
+                info.addtoUsedLocation(loc, c.getInt(player + "." + key));
+            }
+        }
+        this.getPlugin().getLogger().log(Level.INFO, String.format("Users loaded: %s", this.users.size()));
     }
 
     protected Warp addWarp(String name, Location loc) {
