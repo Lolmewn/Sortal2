@@ -19,3 +19,5 @@ noPermissions: You don't have permissions to do that!
 
 signError: There's something wrong with this sign!
 playerTeleported: You've teleported to $DEST!
+
+maxUsesReached: You can't use this sign anymore!

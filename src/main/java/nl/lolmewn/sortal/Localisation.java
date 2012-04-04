@@ -29,6 +29,7 @@ public class Localisation {
     private String errorInSign;
     private String playerTeleported;
     private String costSet;
+    private String maxUsesReached;
 
     public Localisation() {
         this.checkFile();
@@ -60,21 +61,26 @@ public class Localisation {
 
     private void loadFile() {
         YamlConfiguration c = YamlConfiguration.loadConfiguration(this.localisation);
-        this.createNameForgot = c.getString("commands.createNameForgotten");
-        this.deleteNameForgot = c.getString("commands.deleteNameForgotten");
-        this.nameInUse = c.getString("commands.nameInUse");
-        this.noMoney = c.getString("noMoney");
-        this.noPerms = c.getString("noPermissions");
-        this.noPlayer = c.getString("noPlayer");
-        this.paymentComplete = c.getString("paymentComplete");
-        this.warpCreated = c.getString("commands.warpCreated");
-        this.warpDeleted = c.getString("commands.warpDeleted");
-        this.warpNotFound = c.getString("commands.warpNotFound");
-        this.noWarpsFound = c.getString("commands.noWarpsFound");
-        this.errorInSign = c.getString("signError");
-        this.playerTeleported = c.getString("playerTeleported");
-        this.costSet = c.getString("commands.costSet");
+        this.createNameForgot = c.getString("commands.createNameForgotten" , "Please specify a name for this warp!");
+        this.deleteNameForgot = c.getString("commands.deleteNameForgotten" , "Please specify the name of the warp!");
+        this.nameInUse = c.getString("commands.nameInUse", "Warp $WARP already exists!");
+        this.noMoney = c.getString("noMoney", "You need $MONEY to do this!");
+        this.noPerms = c.getString("noPermissions", "You don't have permissions to do that!");
+        this.noPlayer = c.getString("noPlayer", "You have to be a player to do this!");
+        this.paymentComplete = c.getString("paymentComplete", "You've payed $MONEY!");
+        this.warpCreated = c.getString("commands.warpCreated", "Warp $WARP created!");
+        this.warpDeleted = c.getString("commands.warpDeleted", "Warp $WARP deleted!");
+        this.warpNotFound = c.getString("commands.warpNotFound", "Warp $WARP not found!");
+        this.noWarpsFound = c.getString("commands.noWarpsFound", "There are no warps yet!");
+        this.errorInSign = c.getString("signError", "There's something wrong with this sign!");
+        this.playerTeleported = c.getString("playerTeleported", "You've teleported to $DEST!");
+        this.costSet = c.getString("commands.costSet", "Cost set to $COST!");
+        this.maxUsesReached = c.getString("maxUsesReached", "You can't use this sign anymore!");
         Bukkit.getLogger().info("[Sortal] Localisation loaded!");
+    }
+
+    public String getMaxUsesReached() {
+        return maxUsesReached;
     }
 
     public String getCreateNameForgot() {
