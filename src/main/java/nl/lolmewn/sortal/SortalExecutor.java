@@ -373,6 +373,28 @@ public class SortalExecutor implements CommandExecutor {
                     return true;
                 }
             }
+            if(args[1].equalsIgnoreCase("warp")){
+                if(args.length == 3 || args.length == 4){
+                    sender.sendMessage("Correct usage: /sortal " + args[0] + " warp " + (args.length == 3? "<warp>" : args[2]) + " <amount>");
+                    return true;
+                }
+                String warp = args[2];
+                if(!this.getPlugin().getWarpManager().hasWarp(warp)){
+                    sender.sendMessage(this.getLocalisation().getWarpNotFound(warp));
+                    return true;
+                }
+                Warp w = this.getPlugin().getWarpManager().getWarp(warp);
+                try{
+                    int uses = Integer.parseInt(args[3]);
+                    w.setUses(uses);
+                    return true;
+                }catch(NumberFormatException e){
+                    sender.sendMessage("ERR: Int expected, got string!");
+                    return true;
+                }
+            }
+            sender.sendMessage("Correct usage: /sortal " + args[0] + " <amount> OR /sortal " + args[0] + " warp <warp> <amount>");
+            return true;
         }
         sender.sendMessage("Unknown syntax, /sortal help for commands");
         return true;
