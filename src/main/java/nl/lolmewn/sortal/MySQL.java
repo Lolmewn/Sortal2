@@ -73,7 +73,8 @@ public class MySQL {
                 + "usedTotalBased boolean,"
                 + "owner varchar(255))");
         this.executeStatement("CREATE TABLE IF NOT EXISTS " + this.prefix + "users"
-                + "(player varchar(255) NOT NULL,"
+                + "(id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, "
+                + "player varchar(255) NOT NULL,"
                 + "used int NOT NULL,"
                 + "warp varchar(255),"
                 + "x int, y int, z int, world varchar(255))");
