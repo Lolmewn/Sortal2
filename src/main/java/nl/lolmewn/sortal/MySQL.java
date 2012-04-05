@@ -1,6 +1,8 @@
 package nl.lolmewn.sortal;
 
 import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MySQL {
 
@@ -183,9 +185,15 @@ public class MySQL {
     }
     
     private void checkColumn(String table, String column, String type){
-        ResultSet set = this.executeQuery("SELECT " + column + " FROM " + table + " LIMIT 1");
+        ResultSet set = this.executeQuery("SELECT * FROM " + table + " LIMIT 1");
         if(set == null){
-            //not in
+            return;
+        }
+        try {
+            while(set.next()){
+                set.getObject(column);
+            }
+        } catch (SQLException ex) {
             System.out.println("Adding column " + column + ",type " + type + " to table " + table + "..");
             this.executeStatement("ALTER TABLE " + table + " ADD COLUMN " + column + " " + type);
             System.out.println("Added column " + column + ",type " + type + " to table " + table + " succesfully");
