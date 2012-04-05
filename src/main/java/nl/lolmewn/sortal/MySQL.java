@@ -139,6 +139,16 @@ public class MySQL {
         if (this.isFault()) {
             return;
         }
+        this.checkColumn(this.prefix + "warps", "uses", "int");
+        this.checkColumn(this.prefix + "warps", "used", "int");
+        this.checkColumn(this.prefix + "warps", "owner", "varchar(255)");
+        this.checkColumn(this.prefix + "usedTotalBased", "uses", "boolean");
+        this.checkColumn(this.prefix + "signs", "uses", "int");
+        this.checkColumn(this.prefix + "signs", "used", "int");
+        this.checkColumn(this.prefix + "signs", "owner", "varchar(255)");
+        this.checkColumn(this.prefix + "usedTotalBased", "uses", "boolean");
+        
+        /*
         ResultSet set = this.executeQuery("SELECT * FROM " + this.prefix + "warps LIMIT 1");
         try {
             while (set.next()) {
@@ -169,6 +179,16 @@ public class MySQL {
                     this.executeStatement("ALTER TABLE " + this.prefix + "signs ADD COLUMN uses int, ADD COLUMN used int, ADD COLUMN owner varchar(255), ADD COLUMN usedTotalBased boolean");
                 }
             }
+        }*/
+    }
+    
+    private void checkColumn(String table, String column, String type){
+        ResultSet set = this.executeQuery("SELECT " + column + " FROM " + table + " LIMIT 1");
+        if(set == null){
+            //not in
+            System.out.println("Adding column " + column + ",type " + type + " to table " + table + "..");
+            this.executeStatement("ALTER TABLE " + table + " ADD COLUMN " + column + " " + type);
+            System.out.println("Added column " + column + ",type " + type + " to table " + table + " succesfully");
         }
     }
 }
