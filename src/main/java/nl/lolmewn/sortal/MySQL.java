@@ -142,11 +142,11 @@ public class MySQL {
         this.checkColumn(this.prefix + "warps", "uses", "int");
         this.checkColumn(this.prefix + "warps", "used", "int");
         this.checkColumn(this.prefix + "warps", "owner", "varchar(255)");
-        this.checkColumn(this.prefix + "usedTotalBased", "uses", "boolean");
+        this.checkColumn(this.prefix + "warps", "usedTotalBased", "boolean");
         this.checkColumn(this.prefix + "signs", "uses", "int");
         this.checkColumn(this.prefix + "signs", "used", "int");
         this.checkColumn(this.prefix + "signs", "owner", "varchar(255)");
-        this.checkColumn(this.prefix + "usedTotalBased", "uses", "boolean");
+        this.checkColumn(this.prefix + "signs", "usedTotalBased", "boolean");
         
         /*
         ResultSet set = this.executeQuery("SELECT * FROM " + this.prefix + "warps LIMIT 1");
