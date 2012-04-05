@@ -295,6 +295,12 @@ public class EventListener implements Listener {
                     event.getPlayer().sendMessage(this.getLocalisation().getNoPerms());
                     event.setCancelled(true);
                 }
+                SignInfo i = this.getPlugin().getWarpManager().getSign(b.getLocation());
+                if(this.getPlugin().getSettings().useMySQL()){
+                    i.delete(this.getPlugin().getMySQL(), this.getPlugin().getSignTable());
+                }else{
+                    i.delete(this.getPlugin().getWarpManager().signFile);
+                }
             }
         }
     }
