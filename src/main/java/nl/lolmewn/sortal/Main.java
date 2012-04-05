@@ -169,20 +169,28 @@ public class Main extends JavaPlugin{
     }
     
     public boolean pay(Player p, int amount){
-        if(amount == 0){
-            return true;
-        }
-        if(initVault()){
-            if(!this.eco.has(p.getName(), amount)){
-                //Doesn't have enough money
-                p.sendMessage(this.getSettings().getLocalisation().getNoMoney(Integer.toString(amount)));
-                return false;
+        if(this.canPay(p, amount)){
+            if(!initVault()){
+                return true;
             }
             this.eco.withdrawPlayer(p.getName(), amount);
             p.sendMessage(this.getSettings().getLocalisation().getPaymentComplete(Integer.toString(amount)));
             return true;
         }
-        //Either vault isn't found or Economy isn't found.
+        p.sendMessage(this.getSettings().getLocalisation().getNoMoney(Integer.toString(amount)));
+        return false;
+    }
+    
+    public boolean canPay(Player p, int amount){
+        if(amount == 0){
+            return true;
+        }
+        if(initVault()){
+            if(!this.eco.has(p.getName(), amount)){
+                return false;
+            }
+            return true;
+        }
         return true;
     }
 

@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 /**
@@ -17,10 +18,11 @@ public class SignInfo {
     private String warp;
     private String world;
     private int x, y, z;
-    private int price;
+    private int price = -1;
     private boolean hasPrice = false;
-    private int uses;
+    private int uses = -1;
     private int used;
+    private boolean usedTotalBased;
     private String owner;
     
     public SignInfo(String world, int x, int y, int z){
@@ -33,6 +35,14 @@ public class SignInfo {
     public SignInfo(String world, int x, int y, int z, String warp){
         this(world, x, y, z);
         this.warp = warp;
+    }
+
+    public boolean isUsedTotalBased() {
+        return usedTotalBased;
+    }
+
+    public void setUsedTotalBased(boolean usedTotalBased) {
+        this.usedTotalBased = usedTotalBased;
     }
     
     public boolean hasPrice(){
@@ -99,6 +109,10 @@ public class SignInfo {
         return this.world + "," + this.x + "," + this.y + "," + this.z;
     }
     
+    public Location getLocation(){
+        return new Location(Bukkit.getServer().getWorld(world), x, y, z);
+    }
+    
     public void save(MySQL m, String table){
         ResultSet set = m.executeQuery("SELECT * FROM " + table + 
                 " WHERE x=" + x + " AND y=" + y + " AND z=" + z + " AND world='" + this.world + "'");
@@ -109,19 +123,12 @@ public class SignInfo {
         }
         try {
             while(set.next()){
-                //a warp already is in the database, gotta update it
-                if(set.getInt("x") == this.x && 
-                        set.getString("world").equals(this.world) &&
-                        set.getInt("y") == this.y && 
-                        set.getInt("z") == this.z && 
-                        set.getInt("price") == this.getPrice() && 
-                        set.getString("warp").equals(this.warp)){
-                    //no need to update anything
-                    return;
-                }
                 m.executeStatement("UPDATE " + table + " SET "
                         + "warp='" + this.warp + "', "
-                        + "price=" + this.getPrice()
+                        + "price=" + this.getPrice() + ", "
+                        + "uses=" + this.getUses() + ", "
+                        + "used=" + this.getUsed() + ", "
+                        + "usedTotalBased=" + this.isUsedTotalBased()
                         + " WHERE x=" + x + " AND y=" + y + " AND z=" + z + " AND world='" + this.world + "'");
             }
             //It's not in the table at all

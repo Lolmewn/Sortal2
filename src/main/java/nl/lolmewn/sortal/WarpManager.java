@@ -8,7 +8,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -57,10 +56,22 @@ public class WarpManager {
             }
             try {
                 while (set.next()) {
-                    this.addWarp(set.getString("name"), new Location(
+                    Warp w = this.addWarp(set.getString("name"), new Location(
                             this.getPlugin().getServer().getWorld(set.getString("world")),
                             set.getInt("x"), set.getInt("y"), set.getInt("z"),
                             set.getFloat("yaw"), set.getFloat("pitch")));
+                    if(set.getInt("uses") != -1){
+                        w.setUses(set.getInt("uses"));
+                        w.setUsed(set.getInt("used"));
+                        w.setUsedTotalBased(set.getBoolean("usedTotalBased"));
+                    }
+                    if(set.getInt("price") != -1){
+                        w.setPrice(set.getInt("price"));
+                        w.setHasPrice(true);
+                    }
+                    if(set.getString("owner") != null){
+                        w.setOwner(set.getString("owner"));
+                    }
                     if (this.getPlugin().getSettings().isDebug()) {
                         this.getPlugin().getLogger().log(Level.INFO, "Warp loaded: %s", set.getString("name"));
                     }
@@ -82,8 +93,20 @@ public class WarpManager {
         }
         YamlConfiguration c = YamlConfiguration.loadConfiguration(this.warpFile);
         for (String key : c.getConfigurationSection("").getKeys(false)) {
-            this.addWarp(key, new Location(this.getPlugin().getServer().getWorld(c.getString(key + ".world")), c.getDouble(key + ".x"), c.getDouble(key + ".y"), c.getDouble(key + ".z"),
+            Warp w = this.addWarp(key, new Location(this.getPlugin().getServer().getWorld(c.getString(key + ".world")), c.getDouble(key + ".x"), c.getDouble(key + ".y"), c.getDouble(key + ".z"),
                     (float) c.getDouble(key + ".yaw"), (float) c.getDouble(key + ".pitch")));
+            if(c.getInt(key + ".uses", -1) != -1){
+                w.setUses(c.getInt(key + ".uses"));
+                w.setUsed(c.getInt(key + ".used"));
+                w.setUsedTotalBased(c.getBoolean(key + ".usedTotalBased"));
+            }
+            if(c.contains(key + ".owner")){
+                w.setOwner(key + ".owner");
+            }
+            if(c.getInt(key + ".price", -1) != -1){
+                w.setPrice(c.getInt(key + ".price"));
+                w.setHasPrice(true);
+            }
         }
         this.getPlugin().getLogger().log(Level.INFO, String.format("Warps loaded: %s", this.warps.size()));
     }
@@ -106,13 +129,18 @@ public class WarpManager {
                             set.getInt("y"),
                             set.getInt("z"));
                     this.addSign(loc).setWarp(set.getString("warp"));
-                    if (set.getInt("price") != 0) {
+                    if (set.getInt("price") != -1) {
                         SignInfo added = this.getSign(loc);
                         if (added == null) {
                             //dafuq?
                             continue;
                         }
                         added.setPrice(set.getInt("price"));
+                    }
+                    if(set.getInt("uses") != -1){
+                        this.getSign(loc).setUses(set.getInt("uses"));
+                        this.getSign(loc).setUsedTotalBased(set.getBoolean("usedTotalBased"));
+                        this.getSign(loc).setUsed(set.getInt("used"));
                     }
                 }
             } catch (SQLException ex) {
@@ -144,11 +172,22 @@ public class WarpManager {
                     Integer.parseInt(splot[3]));
             String extra = c.getString(key);
             if (extra.contains(",")) {
-                String warp = extra.split(",")[0];
-                int price = Integer.parseInt(extra.split(",")[1]);
+                String[] split = extra.split(",");
+                String warp = split[0];
+                int price = Integer.parseInt(split[1]);
                 this.addSign(loc);
-                this.getSign(loc).setPrice(price);
                 this.getSign(loc).setWarp(warp);
+                if(price != -1){
+                    this.getSign(loc).setPrice(price);
+                }
+                if(split.length > 4){
+                    int uses = Integer.parseInt(split[2]);
+                    if(uses != -1){
+                        this.getSign(loc).setUses(uses);
+                        this.getSign(loc).setUsed(Integer.parseInt(split[3]));
+                        this.getSign(loc).setUsedTotalBased(Boolean.getBoolean(split[4]));
+                    }
+                }
                 continue;
             }
             this.addSign(loc).setWarp(extra);

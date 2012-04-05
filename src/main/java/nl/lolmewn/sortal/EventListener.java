@@ -88,32 +88,26 @@ public class EventListener implements Listener {
                     }
                     SignInfo sign = this.getPlugin().getWarpManager().getSign(s.getLocation());
                     if (sign.hasWarp()) {
-                        if(this.getPlugin().getSettings().isPerWarpPerm()){
-                            if(!p.hasPermission("sortal.warp." + sign.getWarp())){
+                        if (this.getPlugin().getSettings().isPerWarpPerm()) {
+                            if (!p.hasPermission("sortal.warp." + sign.getWarp())) {
                                 p.sendMessage(this.getLocalisation().getNoPerms());
                                 event.setCancelled(true);
                                 return;
                             }
                         }
                         Warp w = this.getPlugin().getWarpManager().getWarp(sign.getWarp());
-                        if(sign.hasPrice()){
-                            if (!this.getPlugin().pay(p, sign.getPrice())) {
-                                event.setCancelled(true);
-                                return;
-                            }
-                        }else if(w.hasPrice()){
-                            if(!this.getPlugin().pay(p, this.getPlugin().getWarpManager().getWarp(sign.getWarp()).getPrice())){
-                                event.setCancelled(true);
-                                return;
-                            }
-                        }else{
-                            if(!this.getPlugin().pay(p, this.getPlugin().getSettings().getWarpUsePrice())){
-                                event.setCancelled(true);
-                                return;
-                            }
+                        if (!canPay(w, sign, p)) {
+                            p.sendMessage(this.getLocalisation().getNoMoney(Integer.toString(getPrice(w, sign))));
+                            event.setCancelled(true);
+                            return;
                         }
+                        if (!usesCheck(w, sign, p)) {
+                            event.setCancelled(true);
+                            return;
+                        }
+                        this.getPlugin().pay(p, this.getPrice(w, sign));
                         Location loc = w.getLocation();
-                        if(loc.getYaw() == 0 && loc.getPitch()==0){
+                        if (loc.getYaw() == 0 && loc.getPitch() == 0) {
                             loc.setYaw(p.getLocation().getYaw());
                             loc.setPitch(p.getLocation().getPitch());
                         }
@@ -122,7 +116,7 @@ public class EventListener implements Listener {
                         event.setCancelled(true); //Cancel, don't place block.
                         return;
                     }
-                    p.sendMessage(this.getLocalisation().getErrorInSign()); //Sign does have a price but no warp -> weird.
+                    p.sendMessage(this.getLocalisation().getErrorInSign()); //Sign does have something but no warp -> weird.
                     event.setCancelled(true);
                     return; //have to return, otherwise it'll check the next lines
                 }
@@ -141,27 +135,30 @@ public class EventListener implements Listener {
                 if (nextLine.contains("w:")) {
                     //It's a warp
                     String warp = nextLine.split(":")[1];
-                    if(this.getPlugin().getSettings().isPerWarpPerm()){
-                            if(!p.hasPermission("sortal.warp." + warp)){
-                                p.sendMessage(this.getLocalisation().getNoPerms());
-                                event.setCancelled(true);
-                                return;
-                            }
+                    if (this.getPlugin().getSettings().isPerWarpPerm()) {
+                        if (!p.hasPermission("sortal.warp." + warp)) {
+                            p.sendMessage(this.getLocalisation().getNoPerms());
+                            event.setCancelled(true);
+                            return;
                         }
+                    }
                     if (!this.getPlugin().getWarpManager().hasWarp(warp)) {
                         p.sendMessage(this.getLocalisation().getWarpNotFound(warp));
                         event.setCancelled(true);
                         return;
                     }
                     Warp w = this.getPlugin().getWarpManager().getWarp(warp);
-                    int price = w.getPrice();
-                    if(this.getPlugin().getWarpManager().hasSignInfo(s.getLocation())){
-                        price = this.getPlugin().getWarpManager().getSign(s.getLocation()).getPrice();
-                    }
-                    if (!this.getPlugin().pay(p, price)) {
+                    SignInfo sign = this.getPlugin().getWarpManager().getSign(s.getLocation());
+                    if (!canPay(w, sign, p)) {
+                        p.sendMessage(this.getLocalisation().getNoMoney(Integer.toString(getPrice(w, sign))));
                         event.setCancelled(true);
                         return;
                     }
+                    if (!usesCheck(w, sign, p)) {
+                        event.setCancelled(true);
+                        return;
+                    }
+                    this.getPlugin().pay(p, this.getPrice(w, sign));
                     p.teleport(w.getLocation(), TeleportCause.PLUGIN);
                     p.sendMessage(this.getLocalisation().getPlayerTeleported(warp));
                     event.setCancelled(true);
@@ -182,14 +179,17 @@ public class EventListener implements Listener {
                         }
                         add = 1;
                     }
-                    int price = this.getPlugin().getSettings().getWarpUsePrice();
-                    if(this.getPlugin().getWarpManager().hasSignInfo(s.getLocation())){
-                        price = this.getPlugin().getWarpManager().getSign(s.getLocation()).getPrice();
-                    }
-                    if(!this.getPlugin().pay(p, price)){
+                    SignInfo sign = this.getPlugin().getWarpManager().getSign(s.getLocation());
+                    if (!canPay(null, sign, p)) {
+                        p.sendMessage(this.getLocalisation().getNoMoney(Integer.toString(getPrice(null, sign))));
                         event.setCancelled(true);
                         return;
                     }
+                    if (!usesCheck(null, sign, p)) {
+                        event.setCancelled(true);
+                        return;
+                    }
+                    this.getPlugin().pay(p, this.getPrice(null, sign));
                     int x = Integer.parseInt(split[0 + add]), y = Integer.parseInt(split[1 + add]),
                             z = Integer.parseInt(split[2 + add]);
                     Location dest = new Location(w, x, y, z, p.getLocation().getYaw(), p.getLocation().getPitch());
@@ -215,8 +215,8 @@ public class EventListener implements Listener {
                 player.sendMessage("Price set to " + sign.getPrice() + " for this sign!");
                 return true;
             }
-            for(String line : s.getLines()){
-                if(line.toLowerCase().contains("[sortal]") || line.contains(this.getPlugin().getSettings().getSignContains())){
+            for (String line : s.getLines()) {
+                if (line.toLowerCase().contains("[sortal]") || line.contains(this.getPlugin().getSettings().getSignContains())) {
                     SignInfo sign = this.getPlugin().getWarpManager().addSign(s.getLocation());
                     sign.setPrice(this.getPlugin().setcost.remove(player.getName()));
                     sign.setOwner(player.getName());
@@ -242,21 +242,21 @@ public class EventListener implements Listener {
             player.sendMessage("Sign is now pointing to " + warp);
             return true;
         }
-        if (this.getPlugin().unregister.contains(player.getName())){
-            if (!this.getPlugin().getWarpManager().hasSignInfo(s.getLocation())){
+        if (this.getPlugin().unregister.contains(player.getName())) {
+            if (!this.getPlugin().getWarpManager().hasSignInfo(s.getLocation())) {
                 player.sendMessage("This sign isn't registered, please hit a registered sign to unregister!");
                 return true;
             }
             SignInfo sign = this.getPlugin().getWarpManager().getSign(s.getLocation());
-            if(!sign.hasWarp()){
+            if (!sign.hasWarp()) {
                 player.sendMessage("This sign isn't pointing to a warp!");
                 return true;
             }
-            if(!sign.hasPrice()){
+            if (!sign.hasPrice()) {
                 //Sign doesn't have a price and warp gets removed, remove whole sign info
-                if(this.getPlugin().getSettings().useMySQL()){
+                if (this.getPlugin().getSettings().useMySQL()) {
                     sign.delete(this.getPlugin().getMySQL(), this.getPlugin().getSignTable());
-                }else{
+                } else {
                     sign.delete(this.getPlugin().getWarpManager().signFile);
                 }
                 player.sendMessage("Unregistered sign! No data left for sign, removing..");
@@ -268,21 +268,21 @@ public class EventListener implements Listener {
             player.sendMessage("Sign unregistered!");
             return true;
         }
-        if(this.getPlugin().setuses.containsKey(player.getName())){
+        if (this.getPlugin().setuses.containsKey(player.getName())) {
             //TODO set the uses
         }
         return false;
     }
-    
+
     @EventHandler
-    public void onBlockBreak(BlockBreakEvent event){
+    public void onBlockBreak(BlockBreakEvent event) {
         Block b = event.getBlock();
-        if(b.getType().equals(Material.SIGN) || b.getType().equals(Material.SIGN_POST)
-                || b.getType().equals(Material.WALL_SIGN)){
-            Sign s = (Sign)b.getState();
-            for(String line : s.getLines()){
-                if(line.toLowerCase().contains("[sortal]") || line.toLowerCase().contains(this.getPlugin().getSettings().getSignContains())){
-                    if(!event.getPlayer().hasPermission("sortal.breaksign")){
+        if (b.getType().equals(Material.SIGN) || b.getType().equals(Material.SIGN_POST)
+                || b.getType().equals(Material.WALL_SIGN)) {
+            Sign s = (Sign) b.getState();
+            for (String line : s.getLines()) {
+                if (line.toLowerCase().contains("[sortal]") || line.toLowerCase().contains(this.getPlugin().getSettings().getSignContains())) {
+                    if (!event.getPlayer().hasPermission("sortal.breaksign")) {
                         event.getPlayer().sendMessage(this.getLocalisation().getNoPerms());
                         event.setCancelled(true);
                         return;
@@ -290,12 +290,156 @@ public class EventListener implements Listener {
                 }
             }
             //no [Sortal] or whatever on sign, maybe registered?
-            if(this.getPlugin().getWarpManager().hasSignInfo(b.getLocation())){
-                if(!event.getPlayer().hasPermission("sortal.breaksign")){
+            if (this.getPlugin().getWarpManager().hasSignInfo(b.getLocation())) {
+                if (!event.getPlayer().hasPermission("sortal.breaksign")) {
                     event.getPlayer().sendMessage(this.getLocalisation().getNoPerms());
                     event.setCancelled(true);
                 }
             }
+        }
+    }
+
+    /*
+     * @return returns true if the check was completed without denial
+     */
+    private boolean usesCheck(Warp w, SignInfo sign, Player p) {
+        UserInfo f = this.getPlugin().getWarpManager().getUserInfo(p.getName());
+        if (w == null && sign.getUses() == -1 || w.getUses() == -1 && sign == null || w == null && sign == null) {
+            return true;
+        }
+        if (w == null) {
+            //warp is unlimited then
+            if (sign.isUsedTotalBased()) {
+                if (sign.getUsed() >= sign.getUses()) {
+                    //Used more often than allowed
+                    return false;
+                }
+                sign.setUsed(sign.getUsed() + 1);
+                return true;
+            } else {
+                if (sign.getUses() > f.getUsedLocation(sign.getLocation())) {
+                    //Not used as many times as allowed
+                    f.addtoUsedLocation(sign.getLocation(), 1);
+                    return true;
+                }
+                return false;
+            }
+        }
+        if (sign == null) {
+            //warp is unlimited then
+            if (w.isUsedTotalBased()) {
+                if (w.getUsed() >= w.getUses()) {
+                    //Used more often than allowed
+                    return false;
+                }
+                w.setUsed(w.getUsed() + 1);
+                return true;
+            } else {
+                if (w.getUses() > f.getUsedWarp(w.getName())) {
+                    //Not used as many times as allowed
+                    f.addtoUsedWarp(w.getName(), 1);
+                    return true;
+                }
+                return false;
+            }
+        }
+        if (sign.getUses() == -1 && w.getUses() == -1) {
+            //both are unlimited
+            return true;
+        }
+        if (w.getUses() == -1) {
+            //warp is unlimited, sign isn't or it'd already returned true
+            if (sign.isUsedTotalBased()) {
+                if (sign.getUsed() >= sign.getUses()) {
+                    //Used more often than allowed
+                    return false;
+                } else {
+                    sign.setUsed(sign.getUsed() + 1);
+                    return true;
+                }
+            } else {
+                if (sign.getUses() > f.getUsedLocation(sign.getLocation())) {
+                    //Not used as many times as allowed
+                    f.addtoUsedLocation(sign.getLocation(), 1);
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+        if (sign.getUses() == -1) {
+            if (w.isUsedTotalBased()) {
+                if (w.getUsed() >= w.getUses()) {
+                    //Used more often than allowed
+                    return false;
+                } else {
+                    w.setUsed(w.getUsed() + 1);
+                    return true;
+                }
+            } else {
+                if (w.getUses() > f.getUsedWarp(w.getName())) {
+                    //Not used as many times as allowed
+                    f.addtoUsedWarp(w.getName(), 1);
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        }
+        //They both aren't -1, doing epic face check
+        if (w.isUsedTotalBased()) {
+            if (w.getUsed() >= w.getUses()) {
+                //Used more often than allowed
+                return false;
+            }
+            if (sign.isUsedTotalBased()) {
+                if (sign.getUsed() >= sign.getUses()) {
+                    //Used more often than allowed
+                    return false;
+                }
+                sign.setUsed(sign.getUsed() + 1);
+                w.setUsed(w.getUsed() + 1);
+                return true;
+            }
+            if (sign.getUses() > f.getUsedLocation(sign.getLocation())) {
+                w.setUsed(w.getUsed() + 1);
+                f.addtoUsedLocation(sign.getLocation(), 1);
+                return true;
+            }
+            return false;
+        }
+        if (sign.isUsedTotalBased()) {
+            if (sign.getUsed() >= sign.getUses()) {
+                return false;
+            }
+            //w cant be usedTotalBased
+            if (w.getUses() > f.getUsedWarp(w.getName())) {
+                sign.setUsed(sign.getUsed() + 1);
+                f.addtoUsedWarp(w.getName(), 1);
+                return true;
+            }
+            return false;
+        }
+        if (this.getPlugin().getSettings().isDebug()) {
+            this.getPlugin().getLogger().info("[Debug] That one return statement just happened.");
+        }
+        return false;
+    }
+
+    private boolean canPay(Warp w, SignInfo sign, Player p) {
+        if (this.getPlugin().canPay(p, this.getPrice(w, sign))) {
+            return true;
+        }
+        return false;
+    }
+
+    private int getPrice(Warp w, SignInfo sign) {
+        if (sign != null && sign.hasPrice()) {
+            return sign.getPrice();
+        } else if (w != null && w.hasPrice()) {
+            return w.getPrice();
+        } else {
+            return this.getPlugin().getSettings().getWarpUsePrice();
         }
     }
 }

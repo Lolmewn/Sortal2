@@ -58,6 +58,7 @@ public class MySQL {
                 + "price int, "
                 + "uses int,"
                 + "used int,"
+                + "usedTotalBased boolean,"
                 + "owner varchar(255))");
         this.executeStatement("CREATE TABLE IF NOT EXISTS " + this.prefix + "signs"
                 + "(id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, "
@@ -69,6 +70,7 @@ public class MySQL {
                 + "price int,"
                 + "uses int,"
                 + "used int,"
+                + "usedTotalBased boolean,"
                 + "owner varchar(255))");
         this.executeStatement("CREATE TABLE IF NOT EXISTS " + this.prefix + "users"
                 + "(player varchar(255) NOT NULL,"
@@ -143,12 +145,13 @@ public class MySQL {
                 set.getInt("uses");
                 set.getInt("used");
                 set.getString("owner");
+                set.getBoolean("usedTotalBased");
             }
         } catch (SQLException ex) {
             System.out.println("Error while validating tables, message: " + ex.getMessage());
             if (ex.getMessage().contains("Column")) {
                 System.out.println("Adding missing columns");
-                this.executeStatement("ALTER TABLE " + this.prefix + "warps ADD COLUMN uses int, ADD COLUMN used int, ADD COLUMN owner varchar(255)");
+                this.executeStatement("ALTER TABLE " + this.prefix + "warps ADD COLUMN uses int, ADD COLUMN used int, ADD COLUMN owner varchar(255), ADD COLUMN usedTotalBased boolean");
             }
         } finally {
             ResultSet set2 = this.executeQuery("SELECT * FROM " + this.prefix + "signs LIMIT 1");
@@ -157,12 +160,13 @@ public class MySQL {
                     set2.getInt("uses");
                     set2.getInt("used");
                     set2.getString("owner");
+                    set.getBoolean("usedTotalBased");
                 }
             } catch (SQLException ex) {
                 System.out.println("Error while validating tables, message: " + ex.getMessage());
                 if (ex.getMessage().contains("Column")) {
                     System.out.println("Adding missing columns");
-                    this.executeStatement("ALTER TABLE " + this.prefix + "signs ADD COLUMN uses int, ADD COLUMN used int, ADD COLUMN owner varchar(255)");
+                    this.executeStatement("ALTER TABLE " + this.prefix + "signs ADD COLUMN uses int, ADD COLUMN used int, ADD COLUMN owner varchar(255), ADD COLUMN usedTotalBased boolean");
                 }
             }
         }
