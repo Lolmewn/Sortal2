@@ -304,7 +304,7 @@ public class EventListener implements Listener {
      */
     private boolean usesCheck(Warp w, SignInfo sign, Player p) {
         UserInfo f = this.getPlugin().getWarpManager().getUserInfo(p.getName());
-        if(w == null && sign == null){
+        if (w == null && sign == null) {
             return true;
         }
         if (w == null && sign.getUses() == -1 || w.getUses() == -1 && sign == null) {
@@ -422,11 +422,15 @@ public class EventListener implements Listener {
                 return true;
             }
             return false;
+        } else {
+            f.addtoUsedLocation(sign.getLocation(), 1);
+            f.addtoUsedWarp(w.getName(), 1);
+            if (this.getPlugin().getSettings().isDebug()) {
+                this.getPlugin().getLogger().info("[Debug] That one return statement just happened.");
+            }
+            return true;
         }
-        if (this.getPlugin().getSettings().isDebug()) {
-            this.getPlugin().getLogger().info("[Debug] That one return statement just happened.");
-        }
-        return false;
+        //both player based
     }
 
     private boolean canPay(Warp w, SignInfo sign, Player p) {
