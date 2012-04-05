@@ -10,7 +10,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.logging.Level;
-import java.util.logging.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -19,7 +18,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
  *
  * @author Lolmewn <lolmewn@centrility.nl>
  */
-class UserInfo {
+public class UserInfo {
     
     private String username;
     
@@ -35,6 +34,9 @@ class UserInfo {
     }
     
     public int getUsedWarp(String warp){
+        if(!this.warpUses.containsKey(warp)){
+            return 0;
+        }
         return this.warpUses.get(warp);
     }
     
@@ -47,6 +49,9 @@ class UserInfo {
     }
     
     public int getUsedLocation(Location loc){
+        if(!this.locUses.containsKey(loc)){
+            return 0;
+        }
         return this.locUses.get(loc);
     }
     
