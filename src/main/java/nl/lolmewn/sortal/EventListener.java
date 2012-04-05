@@ -423,6 +423,12 @@ public class EventListener implements Listener {
             }
             return false;
         } else {
+            if(w.getUses() <= f.getUsedWarp(w.getName())){
+                return false;
+            }
+            if(sign.getUses() <= f.getUsedLocation(sign.getLocation())){
+                return false;
+            }
             f.addtoUsedLocation(sign.getLocation(), 1);
             f.addtoUsedWarp(w.getName(), 1);
             if (this.getPlugin().getSettings().isDebug()) {
