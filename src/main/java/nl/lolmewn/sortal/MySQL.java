@@ -1,8 +1,6 @@
 package nl.lolmewn.sortal;
 
 import java.sql.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class MySQL {
 
@@ -149,39 +147,6 @@ public class MySQL {
         this.checkColumn(this.prefix + "signs", "used", "int");
         this.checkColumn(this.prefix + "signs", "owner", "varchar(255)");
         this.checkColumn(this.prefix + "signs", "usedTotalBased", "boolean");
-        
-        /*
-        ResultSet set = this.executeQuery("SELECT * FROM " + this.prefix + "warps LIMIT 1");
-        try {
-            while (set.next()) {
-                set.getInt("uses");
-                set.getInt("used");
-                set.getString("owner");
-                set.getBoolean("usedTotalBased");
-            }
-        } catch (SQLException ex) {
-            System.out.println("Error while validating tables, message: " + ex.getMessage());
-            if (ex.getMessage().contains("Column")) {
-                System.out.println("Adding missing columns");
-                this.executeStatement("ALTER TABLE " + this.prefix + "warps ADD COLUMN uses int, ADD COLUMN used int, ADD COLUMN owner varchar(255), ADD COLUMN usedTotalBased boolean");
-            }
-        } finally {
-            ResultSet set2 = this.executeQuery("SELECT * FROM " + this.prefix + "signs LIMIT 1");
-            try {
-                while (set2.next()) {
-                    set2.getInt("uses");
-                    set2.getInt("used");
-                    set2.getString("owner");
-                    set.getBoolean("usedTotalBased");
-                }
-            } catch (SQLException ex) {
-                System.out.println("Error while validating tables, message: " + ex.getMessage());
-                if (ex.getMessage().contains("Column")) {
-                    System.out.println("Adding missing columns");
-                    this.executeStatement("ALTER TABLE " + this.prefix + "signs ADD COLUMN uses int, ADD COLUMN used int, ADD COLUMN owner varchar(255), ADD COLUMN usedTotalBased boolean");
-                }
-            }
-        }*/
     }
     
     private void checkColumn(String table, String column, String type){

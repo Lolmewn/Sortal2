@@ -304,7 +304,10 @@ public class EventListener implements Listener {
      */
     private boolean usesCheck(Warp w, SignInfo sign, Player p) {
         UserInfo f = this.getPlugin().getWarpManager().getUserInfo(p.getName());
-        if (w == null && sign.getUses() == -1 || w.getUses() == -1 && sign == null || w == null && sign == null) {
+        if(w == null && sign == null){
+            return true;
+        }
+        if (w == null && sign.getUses() == -1 || w.getUses() == -1 && sign == null) {
             return true;
         }
         if (w == null) {

@@ -60,20 +60,20 @@ public class WarpManager {
                             this.getPlugin().getServer().getWorld(set.getString("world")),
                             set.getInt("x"), set.getInt("y"), set.getInt("z"),
                             set.getFloat("yaw"), set.getFloat("pitch")));
-                    if(set.getInt("uses") != -1){
+                    if (set.getInt("uses") != -1) {
                         w.setUses(set.getInt("uses"));
                         w.setUsed(set.getInt("used"));
                         w.setUsedTotalBased(set.getBoolean("usedTotalBased"));
                     }
-                    if(set.getInt("price") != -1){
+                    if (set.getInt("price") != -1) {
                         w.setPrice(set.getInt("price"));
                         w.setHasPrice(true);
                     }
-                    if(set.getString("owner") != null){
+                    if (set.getString("owner") != null) {
                         w.setOwner(set.getString("owner"));
                     }
                     if (this.getPlugin().getSettings().isDebug()) {
-                        this.getPlugin().getLogger().log(Level.INFO, "Warp loaded: %s", set.getString("name"));
+                        this.getPlugin().getLogger().log(Level.INFO, String.format("Warp loaded: %s", set.getString("name")));
                     }
                 }
             } catch (SQLException ex) {
@@ -95,15 +95,15 @@ public class WarpManager {
         for (String key : c.getConfigurationSection("").getKeys(false)) {
             Warp w = this.addWarp(key, new Location(this.getPlugin().getServer().getWorld(c.getString(key + ".world")), c.getDouble(key + ".x"), c.getDouble(key + ".y"), c.getDouble(key + ".z"),
                     (float) c.getDouble(key + ".yaw"), (float) c.getDouble(key + ".pitch")));
-            if(c.getInt(key + ".uses", -1) != -1){
+            if (c.getInt(key + ".uses", -1) != -1) {
                 w.setUses(c.getInt(key + ".uses"));
                 w.setUsed(c.getInt(key + ".used"));
                 w.setUsedTotalBased(c.getBoolean(key + ".usedTotalBased"));
             }
-            if(c.contains(key + ".owner")){
+            if (c.contains(key + ".owner")) {
                 w.setOwner(key + ".owner");
             }
-            if(c.getInt(key + ".price", -1) != -1){
+            if (c.getInt(key + ".price", -1) != -1) {
                 w.setPrice(c.getInt(key + ".price"));
                 w.setHasPrice(true);
             }
@@ -137,7 +137,7 @@ public class WarpManager {
                         }
                         added.setPrice(set.getInt("price"));
                     }
-                    if(set.getInt("uses") != -1){
+                    if (set.getInt("uses") != -1) {
                         this.getSign(loc).setUses(set.getInt("uses"));
                         this.getSign(loc).setUsedTotalBased(set.getBoolean("usedTotalBased"));
                         this.getSign(loc).setUsed(set.getInt("used"));
@@ -177,12 +177,12 @@ public class WarpManager {
                 int price = Integer.parseInt(split[1]);
                 this.addSign(loc);
                 this.getSign(loc).setWarp(warp);
-                if(price != -1){
+                if (price != -1) {
                     this.getSign(loc).setPrice(price);
                 }
-                if(split.length > 4){
+                if (split.length > 4) {
                     int uses = Integer.parseInt(split[2]);
-                    if(uses != -1){
+                    if (uses != -1) {
                         this.getSign(loc).setUses(uses);
                         this.getSign(loc).setUsed(Integer.parseInt(split[3]));
                         this.getSign(loc).setUsedTotalBased(Boolean.getBoolean(split[4]));
@@ -194,9 +194,9 @@ public class WarpManager {
         }
         this.getPlugin().getLogger().log(Level.INFO, String.format("Signs loaded: %s", this.signs.size()));
     }
-    
+
     private void loadUsers() {
-        if(this.getPlugin().getSettings().useMySQL()){
+        if (this.getPlugin().getSettings().useMySQL()) {
             ResultSet set = this.getPlugin().getMySQL().executeQuery("SELECT * FROM " + this.getPlugin().getUserTable());
             if (set == null) {
                 this.getPlugin().getLogger().severe("Something is wrong with your MySQL database!");
@@ -205,15 +205,15 @@ public class WarpManager {
                 return;
             }
             try {
-                while(set.next()){
+                while (set.next()) {
                     String player = set.getString("player");
                     UserInfo info;
-                    if(this.hasUserInfo(player)){
+                    if (this.hasUserInfo(player)) {
                         info = this.getUserInfo(player);
-                    }else{
+                    } else {
                         info = this.addUserInfo(player);
                     }
-                    if(set.getString("warp") == null){
+                    if (set.getString("warp") == null) {
                         //location
                         info.addtoUsedLocation(new Location(this.getPlugin().getServer().getWorld(set.getString("world")),
                                 set.getInt("x"), set.getInt("y"), set.getInt("z")), set.getInt("used"));
@@ -229,7 +229,7 @@ public class WarpManager {
         YamlConfiguration c = YamlConfiguration.loadConfiguration(this.userFile);
         for (String player : c.getConfigurationSection("").getKeys(false)) {
             UserInfo info = this.addUserInfo(player);
-            for(String key : c.getConfigurationSection(player).getKeys(false)){
+            for (String key : c.getConfigurationSection(player).getKeys(false)) {
                 if (!key.contains(",")) {
                     //warp
                     info.addtoUsedWarp(key, c.getInt(player + "." + key));
@@ -274,14 +274,17 @@ public class WarpManager {
                 loc.getBlockZ()));
         return this.getSign(loc);
     }
-    
-    protected UserInfo addUserInfo(String name){
+
+    protected UserInfo addUserInfo(String name) {
         this.users.put(name, new UserInfo(name));
         return this.getUserInfo(name);
     }
-    
-    protected UserInfo getUserInfo(String name){
-        return this.users.get(name);
+
+    protected UserInfo getUserInfo(String name) {
+        if (this.hasUserInfo(name)) {
+            return this.users.get(name);
+        }
+        return new UserInfo(name);
     }
 
     protected SignInfo getSign(Location loc) {
@@ -322,8 +325,8 @@ public class WarpManager {
     protected boolean hasWarp(String name) {
         return this.warps.containsKey(name);
     }
-    
-    protected boolean hasUserInfo(String user){
+
+    protected boolean hasUserInfo(String user) {
         return this.users.containsKey(user);
     }
 
@@ -352,7 +355,7 @@ public class WarpManager {
                 this.signs.get(loc).save(this.signFile);
             }
         }
-        for(String user : this.users.keySet()){
+        for (String user : this.users.keySet()) {
             if (this.getPlugin().getSettings().isDebug()) {
                 this.getPlugin().getLogger().log(Level.INFO, String.format("[Debug] Saving user %s", user));
             }
@@ -371,7 +374,7 @@ public class WarpManager {
         }
         return warpSet;
     }
-    
+
     public Set<SignInfo> getSigns() {
         Set<SignInfo> warpSet = new HashSet<SignInfo>();
         for (String warp : this.signs.keySet()) {
@@ -488,5 +491,4 @@ public class WarpManager {
             return false;
         }
     }
-    
 }
