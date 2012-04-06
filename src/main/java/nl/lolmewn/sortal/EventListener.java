@@ -102,6 +102,7 @@ public class EventListener implements Listener {
                             return;
                         }
                         if (!usesCheck(w, sign, p)) {
+                            p.sendMessage(this.getLocalisation().getMaxUsesReached());
                             event.setCancelled(true);
                             return;
                         }
@@ -155,6 +156,7 @@ public class EventListener implements Listener {
                         return;
                     }
                     if (!usesCheck(w, sign, p)) {
+                        p.sendMessage(this.getLocalisation().getMaxUsesReached());
                         event.setCancelled(true);
                         return;
                     }
@@ -186,6 +188,7 @@ public class EventListener implements Listener {
                         return;
                     }
                     if (!usesCheck(null, sign, p)) {
+                        p.sendMessage(this.getLocalisation().getMaxUsesReached());
                         event.setCancelled(true);
                         return;
                     }
@@ -296,9 +299,9 @@ public class EventListener implements Listener {
                     event.setCancelled(true);
                 }
                 SignInfo i = this.getPlugin().getWarpManager().getSign(b.getLocation());
-                if(this.getPlugin().getSettings().useMySQL()){
+                if (this.getPlugin().getSettings().useMySQL()) {
                     i.delete(this.getPlugin().getMySQL(), this.getPlugin().getSignTable());
-                }else{
+                } else {
                     i.delete(this.getPlugin().getWarpManager().signFile);
                 }
             }
@@ -311,25 +314,43 @@ public class EventListener implements Listener {
     private boolean usesCheck(Warp w, SignInfo sign, Player p) {
         UserInfo f = this.getPlugin().getWarpManager().getUserInfo(p.getName());
         if (w == null && sign == null) {
+            if (this.getPlugin().getSettings().isDebug()) {
+                this.getPlugin().getLogger().info("[Debug] Uses end code 1");
+            }
             return true;
         }
         if (w == null && sign.getUses() == -1 || w.getUses() == -1 && sign == null) {
+            if (this.getPlugin().getSettings().isDebug()) {
+                this.getPlugin().getLogger().info("[Debug] Uses end code 2");
+            }
             return true;
         }
         if (w == null) {
             //warp is unlimited then
             if (sign.isUsedTotalBased()) {
                 if (sign.getUsed() >= sign.getUses()) {
+                    if (this.getPlugin().getSettings().isDebug()) {
+                        this.getPlugin().getLogger().info("[Debug] Uses end code 3");
+                    }
                     //Used more often than allowed
                     return false;
                 }
                 sign.setUsed(sign.getUsed() + 1);
+                if (this.getPlugin().getSettings().isDebug()) {
+                    this.getPlugin().getLogger().info("[Debug] Uses end code 4");
+                }
                 return true;
             } else {
                 if (sign.getUses() > f.getUsedLocation(sign.getLocation())) {
                     //Not used as many times as allowed
                     f.addtoUsedLocation(sign.getLocation(), 1);
+                    if (this.getPlugin().getSettings().isDebug()) {
+                        this.getPlugin().getLogger().info("[Debug] Uses end code 5");
+                    }
                     return true;
+                }
+                if (this.getPlugin().getSettings().isDebug()) {
+                    this.getPlugin().getLogger().info("[Debug] Uses end code 6");
                 }
                 return false;
             }
@@ -338,22 +359,37 @@ public class EventListener implements Listener {
             //warp is unlimited then
             if (w.isUsedTotalBased()) {
                 if (w.getUsed() >= w.getUses()) {
+                    if (this.getPlugin().getSettings().isDebug()) {
+                        this.getPlugin().getLogger().info("[Debug] Uses end code 7");
+                    }
                     //Used more often than allowed
                     return false;
                 }
                 w.setUsed(w.getUsed() + 1);
+                if (this.getPlugin().getSettings().isDebug()) {
+                    this.getPlugin().getLogger().info("[Debug] Uses end code 8");
+                }
                 return true;
             } else {
                 if (w.getUses() > f.getUsedWarp(w.getName())) {
                     //Not used as many times as allowed
                     f.addtoUsedWarp(w.getName(), 1);
+                    if (this.getPlugin().getSettings().isDebug()) {
+                        this.getPlugin().getLogger().info("[Debug] Uses end code 9");
+                    }
                     return true;
+                }
+                if (this.getPlugin().getSettings().isDebug()) {
+                    this.getPlugin().getLogger().info("[Debug] Uses end code 10");
                 }
                 return false;
             }
         }
         if (sign.getUses() == -1 && w.getUses() == -1) {
             //both are unlimited
+            if (this.getPlugin().getSettings().isDebug()) {
+                this.getPlugin().getLogger().info("[Debug] Uses end code 11");
+            }
             return true;
         }
         if (w.getUses() == -1) {
@@ -361,17 +397,29 @@ public class EventListener implements Listener {
             if (sign.isUsedTotalBased()) {
                 if (sign.getUsed() >= sign.getUses()) {
                     //Used more often than allowed
+                    if (this.getPlugin().getSettings().isDebug()) {
+                        this.getPlugin().getLogger().info("[Debug] Uses end code 12");
+                    }
                     return false;
                 } else {
                     sign.setUsed(sign.getUsed() + 1);
+                    if (this.getPlugin().getSettings().isDebug()) {
+                        this.getPlugin().getLogger().info("[Debug] Uses end code 13");
+                    }
                     return true;
                 }
             } else {
                 if (sign.getUses() > f.getUsedLocation(sign.getLocation())) {
                     //Not used as many times as allowed
                     f.addtoUsedLocation(sign.getLocation(), 1);
+                    if (this.getPlugin().getSettings().isDebug()) {
+                        this.getPlugin().getLogger().info("[Debug] Uses end code 14");
+                    }
                     return true;
                 } else {
+                    if (this.getPlugin().getSettings().isDebug()) {
+                        this.getPlugin().getLogger().info("[Debug] Uses end code 15");
+                    }
                     return false;
                 }
             }
@@ -380,17 +428,29 @@ public class EventListener implements Listener {
             if (w.isUsedTotalBased()) {
                 if (w.getUsed() >= w.getUses()) {
                     //Used more often than allowed
+                    if (this.getPlugin().getSettings().isDebug()) {
+                        this.getPlugin().getLogger().info("[Debug] Uses end code 16");
+                    }
                     return false;
                 } else {
                     w.setUsed(w.getUsed() + 1);
+                    if (this.getPlugin().getSettings().isDebug()) {
+                        this.getPlugin().getLogger().info("[Debug] Uses end code 17");
+                    }
                     return true;
                 }
             } else {
                 if (w.getUses() > f.getUsedWarp(w.getName())) {
                     //Not used as many times as allowed
                     f.addtoUsedWarp(w.getName(), 1);
+                    if (this.getPlugin().getSettings().isDebug()) {
+                        this.getPlugin().getLogger().info("[Debug] Uses end code 18");
+                    }
                     return true;
                 } else {
+                    if (this.getPlugin().getSettings().isDebug()) {
+                        this.getPlugin().getLogger().info("[Debug] Uses end code 19");
+                    }
                     return false;
                 }
             }
@@ -398,47 +458,77 @@ public class EventListener implements Listener {
         //They both aren't -1, doing epic face check
         if (w.isUsedTotalBased()) {
             if (w.getUsed() >= w.getUses()) {
+                if (this.getPlugin().getSettings().isDebug()) {
+                    this.getPlugin().getLogger().info("[Debug] Uses end code 20");
+                }
                 //Used more often than allowed
                 return false;
             }
             if (sign.isUsedTotalBased()) {
                 if (sign.getUsed() >= sign.getUses()) {
+                    if (this.getPlugin().getSettings().isDebug()) {
+                        this.getPlugin().getLogger().info("[Debug] Uses end code 21");
+                    }
                     //Used more often than allowed
                     return false;
+                }
+                if (this.getPlugin().getSettings().isDebug()) {
+                    this.getPlugin().getLogger().info("[Debug] Uses end code 22");
                 }
                 sign.setUsed(sign.getUsed() + 1);
                 w.setUsed(w.getUsed() + 1);
                 return true;
             }
             if (sign.getUses() > f.getUsedLocation(sign.getLocation())) {
+                if (this.getPlugin().getSettings().isDebug()) {
+                    this.getPlugin().getLogger().info("[Debug] Uses end code 23");
+                }
                 w.setUsed(w.getUsed() + 1);
                 f.addtoUsedLocation(sign.getLocation(), 1);
                 return true;
+            }
+            if (this.getPlugin().getSettings().isDebug()) {
+                this.getPlugin().getLogger().info("[Debug] Uses end code 24");
             }
             return false;
         }
         if (sign.isUsedTotalBased()) {
             if (sign.getUsed() >= sign.getUses()) {
+                if (this.getPlugin().getSettings().isDebug()) {
+                    this.getPlugin().getLogger().info("[Debug] Uses end code 25");
+                }
                 return false;
             }
             //w cant be usedTotalBased
             if (w.getUses() > f.getUsedWarp(w.getName())) {
+                if (this.getPlugin().getSettings().isDebug()) {
+                    this.getPlugin().getLogger().info("[Debug] Uses end code 26");
+                }
                 sign.setUsed(sign.getUsed() + 1);
                 f.addtoUsedWarp(w.getName(), 1);
                 return true;
             }
+            if (this.getPlugin().getSettings().isDebug()) {
+                this.getPlugin().getLogger().info("[Debug] Uses end code 27");
+            }
             return false;
         } else {
-            if(w.getUses() <= f.getUsedWarp(w.getName())){
+            if (w.getUses() <= f.getUsedWarp(w.getName())) {
+                if (this.getPlugin().getSettings().isDebug()) {
+                    this.getPlugin().getLogger().info("[Debug] Uses end code 28");
+                }
                 return false;
             }
-            if(sign.getUses() <= f.getUsedLocation(sign.getLocation())){
+            if (sign.getUses() <= f.getUsedLocation(sign.getLocation())) {
+                if (this.getPlugin().getSettings().isDebug()) {
+                    this.getPlugin().getLogger().info("[Debug] Uses end code 29");
+                }
                 return false;
             }
             f.addtoUsedLocation(sign.getLocation(), 1);
             f.addtoUsedWarp(w.getName(), 1);
             if (this.getPlugin().getSettings().isDebug()) {
-                this.getPlugin().getLogger().info("[Debug] That one return statement just happened.");
+                this.getPlugin().getLogger().info("[Debug] Uses end code 30");
             }
             return true;
         }
