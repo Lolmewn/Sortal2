@@ -272,11 +272,10 @@ public class EventListener implements Listener {
             return true;
         }
         if (this.getPlugin().setuses.containsKey(player.getName())) {
-            //TODO set the uses
             SignInfo info;
-            if(this.getPlugin().getWarpManager().hasSignInfo(s.getLocation())){
+            if (this.getPlugin().getWarpManager().hasSignInfo(s.getLocation())) {
                 info = this.getPlugin().getWarpManager().getSign(s.getLocation());
-            }else{
+            } else {
                 info = this.getPlugin().getWarpManager().addSign(s.getLocation());
             }
             String uses = this.getPlugin().setuses.remove(player.getName());
@@ -331,11 +330,21 @@ public class EventListener implements Listener {
             }
             return true;
         }
-        if (w == null && sign.getUses() == -1 || w.getUses() == -1 && sign == null) {
-            if (this.getPlugin().getSettings().isDebug()) {
-                this.getPlugin().getLogger().info("[Debug] Uses end code 2");
+        if (w == null) {
+            if (sign.getUses() == -1) {
+                if (this.getPlugin().getSettings().isDebug()) {
+                    this.getPlugin().getLogger().info("[Debug] Uses end code 2.1");
+                }
+                return true;
             }
-            return true;
+        }
+        if (sign == null) {
+            if (w.getUses() == -1) {
+                if (this.getPlugin().getSettings().isDebug()) {
+                    this.getPlugin().getLogger().info("[Debug] Uses end code 2.2");
+                }
+                return true;
+            }
         }
         if (w == null) {
             //warp is unlimited then
@@ -387,7 +396,7 @@ public class EventListener implements Listener {
                     //Not used as many times as allowed
                     f.addtoUsedWarp(w.getName(), 1);
                     if (this.getPlugin().getSettings().isDebug()) {
-                        this.getPlugin().getLogger().info("[Debug] Uses end code 9,"+w.getUses() + "," + f.getUsedWarp(w.getName()));
+                        this.getPlugin().getLogger().info("[Debug] Uses end code 9," + w.getUses() + "," + f.getUsedWarp(w.getName()));
                     }
                     return true;
                 }
