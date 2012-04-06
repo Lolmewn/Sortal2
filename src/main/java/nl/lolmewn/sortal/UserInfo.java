@@ -137,10 +137,10 @@ public class UserInfo {
         }
         YamlConfiguration c = YamlConfiguration.loadConfiguration(f);
         for(String warp : this.warpUses.keySet()){
-            c.set(this.username + "." + warp, this.warpUses.get(warp));
+            c.set(this.username + "." + warp, this.getUsedWarp(warp));
         }
         for(Location loc : this.locUses.keySet()){
-            c.set(this.username + "." + loc.getWorld().getName() + "," + loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ(), this.locUses.get(loc));
+            c.set(this.username + "." + loc.getWorld().getName() + "," + loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ(), this.getUsedLocation(loc));
         }
         try {
             c.save(f);
