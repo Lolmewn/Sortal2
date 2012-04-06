@@ -41,6 +41,10 @@ public class UserInfo {
     }
     
     public void addtoUsedWarp(String warp, int add){
+        if(!this.hasUsedWarp(warp)){
+            this.warpUses.put(warp, 1);
+            return;
+        }
         this.warpUses.put(warp, this.warpUses.get(warp)+add);
     }
     
@@ -56,6 +60,10 @@ public class UserInfo {
     }
     
     public void addtoUsedLocation(Location loc, int add){
+        if(!this.hasUsedLocation(loc)){
+            this.locUses.put(loc, 1);
+            return;
+        }
         this.locUses.put(loc, this.locUses.get(loc)+add);
     }
     
