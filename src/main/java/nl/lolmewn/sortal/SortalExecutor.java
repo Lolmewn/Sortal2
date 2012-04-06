@@ -357,8 +357,8 @@ public class SortalExecutor implements CommandExecutor {
                 }
             }
             if(args[1].equalsIgnoreCase("warp")){
-                if(args.length == 3 || args.length == 4){
-                    sender.sendMessage("Correct usage: /sortal " + args[0] + " warp " + (args.length == 3? "<warp>" : args[2]) + " <amount>");
+                if(args.length == 3){
+                    sender.sendMessage("Correct usage: /sortal " + args[0] + " warp " +  args[2] + " <amount>");
                     return true;
                 }
                 String warp = args[2];
