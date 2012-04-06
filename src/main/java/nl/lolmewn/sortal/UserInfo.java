@@ -78,12 +78,12 @@ public class UserInfo {
                 boolean found = false;
                 while(set.next()){
                    //is already in the table
-                    m.executeStatement("UPDATE " + table + " SET used=" + this.warpUses.get(warp) + " WHERE warp='" + warp + "' AND player='" + this.username + "'");
+                    m.executeStatement("UPDATE " + table + " SET used=" + this.getUsedWarp(warp) + " WHERE warp='" + warp + "' AND player='" + this.username + "'");
                     found = true;
                     break;
                 }
                 if(!found){
-                    m.executeStatement("INSERT INTO " + table + "(player, warp) VALUES ('" + this.username + "', '" + warp + "')");  
+                    m.executeStatement("INSERT INTO " + table + "(player, warp, used) VALUES ('" + this.username + "', '" + warp + "', " + this.getUsedWarp(warp) + ")");  
                 }                
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, null, ex);
@@ -112,12 +112,13 @@ public class UserInfo {
                     break;
                 }
                 if(!found){
-                    m.executeStatement("INSERT INTO " + table + "(player, x, y, z, world) VALUES ('" + 
+                    m.executeStatement("INSERT INTO " + table + "(player, x, y, z, world, used) VALUES ('" + 
                             this.username + "', " + 
                             loc.getBlockX() + ", " + 
                             loc.getBlockY() + ", " + 
                             loc.getBlockZ() + ", '" + 
-                            loc.getWorld().getName() + "')");  
+                            loc.getWorld().getName() + "',"
+                            + this.getUsedLocation(loc) + ")");  
                 }                
             } catch (SQLException ex) {
                 Bukkit.getLogger().log(Level.SEVERE, null, ex);
