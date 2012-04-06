@@ -273,6 +273,15 @@ public class EventListener implements Listener {
         }
         if (this.getPlugin().setuses.containsKey(player.getName())) {
             //TODO set the uses
+            SignInfo info;
+            if(this.getPlugin().getWarpManager().hasSignInfo(s.getLocation())){
+                info = this.getPlugin().getWarpManager().getSign(s.getLocation());
+            }else{
+                info = this.getPlugin().getWarpManager().addSign(s.getLocation());
+            }
+            info.setUses(this.getPlugin().setuses.remove(player.getName()));
+            player.sendMessage("Uses set to " + info.getUses() + " for this sign!");
+            return true;
         }
         return false;
     }
