@@ -42,7 +42,7 @@ public class UserInfo {
     
     public void addtoUsedWarp(String warp, int add){
         if(!this.hasUsedWarp(warp)){
-            this.warpUses.put(warp, 1);
+            this.warpUses.put(warp, add);
             return;
         }
         this.warpUses.put(warp, this.warpUses.get(warp)+add);

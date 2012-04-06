@@ -284,7 +284,7 @@ public class WarpManager {
         if (this.hasUserInfo(name)) {
             return this.users.get(name);
         }
-        return new UserInfo(name);
+        return this.addUserInfo(name);
     }
 
     protected SignInfo getSign(Location loc) {

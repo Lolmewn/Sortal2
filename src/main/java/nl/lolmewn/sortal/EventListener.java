@@ -375,7 +375,7 @@ public class EventListener implements Listener {
                     //Not used as many times as allowed
                     f.addtoUsedWarp(w.getName(), 1);
                     if (this.getPlugin().getSettings().isDebug()) {
-                        this.getPlugin().getLogger().info("[Debug] Uses end code 9");
+                        this.getPlugin().getLogger().info("[Debug] Uses end code 9,"+w.getUses() + "," + f.getUsedWarp(w.getName()));
                     }
                     return true;
                 }
