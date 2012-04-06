@@ -30,7 +30,7 @@ public class Main extends JavaPlugin{
     protected HashMap<String, Integer> setcost = new HashMap<String, Integer>();
     protected HashMap<String, String> register = new HashMap<String, String>();
     protected HashSet<String> unregister = new HashSet<String>();
-    protected HashMap<String, Integer> setuses = new HashMap<String, Integer>();
+    protected HashMap<String, String> setuses = new HashMap<String, String>();
     
     private boolean willUpdate;
     private double newVersion;

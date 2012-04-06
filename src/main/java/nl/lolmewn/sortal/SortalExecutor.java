@@ -1,5 +1,6 @@
 package nl.lolmewn.sortal;
 
+import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -342,13 +343,45 @@ public class SortalExecutor implements CommandExecutor {
                 return true;
             }
             if(args.length == 1){
-                sender.sendMessage("Correct usage: /sortal " + args[0] + " <amount> OR /sortal " + args[0] + " warp <warp> <amount>");
+                sender.sendMessage(ChatColor.RED + "ERR: Syntax. Correct usages:");
+                sender.sendMessage("/sortal " + args[0] + " <amount> [player|total]");
+                sender.sendMessage("/sortal " + args[0] + " warp <warp> <amount> [player|total]");
                 return true;
             }
             if(args.length == 2){
+                if(args[1].equalsIgnoreCase("warp")){
+                    sender.sendMessage("Correct usage: /sortal " + args[0] + " warp <warp> <amount> [player|total]");
+                    return true;
+                }
                 try{
                     int uses = Integer.parseInt(args[1]);
-                    this.getPlugin().setuses.put(sender.getName(), uses);
+                    this.getPlugin().setuses.put(sender.getName(), "player,"+uses);
+                    sender.sendMessage("Now punch the sign you wish to be usable " + uses + " times!");
+                    return true;
+                }catch(NumberFormatException e){
+                    sender.sendMessage("ERR: Int expected, got string!");
+                    return true;
+                }
+            }
+            if(args.length == 3){
+                if(args[1].equalsIgnoreCase("warp")){
+                    sender.sendMessage("Correct usage: /sortal " + args[0] + " warp " + args[2] + " <amount> [player|total]");
+                    return true;
+                }
+                String type = args[2];
+                if(type.startsWith("pl")){
+                    type = "player";
+                }
+                if(type.startsWith("to")){
+                    type = "total";
+                }
+                if(!type.equals("player") && !type.equals("total")){
+                    sender.sendMessage("Correct usage: /sortal " + args[0] + " " + args[1] + " [player|total]");
+                    return true;
+                }
+                try{
+                    int uses = Integer.parseInt(args[1]);
+                    this.getPlugin().setuses.put(sender.getName(), type + "," + uses);
                     sender.sendMessage("Now punch the sign you wish to be usable " + uses + " times!");
                     return true;
                 }catch(NumberFormatException e){
@@ -358,7 +391,18 @@ public class SortalExecutor implements CommandExecutor {
             }
             if(args[1].equalsIgnoreCase("warp")){
                 if(args.length == 3){
-                    sender.sendMessage("Correct usage: /sortal " + args[0] + " warp " +  args[2] + " <amount>");
+                    sender.sendMessage("Correct usage: /sortal " + args[0] + " warp " +  args[2] + " <amount> [player|total]");
+                    return true;
+                }
+                String type = args.length == 5 ? args[4] : "player";
+                if(type.startsWith("pl")){
+                    type = "player";
+                }
+                if(type.startsWith("to")){
+                    type = "total";
+                }
+                if(!type.equals("player") && !type.equals("total")){
+                    sender.sendMessage("Correct usage: /sortal " + args[0] + " warp " + args[2] + " " + args[3] + " [player|total]");
                     return true;
                 }
                 String warp = args[2];
@@ -370,6 +414,11 @@ public class SortalExecutor implements CommandExecutor {
                 try{
                     int uses = Integer.parseInt(args[3]);
                     w.setUses(uses);
+                    if(type.startsWith("total")){
+                        w.setUsedTotalBased(true);
+                    }else{
+                        w.setUsedTotalBased(false);
+                    }
                     sender.sendMessage(this.getLocalisation().getMaxUsesSet(args[3]));
                     return true;
                 }catch(NumberFormatException e){
@@ -377,7 +426,9 @@ public class SortalExecutor implements CommandExecutor {
                     return true;
                 }
             }
-            sender.sendMessage("Correct usage: /sortal " + args[0] + " <amount> OR /sortal " + args[0] + " warp <warp> <amount>");
+            sender.sendMessage(ChatColor.RED + "ERR: Syntax. Correct usages:");
+            sender.sendMessage("/sortal " + args[0] + " <amount> [player|total]");
+            sender.sendMessage("/sortal " + args[0] + " warp <warp> <amount> [player|total]");
             return true;
         }
         sender.sendMessage("Unknown syntax, /sortal help for commands");

@@ -279,8 +279,11 @@ public class EventListener implements Listener {
             }else{
                 info = this.getPlugin().getWarpManager().addSign(s.getLocation());
             }
-            info.setUses(this.getPlugin().setuses.remove(player.getName()));
-            player.sendMessage("Uses set to " + info.getUses() + " for this sign!");
+            String uses = this.getPlugin().setuses.remove(player.getName());
+            String[] split = uses.split(",");
+            info.setUses(Integer.parseInt(split[1]));
+            info.setUsedTotalBased(split[0].equals("total") ? true : false);
+            player.sendMessage("Uses set to " + info.getUses() + " for this sign, " + (info.isUsedTotalBased() ? "total based" : "player based") + "!");
             return true;
         }
         return false;
