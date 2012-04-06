@@ -159,23 +159,6 @@ public class SortalExecutor implements CommandExecutor {
             sender.sendMessage("Now punch the sign you wish to be unregistered!");
             return true;
         }
-        if(args[0].equalsIgnoreCase("setuses") || args[0].equalsIgnoreCase("uses")){
-            if(!(sender instanceof Player)){
-                sender.sendMessage(this.getLocalisation().getNoPlayer());
-                return true;
-            }
-            if(!sender.hasPermission("sortal.setuses")){
-                sender.sendMessage(this.getLocalisation().getNoPerms());
-                return true;
-            }
-            if(args.length == 1){
-                if(this.getPlugin().setuses.containsKey(sender.getName())){
-                    this.getPlugin().setuses.remove(sender.getName());
-                    sender.sendMessage("No longer setting uses!");
-                    return true;
-                }
-            }
-        }
         if(args[0].equalsIgnoreCase("register")){
             if(!(sender instanceof Player)){
                 sender.sendMessage(this.getLocalisation().getNoPlayer());
