@@ -130,12 +130,14 @@ public class SignInfo {
                         + "used=" + this.getUsed() + ", "
                         + "usedTotalBased=" + this.isUsedTotalBased()
                         + " WHERE x=" + x + " AND y=" + y + " AND z=" + z + " AND world='" + this.world + "'");
+                return;
             }
             //It's not in the table at all
-            m.executeQuery("INSERT INTO " + table + "(world, x, y, z, warp, price) VALUES ("
+            m.executeQuery("INSERT INTO " + table + "(world, x, y, z, warp, price, uses, used, usedTotalBased) VALUES ("
                     + "'" + this.world + "', "
                     + this.x + ", " + this.y + ", " + this.z
-                    + ", '" + this.warp + "', " + this.getPrice() + ")");
+                    + ", '" + this.warp + "', " + this.getPrice() + ", " 
+                    + this.uses + ", " + this.used + ", " + this.usedTotalBased + ")");
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, null, ex);
         }
