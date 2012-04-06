@@ -360,9 +360,9 @@ public class WarpManager {
                 this.getPlugin().getLogger().log(Level.INFO, String.format("[Debug] Saving user %s", user));
             }
             if (this.getPlugin().getSettings().useMySQL()) {
-                this.signs.get(user).save(this.getPlugin().getMySQL(), this.getPlugin().getUserTable());
+                this.users.get(user).save(this.getPlugin().getMySQL(), this.getPlugin().getUserTable());
             } else {
-                this.signs.get(user).save(this.userFile);
+                this.users.get(user).save(this.userFile);
             }
         }
     }
