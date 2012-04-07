@@ -146,7 +146,7 @@ public class Settings {
         this.version = c.getDouble("version");
         this.debug = c.getBoolean("debug", false);
         if(!c.contains("perWarpPerm")){
-            this.addSettingToConfig(settingsFile, "perWarpConfig", false);
+            this.addSettingToConfig(settingsFile, "perWarpPerm", false);
         }
         this.perWarpPerm = c.getBoolean("perWarpPerm", false);
         
