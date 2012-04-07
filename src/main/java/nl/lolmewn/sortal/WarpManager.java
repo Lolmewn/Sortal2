@@ -207,12 +207,7 @@ public class WarpManager {
             try {
                 while (set.next()) {
                     String player = set.getString("player");
-                    UserInfo info;
-                    if (this.hasUserInfo(player)) {
-                        info = this.getUserInfo(player);
-                    } else {
-                        info = this.addUserInfo(player);
-                    }
+                    UserInfo info = this.getUserInfo(player);
                     if (set.getString("warp") == null) {
                         //location
                         info.addtoUsedLocation(new Location(this.getPlugin().getServer().getWorld(set.getString("world")),
@@ -228,7 +223,7 @@ public class WarpManager {
         }
         YamlConfiguration c = YamlConfiguration.loadConfiguration(this.userFile);
         for (String player : c.getConfigurationSection("").getKeys(false)) {
-            UserInfo info = this.addUserInfo(player);
+            UserInfo info = this.getUserInfo(player);
             for (String key : c.getConfigurationSection(player).getKeys(false)) {
                 if (!key.contains(",")) {
                     //warp
