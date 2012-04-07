@@ -3,8 +3,6 @@ package nl.lolmewn.sortal;
 import java.io.*;
 import java.util.HashMap;
 import java.util.logging.Level;
-import java.util.logging.Logger;
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 /**
@@ -26,7 +24,7 @@ public class Settings {
     
     private boolean perWarpPerm;
     
-    private File settingsFile = new File("plugins" + File.separator + "Sortal"
+    protected File settingsFile = new File("plugins" + File.separator + "Sortal"
             + File.separator + "settings.yml");
     
     private Localisation localisation;
@@ -251,7 +249,7 @@ public class Settings {
         this.getPlugin().getLogger().info("Saved old settings in new settings file!");
     }
     
-    private void addSettingToConfig(File f, String path, Object value){
+    protected void addSettingToConfig(File f, String path, Object value){
         YamlConfiguration c = YamlConfiguration.loadConfiguration(f);
         c.set(path, value);
         try {

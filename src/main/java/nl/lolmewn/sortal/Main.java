@@ -35,7 +35,7 @@ public class Main extends JavaPlugin{
     private boolean willUpdate;
     private double newVersion;
     
-    private File settingsFile = new File("plugins" + File.separator + "Sortal"
+    protected File settingsFile = new File("plugins" + File.separator + "Sortal"
             + File.separator + "settings.yml");
     
     @Override

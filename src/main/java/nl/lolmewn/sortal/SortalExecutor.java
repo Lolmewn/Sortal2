@@ -277,10 +277,12 @@ public class SortalExecutor implements CommandExecutor {
                     return true;
                 }
                 this.getPlugin().saveData();
+                this.getPlugin().getSettings().addSettingToConfig(this.getPlugin().settingsFile, "useMySQL", true);
                 sender.sendMessage("All data should have been saved to the MySQL table!");
                 return true;
             }
             this.getPlugin().saveData();
+            this.getPlugin().getSettings().addSettingToConfig(this.getPlugin().settingsFile, "useMySQL", false);
             sender.sendMessage("All data should have been saved to flatfiles!");
             return true;
         }
