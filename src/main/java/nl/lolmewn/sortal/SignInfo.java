@@ -152,7 +152,7 @@ public class SignInfo {
             }
         }
         YamlConfiguration c = YamlConfiguration.loadConfiguration(f);
-        c.set(this.getLocationToString(), this.warp + "," + this.getPrice());
+        c.set(this.getLocationToString(), this.warp + "," + this.getPrice() + "," + this.uses + "," + this.used + "," + this.usedTotalBased);
         try {
             c.save(f);
         } catch (IOException ex) {
