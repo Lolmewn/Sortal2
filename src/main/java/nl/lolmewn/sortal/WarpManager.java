@@ -170,27 +170,21 @@ public class WarpManager {
                     Integer.parseInt(splot[1]),
                     Integer.parseInt(splot[2]),
                     Integer.parseInt(splot[3]));
-            String extra = c.getString(key);
-            if (extra.contains(",")) {
-                String[] split = extra.split(",");
-                String warp = split[0];
-                int price = Integer.parseInt(split[1]);
-                this.addSign(loc);
-                this.getSign(loc).setWarp(warp);
-                if (price != -1) {
-                    this.getSign(loc).setPrice(price);
-                }
-                if (split.length > 4) {
-                    int uses = Integer.parseInt(split[2]);
-                    if (uses != -1) {
-                        this.getSign(loc).setUses(uses);
-                        this.getSign(loc).setUsed(Integer.parseInt(split[3]));
-                        this.getSign(loc).setUsedTotalBased(Boolean.getBoolean(split[4]));
-                    }
-                }
-                continue;
+            SignInfo s = this.addSign(loc);
+            if(c.contains(key + ".warp")){
+                s.setWarp(c.getString(key+".warp"));
             }
-            this.addSign(loc).setWarp(extra);
+            if(c.contains(key + ".price")){
+                s.setPrice(c.getInt(key+".price"));
+            }
+            if(c.contains(key+".uses")){
+                s.setUses(c.getInt(key+".uses"));
+                s.setUsed(c.getInt(key+".used"));
+                s.setUsedTotalBased(c.getBoolean(key+".usedTotalBased"));
+            }
+            if(c.contains(key + ".owner")){
+                s.setOwner(c.getString(key+".owner"));
+            }
         }
         this.getPlugin().getLogger().log(Level.INFO, String.format("Signs loaded: %s", this.signs.size()));
     }

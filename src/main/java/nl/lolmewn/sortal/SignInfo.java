@@ -14,7 +14,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
  * @author Sybren
  */
 public class SignInfo {
-    
+
     private String warp;
     private String world;
     private int x, y, z;
@@ -24,15 +24,15 @@ public class SignInfo {
     private int used;
     private boolean usedTotalBased;
     private String owner;
-    
-    public SignInfo(String world, int x, int y, int z){
+
+    public SignInfo(String world, int x, int y, int z) {
         this.world = world;
         this.x = x;
         this.y = y;
         this.z = z;
     }
-    
-    public SignInfo(String world, int x, int y, int z, String warp){
+
+    public SignInfo(String world, int x, int y, int z, String warp) {
         this(world, x, y, z);
         this.warp = warp;
     }
@@ -44,28 +44,28 @@ public class SignInfo {
     public void setUsedTotalBased(boolean usedTotalBased) {
         this.usedTotalBased = usedTotalBased;
     }
-    
-    public boolean hasPrice(){
+
+    public boolean hasPrice() {
         return this.hasPrice;
     }
-    
-    public void setWarp(String warp){
+
+    public void setWarp(String warp) {
         this.warp = warp;
     }
-    
-    public String getWarp(){
+
+    public String getWarp() {
         return this.warp;
     }
-    
-    public boolean hasWarp(){
+
+    public boolean hasWarp() {
         return this.warp == null ? false : true;
     }
 
     public String getOwner() {
         return owner;
     }
-    
-    public boolean hasOwner(){
+
+    public boolean hasOwner() {
         return this.owner == null ? false : true;
     }
 
@@ -88,9 +88,9 @@ public class SignInfo {
     public void setUsed(int used) {
         this.used = used;
     }
-    
-    public boolean isThisSign(String world, int x, int y, int z){
-        if(this.x == x && this.y == y && this.z == z && world.equals(this.world)){
+
+    public boolean isThisSign(String world, int x, int y, int z) {
+        if (this.x == x && this.y == y && this.z == z && world.equals(this.world)) {
             return true;
         }
         return false;
@@ -104,25 +104,25 @@ public class SignInfo {
         this.price = price;
         this.hasPrice = true;
     }
-    
-    public String getLocationToString(){
+
+    public String getLocationToString() {
         return this.world + "," + this.x + "," + this.y + "," + this.z;
     }
-    
-    public Location getLocation(){
+
+    public Location getLocation() {
         return new Location(Bukkit.getServer().getWorld(world), x, y, z);
     }
-    
-    public void save(MySQL m, String table){
-        ResultSet set = m.executeQuery("SELECT * FROM " + table + 
-                " WHERE x=" + x + " AND y=" + y + " AND z=" + z + " AND world='" + this.world + "'");
-        if(set == null){
+
+    public void save(MySQL m, String table) {
+        ResultSet set = m.executeQuery("SELECT * FROM " + table
+                + " WHERE x=" + x + " AND y=" + y + " AND z=" + z + " AND world='" + this.world + "'");
+        if (set == null) {
             //dafuq? 
             System.out.println("[Sortal] ERR: ResultSet returned null");
             return;
         }
         try {
-            while(set.next()){
+            while (set.next()) {
                 m.executeStatement("UPDATE " + table + " SET "
                         + "warp='" + this.warp + "', "
                         + "price=" + this.getPrice() + ", "
@@ -136,15 +136,15 @@ public class SignInfo {
             m.executeQuery("INSERT INTO " + table + "(world, x, y, z, warp, price, uses, used, usedTotalBased) VALUES ("
                     + "'" + this.world + "', "
                     + this.x + ", " + this.y + ", " + this.z
-                    + ", '" + this.warp + "', " + this.getPrice() + ", " 
+                    + ", '" + this.warp + "', " + this.getPrice() + ", "
                     + this.uses + ", " + this.used + ", " + this.usedTotalBased + ")");
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, null, ex);
         }
     }
-    
-    public void save(File f){
-        if(!f.exists()){
+
+    public void save(File f) {
+        if (!f.exists()) {
             try {
                 f.createNewFile();
             } catch (IOException ex) {
@@ -152,7 +152,30 @@ public class SignInfo {
             }
         }
         YamlConfiguration c = YamlConfiguration.loadConfiguration(f);
-        c.set(this.getLocationToString(), this.warp + "," + this.getPrice() + "," + this.uses + "," + this.used + "," + this.usedTotalBased);
+        if (this.hasWarp()) {
+            c.set(this.getLocationToString() + ".warp", this.warp);
+        } else {
+            c.set(this.getLocationToString(), null);
+        }
+        if (this.hasPrice) {
+            c.set(this.getLocationToString() + ".price", this.getPrice());
+        } else {
+            c.set(this.getLocationToString() + ".price", null);
+        }
+        if (this.getUses() != -1) {
+            c.set(this.getLocationToString() + ".uses", this.uses);
+            c.set(this.getLocationToString() + ".used", this.used);
+            c.set(this.getLocationToString() + ".usedTotalBased", this.usedTotalBased);
+        } else {
+            c.set(this.getLocationToString() + ".uses", null);
+            c.set(this.getLocationToString() + ".used", null);
+            c.set(this.getLocationToString() + ".usedTotalBased", null);
+        }
+        if (this.hasOwner()) {
+            c.set(this.getLocationToString() + ".owner", this.getOwner());
+        } else {
+            c.set(this.getLocationToString() + ".owner", null);
+        }
         try {
             c.save(f);
         } catch (IOException ex) {
@@ -173,5 +196,4 @@ public class SignInfo {
             Bukkit.getLogger().log(Level.SEVERE, null, ex);
         }
     }
-    
 }
