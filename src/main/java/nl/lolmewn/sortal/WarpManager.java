@@ -229,7 +229,7 @@ public class WarpManager {
                         Integer.parseInt(splot[1]),
                         Integer.parseInt(splot[2]),
                         Integer.parseInt(splot[3]));
-                info.addtoUsedLocation(loc, c.getInt(player + "." + key));
+                info.addtoUsedLocation(loc, c.getInt(player + "." + key, 0));
             }
         }
         this.getPlugin().getLogger().log(Level.INFO, String.format("Users loaded: %s", this.users.size()));
