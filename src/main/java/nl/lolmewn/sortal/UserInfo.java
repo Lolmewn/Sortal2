@@ -49,22 +49,25 @@ public class UserInfo {
     }
     
     public boolean hasUsedLocation(Location loc){
-        return this.locUses.containsKey(loc);
+        Location l = new Location(loc.getWorld(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+        return this.locUses.containsKey(l);
     }
     
     public int getUsedLocation(Location loc){
-        if(!this.locUses.containsKey(loc)){
+        if(!this.hasUsedLocation(loc)){
             return 0;
         }
-        return this.locUses.get(loc);
+        Location l = new Location(loc.getWorld(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+        return this.locUses.get(l);
     }
     
     public void addtoUsedLocation(Location loc, int add){
-        if(!this.hasUsedLocation(loc)){
-            this.locUses.put(loc, 1);
+        Location l = new Location(loc.getWorld(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
+        if(!this.hasUsedLocation(l)){
+            this.locUses.put(l, add);
             return;
         }
-        this.locUses.put(loc, this.locUses.get(loc)+add);
+        this.locUses.put(l, this.locUses.get(l)+add);
     }
     
     public void save(MySQL m, String table){
