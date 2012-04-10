@@ -1,6 +1,30 @@
+/*
+ * MySQL.java
+ * 
+ * Copyright (c) 2012 Lolmewn <info@lolmewn.nl>. 
+ * 
+ * Sortal is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * Sortal is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with Sortal.  If not, see <http ://www.gnu.org/licenses/>.
+ */
+
 package nl.lolmewn.sortal;
 
 import java.sql.*;
+
+/**
+ *
+ * @author Lolmewn <info@lolmewn.nl>
+ */
 
 public class MySQL {
 
