@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with Sortal.  If not, see <http ://www.gnu.org/licenses/>.
  */
-
 package nl.lolmewn.sortal;
 
 import java.util.logging.Level;
@@ -38,7 +37,6 @@ import org.bukkit.event.player.PlayerTeleportEvent.TeleportCause;
  *
  * @author Lolmewn <info@lolmewn.nl>
  */
-
 public class EventListener implements Listener {
 
     private Main plugin;
@@ -108,8 +106,17 @@ public class EventListener implements Listener {
                     }
                     SignInfo sign = this.getPlugin().getWarpManager().getSign(s.getLocation());
                     if (sign.hasWarp()) {
+                        if (this.getPlugin().getSettings().isDebug()) {
+                            this.getPlugin().getLogger().info(String.format("[Debug] Sign clicked has warp: %s", sign.getWarp()));
+                        }
                         if (this.getPlugin().getSettings().isPerWarpPerm()) {
+                            if (this.getPlugin().getSettings().isDebug()) {
+                                this.getPlugin().getLogger().info(String.format("[Debug] WarpPerPerm = true"));
+                            }
                             if (!p.hasPermission("sortal.warp." + sign.getWarp())) {
+                                if (this.getPlugin().getSettings().isDebug()) {
+                                    this.getPlugin().getLogger().info(String.format("[Debug] No perms! Needed: sortal.warp.%s", sign.getWarp()));
+                                }
                                 p.sendMessage(this.getLocalisation().getNoPerms());
                                 event.setCancelled(true);
                                 return;
@@ -117,6 +124,9 @@ public class EventListener implements Listener {
                         }
                         Warp w = this.getPlugin().getWarpManager().getWarp(sign.getWarp());
                         if (!canPay(w, sign, p)) {
+                            if (this.getPlugin().getSettings().isDebug()) {
+                                this.getPlugin().getLogger().info(String.format("[Debug] Can't pay: %s", getPrice(w, sign)));
+                            }
                             p.sendMessage(this.getLocalisation().getNoMoney(Integer.toString(getPrice(w, sign))));
                             event.setCancelled(true);
                             return;
@@ -126,6 +136,9 @@ public class EventListener implements Listener {
                             event.setCancelled(true);
                             return;
                         }
+                        if (this.getPlugin().getSettings().isDebug()) {
+                            this.getPlugin().getLogger().info(String.format("[Debug] Player is paying.."));
+                        }
                         this.getPlugin().pay(p, this.getPrice(w, sign));
                         Location loc = w.getLocation();
                         if (loc.getYaw() == 0 && loc.getPitch() == 0) {
@@ -133,9 +146,15 @@ public class EventListener implements Listener {
                             loc.setPitch(p.getLocation().getPitch());
                         }
                         p.teleport(w.getLocation(), TeleportCause.PLUGIN);
+                        if (this.getPlugin().getSettings().isDebug()) {
+                            this.getPlugin().getLogger().info(String.format("[Debug] Teleported to: %s", w.getName()));
+                        }
                         p.sendMessage(this.getLocalisation().getPlayerTeleported(w.getName()));
                         event.setCancelled(true); //Cancel, don't place block.
                         return;
+                    }
+                    if (this.getPlugin().getSettings().isDebug()) {
+                        this.getPlugin().getLogger().info(String.format("[Debug] Error in sign!"));
                     }
                     p.sendMessage(this.getLocalisation().getErrorInSign()); //Sign does have something but no warp -> weird.
                     event.setCancelled(true);

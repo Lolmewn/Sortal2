@@ -140,7 +140,19 @@ public class SortalExecutor implements CommandExecutor {
                 if(count < (page-1)*8 || count >= page*8){
                     continue;
                 }
-                sender.sendMessage(warp.getName() + ": " + warp.getLocationToString());
+                StringBuilder sb = new StringBuilder();
+                sb.append(ChatColor.RED).append(warp.getName()).append(": ").append(ChatColor.WHITE).append("X: ");
+                String x = Double.toString(warp.getLocation().getX());
+                sb.append(ChatColor.RED).append(x.substring(0, x.indexOf(".") + 2)).append(ChatColor.WHITE).append(" Y: ");
+                String y = Double.toString(warp.getLocation().getY());
+                sb.append(ChatColor.RED).append(y.substring(0, y.indexOf(".") + 2)).append(ChatColor.WHITE).append(" Z: ");
+                String z = Double.toString(warp.getLocation().getZ());
+                sb.append(ChatColor.RED).append(z.substring(0, z.indexOf(".") + 2)).append(ChatColor.WHITE).append(" Y: ");
+                String f = Float.toString(warp.getLocation().getYaw());
+                sb.append(ChatColor.AQUA).append(f.substring(0, f.indexOf(".") + 2)).append(ChatColor.WHITE).append(" P: ");
+                String p = Double.toString(warp.getLocation().getPitch());
+                sb.append(ChatColor.AQUA).append(p.substring(0, p.indexOf(".") + 2));
+                sender.sendMessage(sb.toString());
             }
             if(count == -1){
                 //no warps found!
