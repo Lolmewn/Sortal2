@@ -132,7 +132,7 @@ public class SortalExecutor implements CommandExecutor {
                     return true;
                 }
             }
-            sender.sendMessage("===Sortal Warps===");
+            sender.sendMessage(ChatColor.GREEN + "===Sortal Warps===");
             sender.sendMessage("Page " + page + "/" + (this.getPlugin().getWarpManager().getWarps().size() / 8 + 1));
             int count = -1;
             for(Warp warp : this.getPlugin().getWarpManager().getWarps()){
@@ -141,7 +141,9 @@ public class SortalExecutor implements CommandExecutor {
                     continue;
                 }
                 StringBuilder sb = new StringBuilder();
-                sb.append(ChatColor.GREEN).append(warp.getName()).append(": ").append(ChatColor.WHITE).append("X: ");
+                sb.append(ChatColor.GREEN).append(warp.getName()).append(": ").append(ChatColor.WHITE).append("W: ");
+                String w = warp.getLocation().getWorld().getName();
+                sb.append(ChatColor.LIGHT_PURPLE).append(w).append(ChatColor.WHITE).append(" X: ");
                 String x = Double.toString(warp.getLocation().getX());
                 sb.append(ChatColor.RED).append(x.substring(0, x.indexOf(".") + 3)).append(ChatColor.WHITE).append(" Y: ");
                 String y = Double.toString(warp.getLocation().getY());
