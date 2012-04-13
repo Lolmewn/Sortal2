@@ -151,7 +151,7 @@ public class SortalExecutor implements CommandExecutor {
                 String z = Double.toString(warp.getLocation().getZ());
                 sb.append(ChatColor.RED).append(z.substring(0, z.indexOf(".") + 3)).append(ChatColor.WHITE).append(" Y: ");
                 String f = Float.toString(warp.getLocation().getYaw());
-                sb.append(ChatColor.AQUA).append(f.substring(0, f.indexOf(".") + 3)).append(ChatColor.WHITE).append(" P: ");
+                sb.append(ChatColor.AQUA).append(f.substring(0, f.indexOf(".") + 2)).append(ChatColor.WHITE).append(" P: ");
                 String p = Double.toString(warp.getLocation().getPitch());
                 sb.append(ChatColor.AQUA).append(p.substring(0, p.indexOf(".") + 3));
                 sender.sendMessage(sb.toString());
