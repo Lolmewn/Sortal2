@@ -143,15 +143,15 @@ public class SortalExecutor implements CommandExecutor {
                 StringBuilder sb = new StringBuilder();
                 sb.append(ChatColor.GREEN).append(warp.getName()).append(": ").append(ChatColor.WHITE).append("X: ");
                 String x = Double.toString(warp.getLocation().getX());
-                sb.append(ChatColor.RED).append(x.substring(0, x.indexOf(".") + 2)).append(ChatColor.WHITE).append(" Y: ");
+                sb.append(ChatColor.RED).append(x.substring(0, x.indexOf(".") + 3)).append(ChatColor.WHITE).append(" Y: ");
                 String y = Double.toString(warp.getLocation().getY());
-                sb.append(ChatColor.RED).append(y.substring(0, y.indexOf(".") + 2)).append(ChatColor.WHITE).append(" Z: ");
+                sb.append(ChatColor.RED).append(y.substring(0, y.indexOf(".") + 3)).append(ChatColor.WHITE).append(" Z: ");
                 String z = Double.toString(warp.getLocation().getZ());
-                sb.append(ChatColor.RED).append(z.substring(0, z.indexOf(".") + 2)).append(ChatColor.WHITE).append(" Y: ");
+                sb.append(ChatColor.RED).append(z.substring(0, z.indexOf(".") + 3)).append(ChatColor.WHITE).append(" Y: ");
                 String f = Float.toString(warp.getLocation().getYaw());
-                sb.append(ChatColor.AQUA).append(f.substring(0, f.indexOf(".") + 2)).append(ChatColor.WHITE).append(" P: ");
+                sb.append(ChatColor.AQUA).append(f.substring(0, f.indexOf(".") + 3)).append(ChatColor.WHITE).append(" P: ");
                 String p = Double.toString(warp.getLocation().getPitch());
-                sb.append(ChatColor.AQUA).append(p.substring(0, p.indexOf(".") + 2));
+                sb.append(ChatColor.AQUA).append(p.substring(0, p.indexOf(".") + 3));
                 sender.sendMessage(sb.toString());
             }
             if(count == -1){
