@@ -23,6 +23,8 @@ import java.io.File;
 import java.io.IOException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -41,9 +43,11 @@ public class SignInfo {
     private int price = -1;
     private boolean hasPrice = false;
     private int uses = -1;
-    private int used;
-    private boolean usedTotalBased;
-    private String owner;
+    private int used = 0;
+    private boolean usedTotalBased = false;
+    private String owner = null;
+    private boolean isPrivate = false;
+    private HashSet<String> privateUsers = new HashSet<String>();
 
     public SignInfo(String world, int x, int y, int z) {
         this.world = world;
@@ -55,6 +59,41 @@ public class SignInfo {
     public SignInfo(String world, int x, int y, int z, String warp) {
         this(world, x, y, z);
         this.warp = warp;
+    }
+    
+    public void addPrivateUser(String name){
+        this.privateUsers.add(name);
+    }
+    
+    public boolean isPrivateUser(String name){
+        return this.privateUsers.contains(name);
+    }
+    
+    private String getPrivateUsers(){
+        StringBuilder b = new StringBuilder();
+        if(this.privateUsers.isEmpty()){
+            return "";
+        }
+        for(String s : this.privateUsers){
+            b.append(s).append(",");
+        }
+        String re = b.toString();
+        re.substring(0, re.lastIndexOf(","));
+        return re;
+    }
+    
+    public void removePrivateUser(String name){
+        if(this.privateUsers.contains(name)){
+            this.privateUsers.remove(name);
+        }
+    }
+
+    public boolean isPrivate() {
+        return isPrivate;
+    }
+
+    public void setIsPrivate(boolean isPrivate) {
+        this.isPrivate = isPrivate;
     }
 
     public boolean isUsedTotalBased() {
@@ -74,11 +113,11 @@ public class SignInfo {
     }
 
     public String getWarp() {
-        return this.warp;
+        return this.warp == null ? null : this.warp;
     }
 
     public boolean hasWarp() {
-        return this.warp == null ? false : true;
+        return this.warp == null || this.warp.equals("null") ? false : true;
     }
 
     public String getOwner() {
@@ -148,16 +187,36 @@ public class SignInfo {
                         + "price=" + this.getPrice() + ", "
                         + "uses=" + this.getUses() + ", "
                         + "used=" + this.getUsed() + ", "
-                        + "usedTotalBased=" + this.isUsedTotalBased()
+                        + "usedTotalBased=" + this.isUsedTotalBased() + ", "
+                        + "isPrivate=" + this.isPrivate() + ", "
+                        + "privateUsers='" + this.getPrivateUsers() + "'"
                         + " WHERE x=" + x + " AND y=" + y + " AND z=" + z + " AND world='" + this.world + "'");
                 return;
             }
             //It's not in the table at all
-            m.executeQuery("INSERT INTO " + table + "(world, x, y, z, warp, price, uses, used, usedTotalBased) VALUES ("
-                    + "'" + this.world + "', "
-                    + this.x + ", " + this.y + ", " + this.z
-                    + ", '" + this.warp + "', " + this.getPrice() + ", "
-                    + this.uses + ", " + this.used + ", " + this.usedTotalBased + ")");
+            m.executeQuery("INSERT INTO " + table + "("
+                    + "world, "
+                    + "x, "
+                    + "y, "
+                    + "z, "
+                    + "warp, "
+                    + "price, "
+                    + "uses, "
+                    + "used, "
+                    + "usedTotalBased, "
+                    + "isPrivate, "
+                    + "privateUsers) VALUES ('" 
+                    + this.world + "', "
+                    + this.x + ", " 
+                    + this.y + ", " 
+                    + this.z + ", '" 
+                    + this.getWarp() + "', " 
+                    + this.getPrice() + ", "
+                    + this.uses + ", " 
+                    + this.used + ", " 
+                    + this.usedTotalBased + ", " 
+                    + this.isPrivate() + ", '"
+                    + this.getPrivateUsers() + "')");
         } catch (SQLException ex) {
             Bukkit.getLogger().log(Level.SEVERE, null, ex);
         }
@@ -177,7 +236,7 @@ public class SignInfo {
         } else {
             c.set(this.getLocationToString(), null);
         }
-        if (this.hasPrice) {
+        if (this.hasPrice()) {
             c.set(this.getLocationToString() + ".price", this.getPrice());
         } else {
             c.set(this.getLocationToString() + ".price", null);
@@ -195,6 +254,12 @@ public class SignInfo {
             c.set(this.getLocationToString() + ".owner", this.getOwner());
         } else {
             c.set(this.getLocationToString() + ".owner", null);
+        }
+        if(this.isPrivate()){
+            c.set(this.getLocationToString() + ".private", true);
+            c.set(this.getLocationToString() + ".privateUsers", Arrays.asList(this.privateUsers.toArray()));
+        }else{
+            c.set(this.getLocationToString() + ".private", false);
         }
         try {
             c.save(f);

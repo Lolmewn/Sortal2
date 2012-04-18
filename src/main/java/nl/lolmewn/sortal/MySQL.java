@@ -149,8 +149,8 @@ public class MySQL {
     }
 
     public void close() {
-        if (isFault()) {
-            System.out.println("[Sortal] Can't close connection, something wrong with it");
+        if (isFault()) { 
+           System.out.println("[Sortal] Can't close connection, something wrong with it");
             return;
         }
         try {
@@ -172,6 +172,8 @@ public class MySQL {
         this.checkColumn(this.prefix + "signs", "used", "int");
         this.checkColumn(this.prefix + "signs", "owner", "varchar(255)");
         this.checkColumn(this.prefix + "signs", "usedTotalBased", "boolean");
+        this.checkColumn(this.prefix + "signs", "isPrivate", "boolean");
+        this.checkColumn(this.prefix + "signs", "privateUsers", "text");
     }
     
     private void checkColumn(String table, String column, String type){

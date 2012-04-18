@@ -51,6 +51,8 @@ public class Main extends JavaPlugin{
     protected HashMap<String, String> register = new HashMap<String, String>();
     protected HashSet<String> unregister = new HashSet<String>();
     protected HashMap<String, String> setuses = new HashMap<String, String>();
+    protected HashSet<String> setPrivate = new HashSet<String>();
+    protected HashMap<String, HashSet<String>> setPrivateUsers = new HashMap<String, HashSet<String>>();
     
     private boolean willUpdate;
     private double newVersion;

@@ -25,6 +25,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Level;
 import org.bukkit.Location;
@@ -89,7 +90,7 @@ public class WarpManager {
                         w.setPrice(set.getInt("price"));
                         w.setHasPrice(true);
                     }
-                    if (set.getString("owner") != null) {
+                    if (set.getString("owner") != null && !set.getString("owner").equals("")) {
                         w.setOwner(set.getString("owner"));
                     }
                     if (this.getPlugin().getSettings().isDebug()) {
@@ -148,19 +149,22 @@ public class WarpManager {
                             set.getInt("x"),
                             set.getInt("y"),
                             set.getInt("z"));
-                    this.addSign(loc).setWarp(set.getString("warp"));
+                    SignInfo added = this.addSign(loc);
+                    added.setWarp(set.getString("warp"));
                     if (set.getInt("price") != -1) {
-                        SignInfo added = this.getSign(loc);
-                        if (added == null) {
-                            //dafuq?
-                            continue;
-                        }
                         added.setPrice(set.getInt("price"));
                     }
                     if (set.getInt("uses") != -1) {
                         this.getSign(loc).setUses(set.getInt("uses"));
                         this.getSign(loc).setUsedTotalBased(set.getBoolean("usedTotalBased"));
                         this.getSign(loc).setUsed(set.getInt("used"));
+                    }
+                    if(set.getBoolean("isPrivate")){
+                        added.setIsPrivate(true);
+                        String[] userNames = set.getString("privateUsers").split(",");
+                        for(String user : userNames){
+                            added.addPrivateUser(user);
+                        }
                     }
                 }
             } catch (SQLException ex) {
@@ -204,6 +208,13 @@ public class WarpManager {
             }
             if(c.contains(key + ".owner")){
                 s.setOwner(c.getString(key+".owner"));
+            }
+            if(c.getBoolean(key + ".private", false)){
+                s.setIsPrivate(true);
+                Set<String> userNames = c.getConfigurationSection(key + ".privateUsers").getKeys(false);
+                for(String user : userNames){
+                    s.addPrivateUser(user);
+                }
             }
         }
         this.getPlugin().getLogger().log(Level.INFO, String.format("Signs loaded: %s", this.signs.size()));
