@@ -432,7 +432,7 @@ public class WarpManager {
                         }
                         this.getPlugin().getLogger().log(Level.INFO, String.format("Converted warp %s", warp));
                     } catch (ArrayIndexOutOfBoundsException e) {
-                        this.getPlugin().getLogger().info(String.format("Warp %s couldn't be converted : Too little arguments!", warp));
+                        this.getPlugin().debug(String.format("Warp %s couldn't be converted : Too little arguments!", warp));
                     }
                 }
             } catch (IOException ex) {

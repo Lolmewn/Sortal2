@@ -263,4 +263,12 @@ public class Main extends JavaPlugin{
             this.getLogger().log(Level.WARNING, null, e);
         }
     }
+    
+    public void debug(String message){
+        this.getLogger().info(message);
+    }
+    
+    public void debug(String message, Object... args){
+        this.getLogger().log(Level.INFO, String.format(message, args));
+    }
 }

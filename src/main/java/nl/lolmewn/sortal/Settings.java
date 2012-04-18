@@ -175,7 +175,7 @@ public class Settings {
 
     private void extractSettings() {
         try {
-            this.getPlugin().getLogger().info("Trying to create default config...");
+            this.getPlugin().debug("Trying to create default config...");
             try {
                 InputStream in = this.getClass().
                         getClassLoader().getResourceAsStream("settings.yml");
@@ -188,7 +188,7 @@ public class Settings {
                 out.flush();
                 out.close();
                 in.close();
-                this.getPlugin().getLogger().info("Default config created succesfully!");
+                this.getPlugin().debug("Default config created succesfully!");
             } catch (Exception e) {
                 e.printStackTrace();
                 this.getPlugin().getLogger().warning("Error creating settings file! Using default settings!");
@@ -200,7 +200,7 @@ public class Settings {
 
     private void printSettings(YamlConfiguration c) {
         for(String path : c.getConfigurationSection("").getKeys(true)){
-            this.getPlugin().getLogger().info("[Debug] CONFIG: " + path + ":" + c.get(path, null));
+            this.getPlugin().debug("[Debug] CONFIG: " + path + ":" + c.get(path, null));
         }
     }
 
@@ -237,7 +237,7 @@ public class Settings {
         this.getLocalisation().addOld(local);
         
         if(this.settingsFile.delete()){
-            this.getPlugin().getLogger().info("Old Config deleted, values stored..");
+            this.getPlugin().debug("Old Config deleted, values stored..");
             this.extractSettings();
             this.addSettingsToConfig(settingsFile, values);
         }else{
@@ -248,7 +248,7 @@ public class Settings {
                     while(!settingsFile.delete()){
                         //keep trying
                     }
-                    getPlugin().getLogger().info("Old setting file deleted, creating new one..");
+                    getPlugin().debug("Old setting file deleted, creating new one..");
                     extractSettings();
                     addSettingsToConfig(settingsFile, values);
                 }
@@ -266,7 +266,7 @@ public class Settings {
         } catch (IOException ex) {
             this.getPlugin().getLogger().log(Level.SEVERE, null, ex);
         }
-        this.getPlugin().getLogger().info("Saved old settings in new settings file!");
+        this.getPlugin().debug("Saved old settings in new settings file!");
     }
     
     protected void addSettingToConfig(File f, String path, Object value){
