@@ -123,6 +123,11 @@ public class EventListener implements Listener {
                             }
                         }
                         if(sign.isPrivate()){
+                            if(!sign.isPrivateUser(p.getName())){
+                                p.sendMessage(this.getLocalisation().getIsPrivateSign());
+                                event.setCancelled(true);
+                                return;
+                            }
                             //TODO Locatisation for private
                             //TODO check if user is private user
                         }

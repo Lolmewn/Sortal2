@@ -191,6 +191,9 @@ public class Main extends JavaPlugin{
     }
     
     public boolean pay(Player p, int amount){
+        if(amount == 0){
+            return true;
+        }
         if(this.canPay(p, amount)){
             if(!initVault()){
                 return true;
