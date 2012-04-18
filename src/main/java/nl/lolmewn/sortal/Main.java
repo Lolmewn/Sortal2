@@ -265,10 +265,9 @@ public class Main extends JavaPlugin{
     }
     
     public void debug(String message){
+        if(!this.getSettings().isDebug()){
+           return; 
+        }
         this.getLogger().info(message);
-    }
-    
-    public void debug(String message, Object... args){
-        this.getLogger().log(Level.INFO, String.format(message, args));
     }
 }
