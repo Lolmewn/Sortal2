@@ -122,6 +122,10 @@ public class EventListener implements Listener {
                                 return;
                             }
                         }
+                        if(sign.isPrivate()){
+                            //TODO Locatisation for private
+                            //TODO check if user is private user
+                        }
                         Warp w = this.getPlugin().getWarpManager().getWarp(sign.getWarp());
                         if (!canPay(w, sign, p)) {
                             if (this.getPlugin().getSettings().isDebug()) {

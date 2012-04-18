@@ -51,7 +51,8 @@ public class Localisation {
     private String costSet;
     private String maxUsesReached;
     private String maxUsesSet;
-
+    private String isPrivateSign;
+    
     public Localisation() {
         this.checkFile();
         this.loadFile();
@@ -82,22 +83,23 @@ public class Localisation {
 
     private void loadFile() {
         YamlConfiguration c = YamlConfiguration.loadConfiguration(this.localisation);
-        this.createNameForgot = c.getString("commands.createNameForgotten" , "Please specify a name for this warp!");
-        this.deleteNameForgot = c.getString("commands.deleteNameForgotten" , "Please specify the name of the warp!");
-        this.nameInUse = c.getString("commands.nameInUse", "Warp $WARP already exists!");
-        this.noMoney = c.getString("noMoney", "You need $MONEY to do this!");
-        this.noPerms = c.getString("noPermissions", "You don't have permissions to do that!");
-        this.noPlayer = c.getString("noPlayer", "You have to be a player to do this!");
-        this.paymentComplete = c.getString("paymentComplete", "You've payed $MONEY!");
-        this.warpCreated = c.getString("commands.warpCreated", "Warp $WARP created!");
-        this.warpDeleted = c.getString("commands.warpDeleted", "Warp $WARP deleted!");
-        this.warpNotFound = c.getString("commands.warpNotFound", "Warp $WARP not found!");
-        this.noWarpsFound = c.getString("commands.noWarpsFound", "There are no warps yet!");
-        this.errorInSign = c.getString("signError", "There's something wrong with this sign!");
-        this.playerTeleported = c.getString("playerTeleported", "You've teleported to $DEST!");
-        this.costSet = c.getString("commands.costSet", "Cost set to $COST!");
-        this.maxUsesReached = c.getString("maxUsesReached", "You can't use this sign anymore!");
-        this.maxUsesSet = c.getString("commands.maxUsesSet", "Max Uses set to $AMOUNT!");
+        this.createNameForgot = this.check(c, "commands.createNameForgotten" , "Please specify a name for this warp!");
+        this.deleteNameForgot = this.check(c, "commands.deleteNameForgotten" , "Please specify the name of the warp!");
+        this.nameInUse = this.check(c, "commands.nameInUse", "Warp $WARP already exists!");
+        this.noMoney = this.check(c, "noMoney", "You need $MONEY to do this!");
+        this.noPerms = this.check(c, "noPermissions", "You don't have permissions to do that!");
+        this.noPlayer = this.check(c, "noPlayer", "You have to be a player to do this!");
+        this.paymentComplete = this.check(c, "paymentComplete", "You've payed $MONEY!");
+        this.warpCreated = this.check(c, "commands.warpCreated", "Warp $WARP created!");
+        this.warpDeleted = this.check(c, "commands.warpDeleted", "Warp $WARP deleted!");
+        this.warpNotFound = this.check(c, "commands.warpNotFound", "Warp $WARP not found!");
+        this.noWarpsFound = this.check(c, "commands.noWarpsFound", "There are no warps yet!");
+        this.errorInSign = this.check(c, "signError", "There's something wrong with this sign!");
+        this.playerTeleported = this.check(c, "playerTeleported", "You've teleported to $DEST!");
+        this.costSet = this.check(c, "commands.costSet", "Cost set to $COST!");
+        this.maxUsesReached = this.check(c, "maxUsesReached", "You can't use this sign anymore!");
+        this.maxUsesSet = this.check(c, "commands.maxUsesSet", "Max Uses set to $AMOUNT!");
+        this.isPrivateSign = this.check(c, "isPrivateSign", "This is a private sign you can't use!");
         Bukkit.getLogger().info("[Sortal] Localisation loaded!");
     }
 
@@ -190,6 +192,19 @@ public class Localisation {
             return costSet.replace("$COST", cost);
         }
         return costSet;
+    }
+
+    public String getIsPrivateSign() {
+        return isPrivateSign;
+    }
+    
+    private String check(YamlConfiguration c, String get, String def){
+        if(c.contains(get)){
+            return this.check(c, get, def);
+        }
+        c.addDefault(get, def);
+        c.options().copyDefaults();
+        return def;
     }
 
     void addOld(HashMap<String, String> local) {
