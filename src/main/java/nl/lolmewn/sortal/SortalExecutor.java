@@ -19,6 +19,7 @@
 
 package nl.lolmewn.sortal;
 
+import java.util.HashSet;
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -465,6 +466,28 @@ public class SortalExecutor implements CommandExecutor {
             sender.sendMessage(ChatColor.RED + "ERR: Syntax. Correct usages:");
             sender.sendMessage("/sortal " + args[0] + " <amount> [player|total]");
             sender.sendMessage("/sortal " + args[0] + " warp <warp> <amount> [player|total]");
+            return true;
+        }
+        if(args[0].equalsIgnoreCase("setprivate") || args[0].equalsIgnoreCase("private")){
+            if(!sender.hasPermission("sortal.setprivate")){
+                sender.sendMessage(this.getLocalisation().getNoPerms());
+                return true;
+            }
+            if(!(sender instanceof Player)){
+                sender.sendMessage(this.getLocalisation().getNoPlayer());
+                return true;
+            }
+            if(args.length == 1){
+                this.getPlugin().setPrivate.add(sender.getName());
+                sender.sendMessage("Now hit the sign you want to be private!");
+                return true;
+            }
+            HashSet<String> set = new HashSet<String>();
+            for(int i = 1; i < args.length; i++){
+                set.add(args[i]);
+            }
+            this.getPlugin().setPrivateUsers.put(sender.getName(), set);
+            sender.sendMessage("Now hit a private sign you want to add " + (args.length == 2? "this one" : "these"));
             return true;
         }
         sender.sendMessage("Unknown syntax, /sortal help for commands");

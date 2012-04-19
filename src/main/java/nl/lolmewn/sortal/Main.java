@@ -268,6 +268,10 @@ public class Main extends JavaPlugin{
         if(!this.getSettings().isDebug()){
            return; 
         }
-        this.getLogger().info(message);
+        if(!message.toLowerCase().startsWith("[debug]")){
+            this.getLogger().info("[Debug] " + message);
+        }else{
+            this.getLogger().info(message);
+        }
     }
 }
