@@ -107,9 +107,7 @@ public class EventListener implements Listener {
                     }
                     SignInfo sign = this.getPlugin().getWarpManager().getSign(s.getLocation());
                     if (sign.hasWarp()) {
-                        if (this.getPlugin().getSettings().isDebug()) {
-                            this.getPlugin().debug(String.format("[Debug] Sign clicked has warp: %s", sign.getWarp()));
-                        }
+                        this.getPlugin().debug(String.format("[Debug] Sign clicked has warp: %s", sign.getWarp()));
                         if (this.getPlugin().getSettings().isPerWarpPerm()) {
                             this.getPlugin().debug("[Debug] WarpPerPerm = true");
                             if (!p.hasPermission("sortal.warp." + sign.getWarp())) {
@@ -119,17 +117,13 @@ public class EventListener implements Listener {
                                 return;
                             }
                         }
-                        if (sign.isPrivate()) {
-                            this.getPlugin().debug("[Debug] Sign is private");
-                            if (!sign.isPrivateUser(p.getName())) {
-                                this.getPlugin().debug("[Debug] Not a PrivateUser");
-                                p.sendMessage(this.getLocalisation().getIsPrivateSign());
-                                event.setCancelled(true);
-                                return;
-                            }
+                        if (!isPrivateUser(sign, p)) {
+                            p.sendMessage(this.getLocalisation().getIsPrivateSign());
+                            event.setCancelled(true);
+                            return;
                         }
                         Warp w = this.getPlugin().getWarpManager().getWarp(sign.getWarp());
-                        if(w == null){
+                        if (w == null) {
                             this.getPlugin().debug("[Debug] Warp w == null, cancelling");
                             p.sendMessage(this.getLocalisation().getErrorInSign());
                             event.setCancelled(true);
@@ -183,7 +177,7 @@ public class EventListener implements Listener {
                     String warp = nextLine.split(":")[1];
                     if (this.getPlugin().getSettings().isPerWarpPerm()) {
                         if (!p.hasPermission("sortal.warp." + warp)) {
-                        this.getPlugin().debug("No perms - need sortal.warp." + warp);
+                            this.getPlugin().debug("No perms - need sortal.warp." + warp);
                             p.sendMessage(this.getLocalisation().getNoPerms());
                             event.setCancelled(true);
                             return;
@@ -197,13 +191,11 @@ public class EventListener implements Listener {
                     }
                     Warp w = this.getPlugin().getWarpManager().getWarp(warp);
                     SignInfo sign = this.getPlugin().getWarpManager().getSign(s.getLocation());
-                    if(sign != null){
-                        if(sign.isPrivate()){
-                            if(!sign.isPrivateUser(p.getName())){
-                                p.sendMessage(this.getLocalisation().getIsPrivateSign());
-                                event.setCancelled(true);
-                                return;
-                            }
+                    if (sign != null) {
+                        if (!isPrivateUser(sign, p)) {
+                            p.sendMessage(this.getLocalisation().getIsPrivateSign());
+                            event.setCancelled(true);
+                            return;
                         }
                     }
                     if (!canPay(w, sign, p)) {
@@ -238,15 +230,11 @@ public class EventListener implements Listener {
                         add = 1;
                     }
                     SignInfo sign = this.getPlugin().getWarpManager().getSign(s.getLocation());
-                    if(sign != null){
-                        if(sign.isPrivate()){
-                            if(!sign.isPrivateUser(p.getName())){
-                                p.sendMessage(this.getLocalisation().getIsPrivateSign());
-                                event.setCancelled(true);
-                                this.getPlugin().debug("Player is no private user!");
-                                return;
-                            }
-                            this.getPlugin().debug("Player is private user");
+                    if (sign != null) {
+                        if (!isPrivateUser(sign, p)) {
+                            p.sendMessage(this.getLocalisation().getIsPrivateSign());
+                            event.setCancelled(true);
+                            return;
                         }
                     }
                     if (!canPay(null, sign, p)) {
@@ -352,9 +340,9 @@ public class EventListener implements Listener {
             player.sendMessage("Uses set to " + info.getUses() + " for this sign, " + (info.isUsedTotalBased() ? "total based" : "player based") + "!");
             return true;
         }
-        if(this.getPlugin().setPrivate.contains(player.getName())){
+        if (this.getPlugin().setPrivate.contains(player.getName())) {
             SignInfo sign;
-            if(this.getPlugin().getWarpManager().hasSignInfo(s.getLocation())){
+            if (this.getPlugin().getWarpManager().hasSignInfo(s.getLocation())) {
                 sign = this.getPlugin().getWarpManager().getSign(s.getLocation());
             } else {
                 sign = this.getPlugin().getWarpManager().addSign(s.getLocation());
@@ -362,26 +350,26 @@ public class EventListener implements Listener {
             sign.setIsPrivate(!sign.isPrivate());
             player.sendMessage("This sign is now " + (sign.isPrivate() ? "private" : "public"));
             this.getPlugin().setPrivate.remove(player.getName());
-            if(this.getPlugin().setPrivateUsers.containsKey(player.getName())){
-                for(String name : this.getPlugin().setPrivateUsers.get(player.getName())){
+            if (this.getPlugin().setPrivateUsers.containsKey(player.getName())) {
+                for (String name : this.getPlugin().setPrivateUsers.get(player.getName())) {
                     sign.addPrivateUser(name);
                 }
                 player.sendMessage(this.getPlugin().setPrivateUsers.remove(player.getName()).size() + " players added!");
+                return true;
+            }
             return true;
         }
-            return true;
-        }
-        if(this.getPlugin().setPrivateUsers.containsKey(player.getName())){
-            if(!this.getPlugin().getWarpManager().hasSignInfo(s.getLocation())){
+        if (this.getPlugin().setPrivateUsers.containsKey(player.getName())) {
+            if (!this.getPlugin().getWarpManager().hasSignInfo(s.getLocation())) {
                 player.sendMessage("Please hit a private sign!");
                 return true;
             }
             SignInfo sign = this.getPlugin().getWarpManager().getSign(s.getLocation());
-            if(!sign.isPrivate()){
+            if (!sign.isPrivate()) {
                 player.sendMessage("Please hit a private sign!");
                 return true;
             }
-            for(String name : this.getPlugin().setPrivateUsers.get(player.getName())){
+            for (String name : this.getPlugin().setPrivateUsers.get(player.getName())) {
                 sign.addPrivateUser(name);
             }
             player.sendMessage(this.getPlugin().setPrivateUsers.remove(player.getName()).size() + " players added!");
@@ -611,5 +599,34 @@ public class EventListener implements Listener {
         } else {
             return this.getPlugin().getSettings().getWarpUsePrice();
         }
+    }
+
+    private boolean isPrivateUser(SignInfo sign, Player p) {
+        if(!sign.isPrivate()){
+            return true;
+        }
+        this.getPlugin().debug("[Debug] Sign is private");
+        if (!sign.isPrivateUser(p.getName())) {
+            this.getPlugin().debug("[Debug] Not a PrivateUser");
+            //not a private user, maybe setting overrides
+            if (this.getPlugin().getSettings().isSignCreatorIsPrivateUser()) {
+                this.getPlugin().debug("[Debug] Setting is true, checking owner");
+                if (sign.hasOwner()) {
+                    this.getPlugin().debug("[Debug] Sign has owner!");
+                    if(sign.getOwner().equals(p.getName())){
+                        this.getPlugin().debug("[Debug] Wow! They're the same!");
+                        return true;
+                    }
+                    this.getPlugin().debug("[Debug] Aww.. Another owner for this sign!");
+                    return false;
+                }
+                this.getPlugin().debug("[Debug] Sign has no owner");
+                return false;
+            }
+            this.getPlugin().debug("[Debug] Setting is false -> false");
+            return false;
+        }
+        this.getPlugin().debug("[Debug] Player is a private user.");
+        return true;
     }
 }

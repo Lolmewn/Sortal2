@@ -43,11 +43,16 @@ public class Settings {
     private int dbPort;
     
     private boolean perWarpPerm;
+    private boolean signCreatorIsPrivateUser;
     
     protected File settingsFile = new File("plugins" + File.separator + "Sortal"
             + File.separator + "settings.yml");
     
     private Localisation localisation;
+
+    public boolean isSignCreatorIsPrivateUser() {
+        return signCreatorIsPrivateUser;
+    }
     
     public Localisation getLocalisation(){
         return this.localisation;
@@ -167,7 +172,10 @@ public class Settings {
             this.addSettingToConfig(settingsFile, "perWarpPerm", false);
         }
         this.perWarpPerm = c.getBoolean("perWarpPerm", false);
-        
+        if(!c.contains("signCreatorIsPrivateUser")){
+            this.addSettingToConfig(settingsFile, "signCreatorIsPrivateUser", true);
+        }
+        this.signCreatorIsPrivateUser = c.getBoolean("signCreatorIsPrivateUser", true);
         if(this.isDebug()){
             this.printSettings(YamlConfiguration.loadConfiguration(this.settingsFile)); //re-init file
         }
