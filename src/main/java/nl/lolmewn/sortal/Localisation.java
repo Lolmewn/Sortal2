@@ -200,7 +200,7 @@ public class Localisation {
     
     private String check(YamlConfiguration c, String get, String def){
         if(c.contains(get)){
-            return this.check(c, get, def);
+            c.getString(get, def);
         }
         c.addDefault(get, def);
         c.options().copyDefaults();
