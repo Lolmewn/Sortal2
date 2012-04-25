@@ -174,9 +174,9 @@ public class MySQL {
         this.checkColumn(this.prefix + "signs", "usedTotalBased", "boolean");
         this.checkColumn(this.prefix + "signs", "isPrivate", "boolean");
         this.checkColumn(this.prefix + "signs", "privateUsers", "text");
-        this.executeStatement("ALTER TABLE " + this.prefix + "warps MODIFY COLUMN x DOUBLE");
-        this.executeStatement("ALTER TABLE " + this.prefix + "warps MODIFY COLUMN y DOUBLE");
-        this.executeStatement("ALTER TABLE " + this.prefix + "warps MODIFY COLUMN z DOUBLE");
+        this.executeStatement("ALTER TABLE " + this.prefix + "warps MODIFY COLUMN x DOUBLE NOT NULL");
+        this.executeStatement("ALTER TABLE " + this.prefix + "warps MODIFY COLUMN y DOUBLE NOT NULL");
+        this.executeStatement("ALTER TABLE " + this.prefix + "warps MODIFY COLUMN z DOUBLE NOT NULL");
     }
     
     private void checkColumn(String table, String column, String type){
