@@ -74,9 +74,9 @@ public class MySQL {
         this.executeStatement("CREATE TABLE IF NOT EXISTS " + this.prefix + "warps"
                 + "(name varchar(255) PRIMARY KEY NOT NULL, "
                 + "world varchar(255) NOT NULL, "
-                + "x int NOT NULL, "
-                + "y int NOT NULL, "
-                + "z int NOT NULL, "
+                + "x DOUBLE NOT NULL, "
+                + "y DOUBLE NOT NULL, "
+                + "z DOUBLE NOT NULL, "
                 + "yaw float, "
                 + "pitch float, "
                 + "price int, "
@@ -174,6 +174,9 @@ public class MySQL {
         this.checkColumn(this.prefix + "signs", "usedTotalBased", "boolean");
         this.checkColumn(this.prefix + "signs", "isPrivate", "boolean");
         this.checkColumn(this.prefix + "signs", "privateUsers", "text");
+        this.executeStatement("ALTER TABLE " + this.prefix + "warps MODIFY COLUMN x DOUBLE");
+        this.executeStatement("ALTER TABLE " + this.prefix + "warps MODIFY COLUMN y DOUBLE");
+        this.executeStatement("ALTER TABLE " + this.prefix + "warps MODIFY COLUMN z DOUBLE");
     }
     
     private void checkColumn(String table, String column, String type){

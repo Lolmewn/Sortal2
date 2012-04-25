@@ -9,7 +9,10 @@
 
     <name>Sortal2</name>
     <url>http://metrics.griefcraft.com/plugin/Sortal</url>
-
+    <ciManagement>
+        <system>hudson</system>
+        <url>http://localhost:8080/job/Sortal2/</url>
+    </ciManagement>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
