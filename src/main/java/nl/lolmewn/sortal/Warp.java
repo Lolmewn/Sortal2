@@ -16,7 +16,6 @@
  * You should have received a copy of the GNU General Public License
  * along with Sortal.  If not, see <http ://www.gnu.org/licenses/>.
  */
-
 package nl.lolmewn.sortal;
 
 import java.io.File;
@@ -32,9 +31,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
  *
  * @author Lolmewn <info@lolmewn.nl>
  */
-
 public class Warp {
-    
+
     private String name;
     private Location loc;
     private int price = -1;
@@ -43,8 +41,8 @@ public class Warp {
     private int used;
     private boolean usedTotalBased;
     private String owner;
-    
-    public Warp(String name, Location loc){
+
+    public Warp(String name, Location loc) {
         this.name = name;
         this.loc = loc;
     }
@@ -56,8 +54,8 @@ public class Warp {
     public void setHasPrice(boolean hasPrice) {
         this.hasPrice = hasPrice;
     }
-    
-    public String getName(){
+
+    public String getName() {
         return this.name;
     }
 
@@ -68,8 +66,8 @@ public class Warp {
     public void setUsedTotalBased(boolean usedTotalBased) {
         this.usedTotalBased = usedTotalBased;
     }
-    
-    public Location getLocation(){
+
+    public Location getLocation() {
         return this.loc;
     }
 
@@ -88,8 +86,8 @@ public class Warp {
     public void setOwner(String owner) {
         this.owner = owner;
     }
-    
-    public boolean hasOwner(){
+
+    public boolean hasOwner() {
         return this.owner == null ? false : true;
     }
 
@@ -108,54 +106,42 @@ public class Warp {
     public void setUses(int uses) {
         this.uses = uses;
     }
-    
-    public String getLocationToString(){
-        return this.loc.getWorld().getName() + 
-                "," + this.loc.getX() + 
-                "," + this.loc.getY() + 
-                "," + this.loc.getZ();
+
+    public String getLocationToString() {
+        return this.loc.getWorld().getName()
+                + "," + this.loc.getX()
+                + "," + this.loc.getY()
+                + "," + this.loc.getZ();
     }
-    
-    public void save(MySQL m, String table){
-        ResultSet set = m.executeQuery("SELECT * FROM " + table + 
-                " WHERE name='" + name + "'");
-        if(set == null){
-            //dafuq? 
-            System.out.println("[Sortal] ERR: ResultSet returned null");
-            return;
-        }
-        try {
-            while(set.next()){
-                //a warp already is in the database, let's just update it for goods sake
-                m.executeStatement("UPDATE " + table + " SET "
-                        + "world='" + loc.getWorld().getName() + "', "
-                        + "x=" + this.loc.getX() + ", "
-                        + "y=" + this.loc.getY() + ", "
-                        + "z=" + this.loc.getZ() + ", "
-                        + "yaw=" + (double)this.loc.getYaw() + ", "
-                        + "pitch=" + (double)this.loc.getPitch() + ", "
-                        + "price=" + this.getPrice() + ", "
-                        + "uses=" + this.uses + ", "
-                        + "used=" + this.used + ", "
-                        + "owner='" + this.owner + "'"
-                        + " WHERE name='" + this.name + "'");
-                return;
-            }
-            //It's not in the table at all
+
+    public void save(MySQL m, String table) {
+        int updated = m.executeStatement("UPDATE " + table + " SET "
+                + "world='" + loc.getWorld().getName() + "', "
+                + "x=" + this.loc.getX() + ", "
+                + "y=" + this.loc.getY() + ", "
+                + "z=" + this.loc.getZ() + ", "
+                + "yaw=" + (double) this.loc.getYaw() + ", "
+                + "pitch=" + (double) this.loc.getPitch() + ", "
+                + "price=" + this.getPrice() + ", "
+                + "uses=" + this.uses + ", "
+                + "used=" + this.used + ", "
+                + "owner='" + this.owner + "'"
+                + " WHERE name='" + this.name + "'");
+        
+        //It's not in the table at all
+        if (updated == 0) {
             m.executeQuery("INSERT INTO " + table + "(name, world, x, y, z, yaw, pitch, price, uses, used, usedTotalBased, owner) VALUES ("
                     + "'" + this.getName() + "', "
-                    + "'" + this.getLocation().getWorld().getName() + "', " 
+                    + "'" + this.getLocation().getWorld().getName() + "', "
                     + this.getLocation().getX() + ", " + this.getLocation().getY()
                     + ", " + this.getLocation().getZ() + ", " + this.getLocation().getYaw()
                     + ", " + this.getLocation().getPitch() + ", " + this.getPrice() + ", "
                     + this.uses + ", " + this.used + ", " + this.usedTotalBased + ", '" + this.owner + "')");
-        } catch (SQLException ex) {
-            Bukkit.getLogger().log(Level.SEVERE, null, ex);
         }
     }
-    
-    public void save(File f){
-        if(!f.exists()){
+
+    public void save(File f) {
+        if (!f.exists()) {
             try {
                 f.createNewFile();
             } catch (IOException ex) {
@@ -167,8 +153,8 @@ public class Warp {
         c.set(name + ".x", loc.getX());
         c.set(name + ".y", loc.getY());
         c.set(name + ".z", loc.getZ());
-        c.set(name + ".yaw", (double)loc.getYaw());
-        c.set(name + ".pitch", (double)loc.getPitch());
+        c.set(name + ".yaw", (double) loc.getYaw());
+        c.set(name + ".pitch", (double) loc.getPitch());
         c.set(name + ".price", this.price);
         c.set(name + ".uses", this.uses);
         c.set(name + ".used", this.used);
@@ -194,5 +180,4 @@ public class Warp {
             Bukkit.getLogger().log(Level.SEVERE, null, ex);
         }
     }
-
 }

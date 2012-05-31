@@ -153,6 +153,7 @@ public class Main extends JavaPlugin{
     
     protected boolean initMySQL(){
         this.mysql = new MySQL(
+                    this,
                     this.getSettings().getDbHost(),
                     this.getSettings().getDbPort(),
                     this.getSettings().getDbUser(),

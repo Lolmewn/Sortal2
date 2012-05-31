@@ -31,10 +31,12 @@ public class MySQL {
     private String host, username, password, database, prefix;
     private int port;
     private boolean fault;
+    private Main plugin;
     private Statement st;
     private Connection con;
 
-    public MySQL(String host, int port, String username, String password, String database, String prefix) {
+    public MySQL(Main main, String host, int port, String username, String password, String database, String prefix) {
+        this.plugin = main;
         this.host = host;
         this.username = username;
         this.password = password;
@@ -118,6 +120,9 @@ public class MySQL {
             System.out.println("[Sortal] Can't execute statement, something wrong with connection");
             return 0;
         }
+        if(this.plugin.getSettings().isDebug()){
+            this.plugin.debug("Executing query: " + statement);
+        }
         try {
             this.st = this.con.createStatement();
             int re = this.st.executeUpdate(statement);
@@ -137,6 +142,9 @@ public class MySQL {
         if (statement.toLowerCase().startsWith("update") || statement.toLowerCase().startsWith("insert") || statement.toLowerCase().startsWith("delete")) {
             this.executeStatement(statement);
             return null;
+        }
+        if(this.plugin.getSettings().isDebug()){
+            this.plugin.debug("Executing query: " + statement);
         }
         try {
             this.st = this.con.createStatement();
