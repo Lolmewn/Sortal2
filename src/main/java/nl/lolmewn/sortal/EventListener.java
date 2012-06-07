@@ -143,6 +143,7 @@ public class EventListener implements Listener {
                         this.getPlugin().debug(String.format("[Debug] Player is paying.."));
                         this.getPlugin().pay(p, this.getPrice(w, sign));
                         Location loc = w.getLocation();
+                        if(!loc.getChunk().isLoaded()){loc.getChunk().load();}
                         if (loc.getYaw() == 0 && loc.getPitch() == 0) {
                             loc.setYaw(p.getLocation().getYaw());
                             loc.setPitch(p.getLocation().getPitch());
@@ -208,6 +209,7 @@ public class EventListener implements Listener {
                         event.setCancelled(true);
                         return;
                     }
+                    if(!w.getLocation().getChunk().isLoaded()){w.getLocation().getChunk().load();}
                     this.getPlugin().pay(p, this.getPrice(w, sign));
                     p.teleport(w.getLocation(), TeleportCause.PLUGIN);
                     p.sendMessage(this.getLocalisation().getPlayerTeleported(warp));
@@ -251,6 +253,7 @@ public class EventListener implements Listener {
                     int x = Integer.parseInt(split[0 + add]), y = Integer.parseInt(split[1 + add]),
                             z = Integer.parseInt(split[2 + add]);
                     Location dest = new Location(w, x, y, z, p.getLocation().getYaw(), p.getLocation().getPitch());
+                    if(!dest.getChunk().isLoaded()){dest.getChunk().load();}
                     p.teleport(dest, TeleportCause.PLUGIN);
                     p.sendMessage(this.getLocalisation().getPlayerTeleported(
                             dest.getBlockX() + ", " + dest.getBlockY() + ", " + dest.getBlockZ()));
