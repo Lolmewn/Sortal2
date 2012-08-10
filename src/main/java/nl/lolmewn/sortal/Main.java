@@ -114,7 +114,7 @@ public class Main extends JavaPlugin{
         if(!this.initVault()){
             this.getLogger().info("Vault error or not found, setting costs to 0!");
             this.getSettings().setWarpCreatePrice(0);
-            this.getSettings().setWarpUsePrice(0);
+            this.getSettings().setWarpUsePrice(0); 
         }else{
             this.getLogger().info("Hooked into Vault and Economy plugin succesfully!");
         }
@@ -270,7 +270,7 @@ public class Main extends JavaPlugin{
            return; 
         }
         if(!message.toLowerCase().startsWith("[debug]")){
-            this.getLogger().info("[Debug] " + message);
+            this.getLogger().info("[Debug] " + message); 
         }else{
             this.getLogger().info(message);
         }

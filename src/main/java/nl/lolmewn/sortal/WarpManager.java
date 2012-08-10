@@ -342,7 +342,21 @@ public class WarpManager {
     }
 
     protected boolean hasWarp(String name) {
-        return this.warps.containsKey(name);
+        if(this.warps.containsKey(name)){
+            return true;
+        }
+        Set<String> warpList = this.warps.keySet();
+        for(String compare: warpList){
+            if(compare.equalsIgnoreCase(name)){
+                return true;
+            }
+        }
+        for(String compare : warpList){
+            if(compare.startsWith(name)){
+                return true;
+            }
+        }
+        return false;
     }
 
     protected boolean hasUserInfo(String user) {
@@ -350,7 +364,21 @@ public class WarpManager {
     }
 
     public Warp getWarp(String name) {
-        return this.warps.get(name);
+        if(this.warps.containsKey(name)){
+            return this.warps.get(name);
+        }
+        Set<String> warpList = this.warps.keySet();
+        for(String compare: warpList){
+            if(compare.equalsIgnoreCase(name)){
+                return this.warps.get(compare);
+            }
+        }
+        for(String compare : warpList){
+            if(compare.startsWith(name)){
+                return this.warps.get(compare);
+            }
+        }
+        return null;
     }
 
     public void saveData() {
