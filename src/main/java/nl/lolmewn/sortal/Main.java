@@ -120,7 +120,7 @@ public class Main extends JavaPlugin{
         }
         this.getServer().getScheduler().scheduleAsyncRepeatingTask(this, new Runnable(){
             public void run() {
-                new Thread(new Runnable(){public void run() {saveData();getLogger().info("Data saved!");}}).start();
+                saveData();getLogger().info("Data saved!");
                 }
         }, 36000L, 36000L);
         this.startMetrics();

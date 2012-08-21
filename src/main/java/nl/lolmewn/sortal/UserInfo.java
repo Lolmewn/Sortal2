@@ -40,9 +40,15 @@ public class UserInfo {
     
     private HashMap<String, Integer> warpUses = new HashMap<String, Integer>();
     private HashMap<Location, Integer> locUses = new HashMap<Location, Integer>();
+    
+    private int redeems;
 
     public UserInfo(String user) {
         this.username = user;
+    }
+    
+    public boolean hasRedeems(){
+        return this.redeems != 0;
     }
     
     public boolean hasUsedWarp(String warp){

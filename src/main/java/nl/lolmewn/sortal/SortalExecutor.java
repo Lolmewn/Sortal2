@@ -490,6 +490,9 @@ public class SortalExecutor implements CommandExecutor {
             sender.sendMessage("Now hit a private sign you want to add " + (args.length == 2? "this one" : "these"));
             return true;
         }
+        if(args[0].equalsIgnoreCase("redeem")){
+            
+        }
         sender.sendMessage("Unknown syntax, /sortal help for commands");
         return true;
     }
