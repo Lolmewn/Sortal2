@@ -224,9 +224,6 @@ public class Main extends JavaPlugin{
         if(this.eco != null){
             return true;
         }
-        if(this.getSettings().getWarpCreatePrice() == 0 && this.getSettings().getWarpUsePrice() == 0){
-            return true;
-        }
         if(this.getServer().getPluginManager().getPlugin("Vault") == null){
             //Vault not found
             return false;
@@ -235,6 +232,9 @@ public class Main extends JavaPlugin{
         if(rsp == null && (this.getSettings().getWarpCreatePrice() != 0 || this.getSettings().getWarpUsePrice() != 0)){
             //Vault not found
             return false;
+        }
+        if(this.getSettings().getWarpCreatePrice() == 0 && this.getSettings().getWarpUsePrice() == 0){
+            return true;
         }
         this.eco = rsp.getProvider();
         if(this.eco == null && (this.getSettings().getWarpCreatePrice() != 0 || this.getSettings().getWarpUsePrice() != 0)){
