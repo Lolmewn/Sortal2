@@ -224,6 +224,9 @@ public class Main extends JavaPlugin{
         if(this.eco != null){
             return true;
         }
+        if(this.getSettings().getWarpCreatePrice() == 0 && this.getSettings().getWarpUsePrice() == 0){
+            return true;
+        }
         if(this.getServer().getPluginManager().getPlugin("Vault") == null){
             //Vault not found
             return false;
