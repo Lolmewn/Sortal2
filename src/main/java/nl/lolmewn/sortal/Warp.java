@@ -20,8 +20,6 @@ package nl.lolmewn.sortal;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
