@@ -78,7 +78,7 @@ public class WarpManager {
                 while (set.next()) {
                     Warp w = this.addWarp(set.getString("name"), new Location(
                             this.getPlugin().getServer().getWorld(set.getString("world")),
-                            set.getInt("x"), set.getInt("y"), set.getInt("z"),
+                            set.getDouble("x"), set.getDouble("y"), set.getDouble("z"),
                             set.getFloat("yaw"), set.getFloat("pitch")));
                     if (set.getInt("uses") != -1) {
                         w.setUses(set.getInt("uses"));
