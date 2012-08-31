@@ -145,12 +145,9 @@ public class SortalExecutor implements CommandExecutor {
                 sb.append(ChatColor.GREEN).append(warp.getName()).append(": ").append(ChatColor.WHITE).append("W: ");
                 String w = warp.getLocation().getWorld().getName();
                 sb.append(ChatColor.LIGHT_PURPLE).append(w).append(ChatColor.WHITE).append(" X: ");
-                String x = Double.toString(warp.getLocation().getX());
-                sb.append(ChatColor.RED).append(x.substring(0, x.indexOf(".") + 3 > x.length() ? x.length() : x.indexOf(".") + 3)).append(ChatColor.WHITE).append(" Y: ");
-                String y = Double.toString(warp.getLocation().getY());
-                sb.append(ChatColor.RED).append(y.substring(0, y.indexOf(".") + 2 > y.length() ? y.length() : y.indexOf(".") + 2)).append(ChatColor.WHITE).append(" Z: ");
-                String z = Double.toString(warp.getLocation().getZ());
-                sb.append(ChatColor.RED).append(z.substring(0, z.indexOf(".") + 3 > z.length() ? z.length() : z.indexOf(".") + 3)).append(ChatColor.WHITE).append(" Y: ");
+                sb.append(ChatColor.RED).append(delimite(warp.getLocation().getX())).append(ChatColor.WHITE).append(" Y: ");
+                sb.append(ChatColor.RED).append(delimite(warp.getLocation().getY())).append(ChatColor.WHITE).append(" Z: ");
+                sb.append(ChatColor.RED).append(delimite(warp.getLocation().getZ())).append(ChatColor.WHITE).append(" Y: ");
                 String f = Float.toString(warp.getLocation().getYaw());
                 sb.append(ChatColor.AQUA).append(f.substring(0, f.indexOf(".") + 2)).append(ChatColor.WHITE).append(" P: ");
                 String p = Double.toString(warp.getLocation().getPitch());
@@ -495,6 +492,13 @@ public class SortalExecutor implements CommandExecutor {
         }
         sender.sendMessage("Unknown syntax, /sortal help for commands");
         return true;
+    }
+    
+    public double delimite(double input){
+        double more = input * 1000;
+        int remove = (int)more;
+        double back = remove / 1000;
+        return back;
     }
 
 }
