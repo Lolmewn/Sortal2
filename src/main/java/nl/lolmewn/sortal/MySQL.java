@@ -32,7 +32,6 @@ public class MySQL {
     private int port;
     private boolean fault;
     private Main plugin;
-    private Statement st;
     private Connection con;
 
     public MySQL(Main main, String host, int port, String username, String password, String database, String prefix) {
@@ -54,7 +53,6 @@ public class MySQL {
             String url = "jdbc:mysql://" + this.host + ":" + this.port + "/" + this.database;
             System.out.println("[Sortal] Connecting to database on " + url);
             this.con = DriverManager.getConnection(url, this.username, this.password);
-            this.st = con.createStatement();
             System.out.println("[Sortal] MySQL initiated succesfully!");
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -124,9 +122,9 @@ public class MySQL {
             this.plugin.debug("Executing query: " + statement);
         }
         try {
-            this.st = this.con.createStatement();
-            int re = this.st.executeUpdate(statement);
-            this.st.close();
+            Statement state = this.con.createStatement();
+            int re = state.executeUpdate(statement);
+            state.close();
             return re;
         } catch (SQLException e) {
             e.printStackTrace();
@@ -147,8 +145,8 @@ public class MySQL {
             this.plugin.debug("Executing query: " + statement);
         }
         try {
-            this.st = this.con.createStatement();
-            ResultSet set = this.st.executeQuery(statement);
+            Statement state = this.con.createStatement();
+            ResultSet set = state.executeQuery(statement);
             return set;
         } catch (SQLException e) {
             e.printStackTrace();

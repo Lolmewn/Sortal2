@@ -54,8 +54,7 @@ public class Main extends JavaPlugin{
     protected HashSet<String> setPrivate = new HashSet<String>();
     protected HashMap<String, HashSet<String>> setPrivateUsers = new HashMap<String, HashSet<String>>();
     
-    private boolean willUpdate;
-    private double newVersion;
+    protected double newVersion = 0;
     
     protected File settingsFile = new File("plugins" + File.separator + "Sortal"
             + File.separator + "settings.yml");
@@ -64,38 +63,8 @@ public class Main extends JavaPlugin{
     public void onDisable(){
         this.saveData();
         this.getServer().getScheduler().cancelTasks(this);
-        if(this.willUpdate){
-            this.getLogger().log(Level.INFO, String.format("Updating Sortal to version %s, please wait..", newVersion));
-            this.update();
-        }
-        this.getLogger().info("Disabled!");
-    }
-    
-    private void update(){
-        try {
-            BufferedInputStream in = new BufferedInputStream(new URL("http://dl.dropbox.com/u/7365249/Sortal.jar").openStream());
-            FileOutputStream fout = new FileOutputStream(this.getClass().getProtectionDomain().getCodeSource().getLocation().toURI().getPath());
-            byte data[] = new byte[1024]; //Download 1 KB at a time
-            int count;
-            while ((count = in.read(data, 0, 1024)) != -1) {
-                fout.write(data, 0, count);
-            }
-            in.close();
-            fout.close();
-            YamlConfiguration c = new YamlConfiguration();
-            try {
-                c.load(this.settingsFile);
-                c.set("version", this.newVersion);
-                c.save(this.settingsFile);
-            } catch (Exception e) {
-                this.getLogger().log(Level.WARNING, null, e);
-            }
-        } catch (MalformedURLException e) {
-            this.getLogger().log(Level.WARNING, null, e);
-        } catch (IOException e) {
-            this.getLogger().log(Level.WARNING, null, e);
-        } catch (URISyntaxException e) {
-            this.getLogger().log(Level.WARNING, null, e);
+        if(this.newVersion != 0){
+            this.getSettings().addSettingToConfig(this.getSettings().settingsFile, "version", newVersion);
         }
     }
     
@@ -124,7 +93,9 @@ public class Main extends JavaPlugin{
                 }
         }, 36000L, 36000L);
         this.startMetrics();
-        this.checkUpdate();
+        if(this.getSettings().isUpdate()){
+            new Updater(this, "sortal", this.getFile(), Updater.UpdateType.DEFAULT, true);
+        }
         this.getLogger().log(Level.INFO, String.format("Version %s build %s loaded!", this.getSettings().getVersion(), this.getDescription().getVersion()));
     }
     
@@ -187,6 +158,10 @@ public class Main extends JavaPlugin{
         return this.getSettings().getDbPrefix() + "users";
     }
     
+    protected double getVersion(){
+        return this.getSettings().getVersion();
+    }
+    
     public void saveData(){
         this.getWarpManager().saveData();
     }
@@ -241,31 +216,6 @@ public class Main extends JavaPlugin{
             return false;
         }
         return true;
-    }
-
-    private void checkUpdate() {
-        if(!this.getSettings().isUpdate()){
-            return;
-        }
-        try {
-            URL url = new URL("http://dl.dropbox.com/u/7365249/sortal.txt");
-            BufferedReader in = new BufferedReader(new InputStreamReader(url.openStream()));
-            String str;
-            while ((str = in.readLine()) != null) {
-                if (this.getSettings().getVersion() < Double.parseDouble(str)) {
-                    this.newVersion = Double.parseDouble(str);
-                    this.willUpdate = true;
-                    this.getLogger().info(String.format("An update is available! Will be downloaded on Disable! New version: %s", str));
-                }
-            }
-            in.close();
-        } catch (MalformedURLException e) {
-            this.getLogger().log(Level.WARNING, null, e);
-        } catch (IOException e) {
-            this.getLogger().log(Level.WARNING, null, e);
-        } catch (Exception e) {
-            this.getLogger().log(Level.WARNING, null, e);
-        }
     }
     
     public void debug(String message){
