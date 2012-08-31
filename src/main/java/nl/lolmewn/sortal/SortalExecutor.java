@@ -498,7 +498,7 @@ public class SortalExecutor implements CommandExecutor {
         plugin.debug("Input: " + input);
         double more = input * 1000;
         int remove = (int)more;
-        double back = remove / 1000;
+        double back = ((double)remove) / 1000;
         plugin.debug("Output: " + back);
         return back;
     }
