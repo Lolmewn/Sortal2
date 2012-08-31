@@ -19,17 +19,14 @@
 
 package nl.lolmewn.sortal;
 
-import java.io.*;
-import java.net.MalformedURLException;
-import java.net.URISyntaxException;
-import java.net.URL;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.logging.Level;
 import net.milkbowl.vault.economy.Economy;
 import nl.lolmewn.sortal.Metrics.Graph;
 import nl.lolmewn.sortal.Metrics.Plotter;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
