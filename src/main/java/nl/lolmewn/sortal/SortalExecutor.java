@@ -148,10 +148,8 @@ public class SortalExecutor implements CommandExecutor {
                 sb.append(ChatColor.RED).append(delimite(warp.getLocation().getX())).append(ChatColor.WHITE).append(" Y: ");
                 sb.append(ChatColor.RED).append(delimite(warp.getLocation().getY())).append(ChatColor.WHITE).append(" Z: ");
                 sb.append(ChatColor.RED).append(delimite(warp.getLocation().getZ())).append(ChatColor.WHITE).append(" Y: ");
-                String f = Float.toString(warp.getLocation().getYaw());
-                sb.append(ChatColor.AQUA).append(f.substring(0, f.indexOf(".") + 2)).append(ChatColor.WHITE).append(" P: ");
-                String p = Double.toString(warp.getLocation().getPitch());
-                sb.append(ChatColor.AQUA).append(p.substring(0, p.indexOf(".") + 3));
+                sb.append(ChatColor.AQUA).append(delimite(warp.getLocation().getYaw())).append(ChatColor.WHITE).append(" P: ");
+                sb.append(ChatColor.AQUA).append(delimite(warp.getLocation().getPitch()));
                 sender.sendMessage(sb.toString());
             }
             if(count == -1){
@@ -499,6 +497,15 @@ public class SortalExecutor implements CommandExecutor {
         double more = input * 1000;
         int remove = (int)more;
         double back = ((double)remove) / 1000;
+        plugin.debug("Output: " + back);
+        return back;
+    }
+    
+    public float delimite(float input){
+        plugin.debug("Input: " + input);
+        float more = input * 1000;
+        int remove = (int)more;
+        float back = ((float)remove) / 1000;
         plugin.debug("Output: " + back);
         return back;
     }
