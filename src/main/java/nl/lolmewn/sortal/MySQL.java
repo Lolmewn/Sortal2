@@ -20,6 +20,8 @@
 package nl.lolmewn.sortal;
 
 import java.sql.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -28,43 +30,22 @@ import java.sql.*;
 
 public class MySQL {
 
-    private String host, username, password, database, prefix;
-    private int port;
+    private String prefix;
     private boolean fault;
     private Main plugin;
-    private Connection con;
+    
+    private MySQLConnectionPool pool;
 
     public MySQL(Main main, String host, int port, String username, String password, String database, String prefix) {
         this.plugin = main;
-        this.host = host;
-        this.username = username;
-        this.password = password;
-        this.database = database;
         this.prefix = prefix;
-        this.port = port;
-        this.connect();
+        try {
+            this.pool = new MySQLConnectionPool("jdbc:mysql://" + host + ":" + port + "/" + database, username, password);
+        } catch (ClassNotFoundException ex) {
+            Logger.getLogger(MySQL.class.getName()).log(Level.SEVERE, null, ex);
+        }
         this.setupDatabase();
         this.validateTables();
-    }
-
-    private void connect() {
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            String url = "jdbc:mysql://" + this.host + ":" + this.port + "/" + this.database;
-            System.out.println("[Sortal] Connecting to database on " + url);
-            this.con = DriverManager.getConnection(url, this.username, this.password);
-            System.out.println("[Sortal] MySQL initiated succesfully!");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-            this.setFault(true);
-        } catch (SQLException e) {
-            e.printStackTrace();
-            this.setFault(true);
-        } finally {
-            if (this.fault) {
-                System.out.println("[Sortal] MySQL initialisation failed!");
-            }
-        }
     }
 
     private void setupDatabase() {
@@ -122,7 +103,7 @@ public class MySQL {
             this.plugin.debug("Executing query: " + statement);
         }
         try {
-            Statement state = this.con.createStatement();
+            Statement state = this.pool.getConnection().createStatement();
             int re = state.executeUpdate(statement);
             state.close();
             return re;
@@ -145,7 +126,7 @@ public class MySQL {
             this.plugin.debug("Executing query: " + statement);
         }
         try {
-            Statement state = this.con.createStatement();
+            Statement state = this.pool.getConnection().createStatement();
             ResultSet set = state.executeQuery(statement);
             return set;
         } catch (SQLException e) {
@@ -159,11 +140,7 @@ public class MySQL {
            System.out.println("[Sortal] Can't close connection, something wrong with it");
             return;
         }
-        try {
-            this.con.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        this.pool.close();
     }
 
     private void validateTables() {
