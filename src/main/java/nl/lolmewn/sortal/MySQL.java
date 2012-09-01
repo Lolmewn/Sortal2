@@ -43,6 +43,7 @@ public class MySQL {
             this.pool = new MySQLConnectionPool("jdbc:mysql://" + host + ":" + port + "/" + database, username, password);
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(MySQL.class.getName()).log(Level.SEVERE, null, ex);
+            this.setFault(true);
         }
         this.setupDatabase();
         this.validateTables();
@@ -103,7 +104,8 @@ public class MySQL {
             this.plugin.debug("Executing query: " + statement);
         }
         try {
-            Statement state = this.pool.getConnection().createStatement();
+            Connection con = this.pool.getConnection();
+            Statement state = con.createStatement();
             int re = state.executeUpdate(statement);
             state.close();
             return re;
@@ -126,8 +128,10 @@ public class MySQL {
             this.plugin.debug("Executing query: " + statement);
         }
         try {
-            Statement state = this.pool.getConnection().createStatement();
+            Connection con = this.pool.getConnection();
+            Statement state = con.createStatement();
             ResultSet set = state.executeQuery(statement);
+            con.close();
             return set;
         } catch (SQLException e) {
             e.printStackTrace();
