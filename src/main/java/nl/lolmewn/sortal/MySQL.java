@@ -43,6 +43,11 @@ public class MySQL {
     public MySQL(Main main, String host, int port, String username, String password, String database, String prefix) {
         this.plugin = main;
         this.prefix = prefix;
+        this.host = host;
+        this.port = port;
+        this.username = username;
+        this.password = password;
+        this.database = database;
         this.setupDatabase();
         this.validateTables();
     }
