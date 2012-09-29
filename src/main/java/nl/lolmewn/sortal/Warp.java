@@ -113,6 +113,14 @@ public class Warp {
     }
 
     public void save(MySQL m, String table) {
+        if(name == null){
+            System.out.println("[Sortal] name=null...");
+            return;
+        }
+        if(loc == null){
+            System.out.println("[Sortal] loc=null for name " + name);
+            return;
+        }
         int updated = m.executeStatement("UPDATE " + table + " SET "
                 + "world='" + loc.getWorld().getName() + "', "
                 + "x=" + this.loc.getX() + ", "
