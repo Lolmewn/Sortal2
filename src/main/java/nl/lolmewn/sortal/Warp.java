@@ -146,6 +146,14 @@ public class Warp {
                 Bukkit.getLogger().log(Level.SEVERE, null, ex);
             }
         }
+        if(name == null){
+            System.out.println("[Sortal] name=null...");
+            return;
+        }
+        if(loc == null){
+            System.out.println("[Sortal] loc=null for name " + name);
+            return;
+        }
         YamlConfiguration c = YamlConfiguration.loadConfiguration(f);
         c.set(name + ".world", loc.getWorld().getName());
         c.set(name + ".x", loc.getX());
