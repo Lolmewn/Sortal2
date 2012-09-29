@@ -121,8 +121,15 @@ public class Warp {
             System.out.println("[Sortal] loc=null for name " + name);
             return;
         }
+        String worldname = "world";
+        try{
+            worldname = loc.getWorld().getName();
+        }catch(NullPointerException e){
+            System.out.println("Nullpointer while saving warp " + name + ", because the world is not loaded: " + e.getMessage());
+            return;
+        }
         int updated = m.executeStatement("UPDATE " + table + " SET "
-                + "world='" + loc.getWorld().getName() + "', "
+                + "world='" + worldname + "', "
                 + "x=" + this.loc.getX() + ", "
                 + "y=" + this.loc.getY() + ", "
                 + "z=" + this.loc.getZ() + ", "
@@ -138,7 +145,7 @@ public class Warp {
         if (updated == 0) {
             m.executeQuery("INSERT INTO " + table + "(name, world, x, y, z, yaw, pitch, price, uses, used, usedTotalBased, owner) VALUES ("
                     + "'" + this.getName() + "', "
-                    + "'" + this.getLocation().getWorld().getName() + "', "
+                    + "'" + worldname + "', "
                     + this.getLocation().getX() + ", " + this.getLocation().getY()
                     + ", " + this.getLocation().getZ() + ", " + this.getLocation().getYaw()
                     + ", " + this.getLocation().getPitch() + ", " + this.getPrice() + ", "
@@ -163,7 +170,14 @@ public class Warp {
             return;
         }
         YamlConfiguration c = YamlConfiguration.loadConfiguration(f);
-        c.set(name + ".world", loc.getWorld().getName());
+        String worldname = "world";
+        try{
+            worldname = loc.getWorld().getName();
+        }catch(NullPointerException e){
+            System.out.println("Nullpointer while saving warp " + name + ", because the world is not loaded: " + e.getMessage());
+            return;
+        }
+        c.set(name + ".world", worldname);
         c.set(name + ".x", loc.getX());
         c.set(name + ".y", loc.getY());
         c.set(name + ".z", loc.getZ());
