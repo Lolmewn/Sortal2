@@ -39,7 +39,7 @@ public class UserInfo {
     private String username;
     
     private HashMap<String, Integer> warpUses = new HashMap<String, Integer>();
-    private HashMap<Location, Integer> locUses = new HashMap<Location, Integer>();
+    private HashMap<String, Integer> locUses = new HashMap<String, Integer>();
     
     private int redeems;
 
@@ -70,26 +70,23 @@ public class UserInfo {
         this.warpUses.put(warp, this.warpUses.get(warp)+add);
     }
     
-    public boolean hasUsedLocation(Location loc){
-        Location l = new Location(loc.getWorld(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
-        return this.locUses.containsKey(l);
+    public boolean hasUsedLocation(String loc){
+        return this.locUses.containsKey(loc);
     }
     
-    public int getUsedLocation(Location loc){
+    public int getUsedLocation(String loc){
         if(!this.hasUsedLocation(loc)){
             return 0;
         }
-        Location l = new Location(loc.getWorld(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
-        return this.locUses.get(l);
+        return this.locUses.get(loc);
     }
     
-    public void addtoUsedLocation(Location loc, int add){
-        Location l = new Location(loc.getWorld(), loc.getBlockX(), loc.getBlockY(), loc.getBlockZ());
-        if(!this.hasUsedLocation(l)){
-            this.locUses.put(l, add);
+    public void addtoUsedLocation(String loc, int add){
+        if(!this.hasUsedLocation(loc)){
+            this.locUses.put(loc, add);
             return;
         }
-        this.locUses.put(l, this.locUses.get(l)+add);
+        this.locUses.put(loc, this.locUses.get(loc)+add);
     }
     
     public void save(MySQL m, String table){
@@ -114,12 +111,13 @@ public class UserInfo {
                 Bukkit.getLogger().log(Level.SEVERE, null, ex);
             }
         }
-        for(Location loc : this.locUses.keySet()){
+        for(String loc : this.locUses.keySet()){
+            String[] split = loc.split(",");
             ResultSet set = m.executeQuery("SELECT * FROM " + table + " WHERE "
-                    + "x=" + loc.getBlockX() + " AND "
-                    + "y=" + loc.getBlockY() + " AND "
-                    + "z=" + loc.getBlockZ() + " AND "
-                    + "world='" + loc.getWorld().getName() + "'");
+                    + "x=" + split[1] + " AND "
+                    + "y=" + split[2] + " AND "
+                    + "z=" + split[3] + " AND "
+                    + "world='" + split[0] + "'");
             if(set == null){
                 //thats weird..
                 continue;
@@ -129,20 +127,20 @@ public class UserInfo {
                 while(set.next()){
                    //is already in the table
                     m.executeStatement("UPDATE " + table + " SET used=" + this.locUses.get(loc) + " WHERE "
-                    + "x=" + loc.getBlockX() + " AND "
-                    + "y=" + loc.getBlockY() + " AND "
-                    + "z=" + loc.getBlockZ() + " AND "
-                    + "world='" + loc.getWorld().getName() + "'");
+                    + "x=" + split[1] + " AND "
+                    + "y=" + split[2] + " AND "
+                    + "z=" + split[3] + " AND "
+                    + "world='" + split[0] + "'");
                     found = true;
                     break;
                 }
                 if(!found){
                     m.executeStatement("INSERT INTO " + table + "(player, x, y, z, world, used) VALUES ('" + 
                             this.username + "', " + 
-                            loc.getBlockX() + ", " + 
-                            loc.getBlockY() + ", " + 
-                            loc.getBlockZ() + ", '" + 
-                            loc.getWorld().getName() + "',"
+                            split[1] + ", " + 
+                            split[2] + ", " + 
+                            split[3] + ", '" + 
+                            split[0] + "',"
                             + this.getUsedLocation(loc) + ")");  
                 }                
             } catch (SQLException ex) {
@@ -164,8 +162,8 @@ public class UserInfo {
         for(String warp : this.warpUses.keySet()){
             c.set(this.username + "." + warp, this.getUsedWarp(warp));
         }
-        for(Location loc : this.locUses.keySet()){
-            c.set(this.username + "." + loc.getWorld().getName() + "," + loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ(), this.getUsedLocation(loc));
+        for(String loc : this.locUses.keySet()){
+            c.set(this.username + "." + loc, this.getUsedLocation(loc));
         }
         try {
             c.save(f);

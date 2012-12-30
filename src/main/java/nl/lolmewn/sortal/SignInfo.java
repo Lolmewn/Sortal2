@@ -168,7 +168,7 @@ public class SignInfo {
         return this.world + "," + this.x + "," + this.y + "," + this.z;
     }
 
-    public Location getLocation() {
+    public Location getSafeLocation() {
         return new Location(Bukkit.getServer().getWorld(world), x, y, z);
     }
 

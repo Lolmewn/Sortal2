@@ -32,7 +32,9 @@ import org.bukkit.configuration.file.YamlConfiguration;
 public class Warp {
 
     private String name;
-    private Location loc;
+    private String world;
+    private double x,y,z;
+    private float pitch=0, yaw=0;
     private int price = -1;
     private boolean hasPrice;
     private int uses = -1;
@@ -40,9 +42,14 @@ public class Warp {
     private boolean usedTotalBased;
     private String owner;
 
-    public Warp(String name, Location loc) {
+    public Warp(String name, String world, double x, double y, double z, float pitch, float yaw) {
         this.name = name;
-        this.loc = loc;
+        this.world = world;
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.pitch = pitch;
+        this.yaw = yaw;
     }
 
     public boolean hasPrice() {
@@ -65,8 +72,28 @@ public class Warp {
         this.usedTotalBased = usedTotalBased;
     }
 
-    public Location getLocation() {
-        return this.loc;
+    public float getPitch() {
+        return pitch;
+    }
+
+    public String getWorld() {
+        return world;
+    }
+
+    public double getX() {
+        return x;
+    }
+
+    public double getY() {
+        return y;
+    }
+
+    public float getYaw() {
+        return yaw;
+    }
+
+    public double getZ() {
+        return z;
     }
 
     public int getPrice() {
@@ -106,10 +133,10 @@ public class Warp {
     }
 
     public String getLocationToString() {
-        return this.loc.getWorld().getName()
-                + "," + this.loc.getX()
-                + "," + this.loc.getY()
-                + "," + this.loc.getZ();
+        return this.world
+                + "," + this.x
+                + "," + this.y
+                + "," + this.z;
     }
 
     public void save(MySQL m, String table) {
@@ -117,24 +144,13 @@ public class Warp {
             System.out.println("[Sortal] name=null...");
             return;
         }
-        if(loc == null){
-            System.out.println("[Sortal] loc=null for name " + name);
-            return;
-        }
-        String worldname = "world";
-        try{
-            worldname = loc.getWorld().getName();
-        }catch(NullPointerException e){
-            System.out.println("Nullpointer while saving warp " + name + ", because the world is not loaded: " + e.getMessage());
-            return;
-        }
         int updated = m.executeStatement("UPDATE " + table + " SET "
-                + "world='" + worldname + "', "
-                + "x=" + this.loc.getX() + ", "
-                + "y=" + this.loc.getY() + ", "
-                + "z=" + this.loc.getZ() + ", "
-                + "yaw=" + (double) this.loc.getYaw() + ", "
-                + "pitch=" + (double) this.loc.getPitch() + ", "
+                + "world='" + world + "', "
+                + "x=" + this.x + ", "
+                + "y=" + this.y + ", "
+                + "z=" + this.z + ", "
+                + "yaw=" + (double) yaw + ", "
+                + "pitch=" + (double) pitch + ", "
                 + "price=" + this.getPrice() + ", "
                 + "uses=" + this.uses + ", "
                 + "used=" + this.used + ", "
@@ -145,10 +161,10 @@ public class Warp {
         if (updated == 0) {
             m.executeQuery("INSERT INTO " + table + "(name, world, x, y, z, yaw, pitch, price, uses, used, usedTotalBased, owner) VALUES ("
                     + "'" + this.getName() + "', "
-                    + "'" + worldname + "', "
-                    + this.getLocation().getX() + ", " + this.getLocation().getY()
-                    + ", " + this.getLocation().getZ() + ", " + this.getLocation().getYaw()
-                    + ", " + this.getLocation().getPitch() + ", " + this.getPrice() + ", "
+                    + "'" + world + "', "
+                    + this.x + ", " + this.y
+                    + ", " + this.z + ", " + this.yaw
+                    + ", " + this.pitch + ", " + this.getPrice() + ", "
                     + this.uses + ", " + this.used + ", " + this.usedTotalBased + ", '" + this.owner + "')");
         }
     }
@@ -165,24 +181,13 @@ public class Warp {
             System.out.println("[Sortal] name=null...");
             return;
         }
-        if(loc == null){
-            System.out.println("[Sortal] loc=null for name " + name);
-            return;
-        }
         YamlConfiguration c = YamlConfiguration.loadConfiguration(f);
-        String worldname = "world";
-        try{
-            worldname = loc.getWorld().getName();
-        }catch(NullPointerException e){
-            System.out.println("Nullpointer while saving warp " + name + ", because the world is not loaded: " + e.getMessage());
-            return;
-        }
-        c.set(name + ".world", worldname);
-        c.set(name + ".x", loc.getX());
-        c.set(name + ".y", loc.getY());
-        c.set(name + ".z", loc.getZ());
-        c.set(name + ".yaw", (double) loc.getYaw());
-        c.set(name + ".pitch", (double) loc.getPitch());
+        c.set(name + ".world", world);
+        c.set(name + ".x", x);
+        c.set(name + ".y", y);
+        c.set(name + ".z", z);
+        c.set(name + ".yaw", (double) yaw);
+        c.set(name + ".pitch", (double) pitch);
         c.set(name + ".price", this.price);
         c.set(name + ".uses", this.uses);
         c.set(name + ".used", this.used);
@@ -207,5 +212,20 @@ public class Warp {
         } catch (IOException ex) {
             Bukkit.getLogger().log(Level.SEVERE, null, ex);
         }
+    }
+    
+    public boolean hasLoadedWorld(){
+        return Bukkit.getWorld(world) != null;
+    }
+    
+    public Location getLocation(){
+        return new Location(Bukkit.getWorld(world), x, y, z, yaw, pitch);
+    }
+    
+    public Location getSafeLocation(){
+        if(this.hasLoadedWorld()){
+            return this.getLocation();
+        }
+        return null;
     }
 }

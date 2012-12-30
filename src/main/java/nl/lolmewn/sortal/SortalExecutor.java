@@ -143,13 +143,12 @@ public class SortalExecutor implements CommandExecutor {
                 }
                 StringBuilder sb = new StringBuilder();
                 sb.append(ChatColor.GREEN).append(warp.getName()).append(": ").append(ChatColor.WHITE).append("W: ");
-                String w = warp.getLocation().getWorld().getName();
-                sb.append(ChatColor.LIGHT_PURPLE).append(w).append(ChatColor.WHITE).append(" X: ");
-                sb.append(ChatColor.RED).append(delimite(warp.getLocation().getX())).append(ChatColor.WHITE).append(" Y: ");
-                sb.append(ChatColor.RED).append(delimite(warp.getLocation().getY())).append(ChatColor.WHITE).append(" Z: ");
-                sb.append(ChatColor.RED).append(delimite(warp.getLocation().getZ())).append(ChatColor.WHITE).append(" Y: ");
-                sb.append(ChatColor.AQUA).append(delimite(warp.getLocation().getYaw())).append(ChatColor.WHITE).append(" P: ");
-                sb.append(ChatColor.AQUA).append(delimite(warp.getLocation().getPitch()));
+                sb.append(ChatColor.LIGHT_PURPLE).append(warp.getWorld()).append(ChatColor.WHITE).append(" X: ");
+                sb.append(ChatColor.RED).append(delimite(warp.getX())).append(ChatColor.WHITE).append(" Y: ");
+                sb.append(ChatColor.RED).append(delimite(warp.getY())).append(ChatColor.WHITE).append(" Z: ");
+                sb.append(ChatColor.RED).append(delimite(warp.getZ())).append(ChatColor.WHITE).append(" Y: ");
+                sb.append(ChatColor.AQUA).append(delimite(warp.getYaw())).append(ChatColor.WHITE).append(" P: ");
+                sb.append(ChatColor.AQUA).append(delimite(warp.getPitch()));
                 sender.sendMessage(sb.toString());
             }
             if(count == -1){
@@ -365,6 +364,10 @@ public class SortalExecutor implements CommandExecutor {
             }
             Warp w = this.getPlugin().getWarpManager().getWarp(warp);
             Player p = (Player)sender;
+            if(!w.hasLoadedWorld()){
+                p.sendMessage("The world the warp is pointing to hasn't been loaded!");
+                p.sendMessage("Therefore, teleport cannot commence. Make sure the world '" + w.getWorld() + "' is loaded.");
+            }
             p.teleport(w.getLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
             sender.sendMessage(this.getLocalisation().getPlayerTeleported(w.getName()));
             return true;

@@ -129,6 +129,12 @@ public class EventListener implements Listener {
                             event.setCancelled(true);
                             return;
                         }
+                        if(!w.hasLoadedWorld()){
+                            this.getPlugin().debug("[Debug] World not loaded, cancelling");
+                            p.sendMessage("World is not loaded, cannot jump!");
+                            event.setCancelled(true);
+                            return;
+                        }
                         if (!canPay(w, sign, p)) {
                             this.getPlugin().debug(String.format("[Debug] Can't pay: %s", getPrice(w, sign)));
                             p.sendMessage(this.getLocalisation().getNoMoney(Integer.toString(getPrice(w, sign))));
@@ -198,6 +204,12 @@ public class EventListener implements Listener {
                             event.setCancelled(true);
                             return;
                         }
+                    }
+                    if(!w.hasLoadedWorld()){
+                            this.getPlugin().debug("[Debug] World not loaded, cancelling");
+                            p.sendMessage("World is not loaded, cannot jump!");
+                            event.setCancelled(true);
+                            return;
                     }
                     if (!canPay(w, sign, p)) {
                         p.sendMessage(this.getLocalisation().getNoMoney(Integer.toString(getPrice(w, sign))));
@@ -445,9 +457,9 @@ public class EventListener implements Listener {
                 this.getPlugin().debug("[Debug] Uses end code 4");
                 return true;
             } else {
-                if (sign.getUses() > f.getUsedLocation(sign.getLocation())) {
+                if (sign.getUses() > f.getUsedLocation(sign.getLocationToString())) {
                     //Not used as many times as allowed
-                    f.addtoUsedLocation(sign.getLocation(), 1);
+                    f.addtoUsedLocation(sign.getLocationToString(), 1);
                     this.getPlugin().debug("[Debug] Uses end code 5");
                     return true;
                 }
@@ -495,9 +507,9 @@ public class EventListener implements Listener {
                     return true;
                 }
             } else {
-                if (sign.getUses() > f.getUsedLocation(sign.getLocation())) {
+                if (sign.getUses() > f.getUsedLocation(sign.getLocationToString())) {
                     //Not used as many times as allowed
-                    f.addtoUsedLocation(sign.getLocation(), 1);
+                    f.addtoUsedLocation(sign.getLocationToString(), 1);
                     this.getPlugin().debug("[Debug] Uses end code 14");
                     return true;
                 } else {
@@ -547,10 +559,10 @@ public class EventListener implements Listener {
                 w.setUsed(w.getUsed() + 1);
                 return true;
             }
-            if (sign.getUses() > f.getUsedLocation(sign.getLocation())) {
+            if (sign.getUses() > f.getUsedLocation(sign.getLocationToString())) {
                 this.getPlugin().debug("[Debug] Uses end code 23");
                 w.setUsed(w.getUsed() + 1);
-                f.addtoUsedLocation(sign.getLocation(), 1);
+                f.addtoUsedLocation(sign.getLocationToString(), 1);
                 return true;
             }
             this.getPlugin().debug("[Debug] Uses end code 24");
@@ -575,11 +587,11 @@ public class EventListener implements Listener {
                 this.getPlugin().debug("[Debug] Uses end code 28");
                 return false;
             }
-            if (sign.getUses() <= f.getUsedLocation(sign.getLocation())) {
+            if (sign.getUses() <= f.getUsedLocation(sign.getLocationToString())) {
                 this.getPlugin().debug("[Debug] Uses end code 29");
                 return false;
             }
-            f.addtoUsedLocation(sign.getLocation(), 1);
+            f.addtoUsedLocation(sign.getLocationToString(), 1);
             f.addtoUsedWarp(w.getName(), 1);
             this.getPlugin().debug("[Debug] Uses end code 30");
             return true;

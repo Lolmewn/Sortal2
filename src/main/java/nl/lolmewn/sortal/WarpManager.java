@@ -234,8 +234,7 @@ public class WarpManager {
                     UserInfo info = this.getUserInfo(player);
                     if (set.getString("warp") == null) {
                         //location
-                        info.addtoUsedLocation(new Location(this.getPlugin().getServer().getWorld(set.getString("world")),
-                                set.getInt("x"), set.getInt("y"), set.getInt("z")), set.getInt("used"));
+                        info.addtoUsedLocation(set.getString("world") + "," + set.getInt("x") + "," + set.getInt("y") + "," + set.getInt("z"), set.getInt("used"));
                         continue;
                     }
                     info.addtoUsedWarp(set.getString("warp"), set.getInt("used"));
@@ -255,19 +254,14 @@ public class WarpManager {
                     info.addtoUsedWarp(key, c.getInt(player + "." + key));
                     continue;
                 }
-                String[] splot = key.split(",");
-                Location loc = new Location(this.getPlugin().getServer().getWorld(splot[0]),
-                        Integer.parseInt(splot[1]),
-                        Integer.parseInt(splot[2]),
-                        Integer.parseInt(splot[3]));
-                info.addtoUsedLocation(loc, c.getInt(player + "." + key, 0));
+                info.addtoUsedLocation(key, c.getInt(player + "." + key, 0));
             }
         }
         this.getPlugin().getLogger().log(Level.INFO, String.format("Users loaded: %s", this.users.size()));
     }
 
     protected Warp addWarp(String name, Location loc) {
-        this.warps.put(name, new Warp(name, loc));
+        this.warps.put(name, new Warp(name, loc.getWorld().getName(), loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch()));
         Warp w = this.getWarp(name);
         if (this.getPlugin().getSettings().useMySQL()) {
             w.save(this.getPlugin().getMySQL(), this.getPlugin().getWarpTable());
