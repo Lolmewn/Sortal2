@@ -369,6 +369,7 @@ public class SortalExecutor implements CommandExecutor {
             if(!w.hasLoadedWorld()){
                 p.sendMessage("The world the warp is pointing to hasn't been loaded!");
                 p.sendMessage("Therefore, teleport cannot commence. Make sure the world '" + w.getWorld() + "' is loaded.");
+                return true;
             }
             p.teleport(w.getLocation(), PlayerTeleportEvent.TeleportCause.PLUGIN);
             sender.sendMessage(this.getLocalisation().getPlayerTeleported(w.getName()));
