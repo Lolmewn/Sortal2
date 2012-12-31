@@ -21,6 +21,7 @@ package nl.lolmewn.sortal;
 
 import java.util.HashSet;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -78,7 +79,8 @@ public class SortalExecutor implements CommandExecutor {
                 if(sender instanceof Player && !this.getPlugin().pay((Player)sender, this.getPlugin().getSettings().getWarpCreatePrice())){
                     return true; 
                 }
-                Warp w = this.getPlugin().getWarpManager().addWarp(warp, ((Player)sender).getLocation());
+                Location loc = ((Player)sender).getLocation();
+                Warp w = this.getPlugin().getWarpManager().addWarp(warp, loc.getWorld().getName(), loc.getX(),loc.getY(),loc.getZ(),loc.getYaw(),loc.getPitch());
                 w.setOwner(sender.getName());
                 sender.sendMessage(this.getLocalisation().getWarpCreated(warp));
                 return true;

@@ -97,7 +97,7 @@ public class EventListener implements Listener {
                     }
                 }
                 if (found == -1) {
-                    if (!this.getPlugin().getWarpManager().hasSignInfo(s.getLocation())) {
+                    if (!this.getPlugin().getWarpManager().hasSignInfo(plugin.getLocationInts(b.getLocation()))) {
                         return; //nvm it's not a sortal sign of any kind.
                     }
                     if (!p.hasPermission("sortal.warp")) {
@@ -105,7 +105,7 @@ public class EventListener implements Listener {
                         event.setCancelled(true);
                         return;
                     }
-                    SignInfo sign = this.getPlugin().getWarpManager().getSign(s.getLocation());
+                    SignInfo sign = this.getPlugin().getWarpManager().getSign(plugin.getLocationInts(b.getLocation()));
                     if (sign.hasWarp()) {
                         this.getPlugin().debug(String.format("[Debug] Sign clicked has warp: %s", sign.getWarp()));
                         if (this.getPlugin().getSettings().isPerWarpPerm()) {
@@ -197,7 +197,7 @@ public class EventListener implements Listener {
                         return;
                     }
                     Warp w = this.getPlugin().getWarpManager().getWarp(warp);
-                    SignInfo sign = this.getPlugin().getWarpManager().getSign(s.getLocation());
+                    SignInfo sign = this.getPlugin().getWarpManager().getSign(plugin.getLocationInts(b.getLocation()));
                     if (sign != null) {
                         if (!isPrivateUser(sign, p)) {
                             p.sendMessage(this.getLocalisation().getIsPrivateSign());
@@ -243,7 +243,7 @@ public class EventListener implements Listener {
                         }
                         add = 1;
                     }
-                    SignInfo sign = this.getPlugin().getWarpManager().getSign(s.getLocation());
+                    SignInfo sign = this.getPlugin().getWarpManager().getSign(plugin.getLocationInts(b.getLocation()));
                     if (sign != null) {
                         if (!isPrivateUser(sign, p)) {
                             p.sendMessage(this.getLocalisation().getIsPrivateSign());
@@ -281,19 +281,19 @@ public class EventListener implements Listener {
     private boolean sortalSign(Sign s, Player player) {
         //checks whether
         if (this.getPlugin().setcost.containsKey(player.getName())) {
-            if (this.getPlugin().getWarpManager().hasSignInfo(s.getLocation())) {
+            if (this.getPlugin().getWarpManager().hasSignInfo(plugin.getLocationInts(s.getLocation()))) {
                 //It's a registered sign
-                SignInfo sign = this.getPlugin().getWarpManager().getSign(s.getLocation());
+                SignInfo sign = this.getPlugin().getWarpManager().getSign(plugin.getLocationInts(s.getLocation()));
                 sign.setPrice(this.getPlugin().setcost.remove(player.getName()));
                 player.sendMessage("Price set to " + sign.getPrice() + " for this sign!");
                 return true;
             }
             for (String line : s.getLines()) {
                 if (line.toLowerCase().contains("[sortal]") || line.contains(this.getPlugin().getSettings().getSignContains())) {
-                    SignInfo sign = this.getPlugin().getWarpManager().addSign(s.getLocation());
+                    SignInfo sign = this.getPlugin().getWarpManager().addSign(plugin.getLocationInts(s.getLocation()));
                     sign.setPrice(this.getPlugin().setcost.remove(player.getName()));
                     sign.setOwner(player.getName());
-                    player.sendMessage("Price set to " + this.getPlugin().getWarpManager().getSign(s.getLocation()).getPrice() + " for this sign!");
+                    player.sendMessage("Price set to " + sign.getPrice() + " for this sign!");
                     return true;
                 }
             }
@@ -301,14 +301,14 @@ public class EventListener implements Listener {
             return true;
         }
         if (this.getPlugin().register.containsKey(player.getName())) {
-            if (this.getPlugin().getWarpManager().hasSignInfo(s.getLocation())) {
+            if (this.getPlugin().getWarpManager().hasSignInfo(plugin.getLocationInts(s.getLocation()))) {
                 //It's a registered sign
-                SignInfo sign = this.getPlugin().getWarpManager().getSign(s.getLocation());
+                SignInfo sign = this.getPlugin().getWarpManager().getSign(plugin.getLocationInts(s.getLocation()));
                 sign.setWarp(this.getPlugin().register.remove(player.getName()));
                 player.sendMessage("Sign is now pointing to " + sign.getWarp());
                 return true;
             }
-            SignInfo sign = this.getPlugin().getWarpManager().addSign(s.getLocation());
+            SignInfo sign = this.getPlugin().getWarpManager().addSign(plugin.getLocationInts(s.getLocation()));
             String warp = this.getPlugin().register.remove(player.getName());
             sign.setWarp(warp);
             sign.setOwner(player.getName());
@@ -316,11 +316,11 @@ public class EventListener implements Listener {
             return true;
         }
         if (this.getPlugin().unregister.contains(player.getName())) {
-            if (!this.getPlugin().getWarpManager().hasSignInfo(s.getLocation())) {
+            if (!this.getPlugin().getWarpManager().hasSignInfo(plugin.getLocationInts(s.getLocation()))) {
                 player.sendMessage("This sign isn't registered, please hit a registered sign to unregister!");
                 return true;
             }
-            SignInfo sign = this.getPlugin().getWarpManager().getSign(s.getLocation());
+            SignInfo sign = this.getPlugin().getWarpManager().getSign(plugin.getLocationInts(s.getLocation()));
             if (!sign.hasWarp()) {
                 player.sendMessage("This sign isn't pointing to a warp!");
                 return true;
@@ -343,10 +343,10 @@ public class EventListener implements Listener {
         }
         if (this.getPlugin().setuses.containsKey(player.getName())) {
             SignInfo info;
-            if (this.getPlugin().getWarpManager().hasSignInfo(s.getLocation())) {
-                info = this.getPlugin().getWarpManager().getSign(s.getLocation());
+            if (this.getPlugin().getWarpManager().hasSignInfo(plugin.getLocationInts(s.getLocation()))) {
+                info = this.getPlugin().getWarpManager().getSign(plugin.getLocationInts(s.getLocation()));
             } else {
-                info = this.getPlugin().getWarpManager().addSign(s.getLocation());
+                info = this.getPlugin().getWarpManager().addSign(plugin.getLocationInts(s.getLocation()));
             }
             String uses = this.getPlugin().setuses.remove(player.getName());
             String[] split = uses.split(",");
@@ -357,10 +357,10 @@ public class EventListener implements Listener {
         }
         if (this.getPlugin().setPrivate.contains(player.getName())) {
             SignInfo sign;
-            if (this.getPlugin().getWarpManager().hasSignInfo(s.getLocation())) {
-                sign = this.getPlugin().getWarpManager().getSign(s.getLocation());
+            if (this.getPlugin().getWarpManager().hasSignInfo(plugin.getLocationInts(s.getLocation()))) {
+                sign = this.getPlugin().getWarpManager().getSign(plugin.getLocationInts(s.getLocation()));
             } else {
-                sign = this.getPlugin().getWarpManager().addSign(s.getLocation());
+                sign = this.getPlugin().getWarpManager().addSign(plugin.getLocationInts(s.getLocation()));
             }
             sign.setIsPrivate(!sign.isPrivate());
             player.sendMessage("This sign is now " + (sign.isPrivate() ? "private" : "public"));
@@ -375,11 +375,11 @@ public class EventListener implements Listener {
             return true;
         }
         if (this.getPlugin().setPrivateUsers.containsKey(player.getName())) {
-            if (!this.getPlugin().getWarpManager().hasSignInfo(s.getLocation())) {
+            if (!this.getPlugin().getWarpManager().hasSignInfo(plugin.getLocationInts(s.getLocation()))) {
                 player.sendMessage("Please hit a private sign!");
                 return true;
             }
-            SignInfo sign = this.getPlugin().getWarpManager().getSign(s.getLocation());
+            SignInfo sign = this.getPlugin().getWarpManager().getSign(plugin.getLocationInts(s.getLocation()));
             if (!sign.isPrivate()) {
                 player.sendMessage("Please hit a private sign!");
                 return true;
@@ -409,12 +409,12 @@ public class EventListener implements Listener {
                 }
             }
             //no [Sortal] or whatever on sign, maybe registered?
-            if (this.getPlugin().getWarpManager().hasSignInfo(b.getLocation())) {
+            if (this.getPlugin().getWarpManager().hasSignInfo(plugin.getLocationInts(s.getLocation()))) {
                 if (!event.getPlayer().hasPermission("sortal.breaksign")) {
                     event.getPlayer().sendMessage(this.getLocalisation().getNoPerms());
                     event.setCancelled(true);
                 }
-                SignInfo i = this.getPlugin().getWarpManager().getSign(b.getLocation());
+                SignInfo i = this.getPlugin().getWarpManager().getSign(plugin.getLocationInts(s.getLocation()));
                 if (this.getPlugin().getSettings().useMySQL()) {
                     i.delete(this.getPlugin().getMySQL(), this.getPlugin().getSignTable());
                 } else {

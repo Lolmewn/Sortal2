@@ -27,7 +27,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
-import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 /**
@@ -76,10 +75,9 @@ public class WarpManager {
             }
             try {
                 while (set.next()) {
-                    Warp w = this.addWarp(set.getString("name"), new Location(
-                            this.getPlugin().getServer().getWorld(set.getString("world")),
+                    Warp w = this.addWarp(set.getString("name"), set.getString("world"),
                             set.getDouble("x"), set.getDouble("y"), set.getDouble("z"),
-                            set.getFloat("yaw"), set.getFloat("pitch")));
+                            set.getFloat("yaw"), set.getFloat("pitch"));
                     if (set.getInt("uses") != -1) {
                         w.setUses(set.getInt("uses"));
                         w.setUsed(set.getInt("used"));
@@ -113,8 +111,8 @@ public class WarpManager {
         }
         YamlConfiguration c = YamlConfiguration.loadConfiguration(this.warpFile);
         for (String key : c.getConfigurationSection("").getKeys(false)) {
-            Warp w = this.addWarp(key, new Location(this.getPlugin().getServer().getWorld(c.getString(key + ".world")), c.getDouble(key + ".x"), c.getDouble(key + ".y"), c.getDouble(key + ".z"),
-                    (float) c.getDouble(key + ".yaw"), (float) c.getDouble(key + ".pitch")));
+            Warp w = this.addWarp(key, c.getString(key + ".world"), c.getDouble(key + ".x"), c.getDouble(key + ".y"), c.getDouble(key + ".z"),
+                    (float) c.getDouble(key + ".yaw"), (float) c.getDouble(key + ".pitch"));
             if (c.getInt(key + ".uses", -1) != -1) {
                 w.setUses(c.getInt(key + ".uses"));
                 w.setUsed(c.getInt(key + ".used"));
@@ -143,11 +141,10 @@ public class WarpManager {
             }
             try {
                 while (set.next()) {
-                    Location loc = new Location(
-                            this.getPlugin().getServer().getWorld(set.getString("world")),
-                            set.getInt("x"),
-                            set.getInt("y"),
-                            set.getInt("z"));
+                    String loc = set.getString("world") + 
+                            set.getInt("x") + 
+                            set.getInt("y") + 
+                            set.getInt("z");
                     SignInfo added = this.addSign(loc);
                     added.setWarp(set.getString("warp"));
                     if (set.getInt("price") != -1) {
@@ -188,12 +185,7 @@ public class WarpManager {
                 //dafuq?
                 continue;
             }
-            String[] splot = key.split(",");
-            Location loc = new Location(this.getPlugin().getServer().getWorld(splot[0]),
-                    Integer.parseInt(splot[1]),
-                    Integer.parseInt(splot[2]),
-                    Integer.parseInt(splot[3]));
-            SignInfo s = this.addSign(loc);
+            SignInfo s = this.addSign(key);
             if(c.contains(key + ".warp")){
                 s.setWarp(c.getString(key+".warp"));
             }
@@ -260,8 +252,8 @@ public class WarpManager {
         this.getPlugin().getLogger().log(Level.INFO, String.format("Users loaded: %s", this.users.size()));
     }
 
-    protected Warp addWarp(String name, Location loc) {
-        this.warps.put(name, new Warp(name, loc.getWorld().getName(), loc.getX(), loc.getY(), loc.getZ(), loc.getYaw(), loc.getPitch()));
+    protected Warp addWarp(String name, String world, double x, double y, double z, float yaw, float pitch) {
+        this.warps.put(name, new Warp(name, world, x, y, z, yaw, pitch));
         Warp w = this.getWarp(name);
         if (this.getPlugin().getSettings().useMySQL()) {
             w.save(this.getPlugin().getMySQL(), this.getPlugin().getWarpTable());
@@ -271,22 +263,20 @@ public class WarpManager {
         return w;
     }
 
-    protected Warp addWarp(String name, Location loc, int price) {
-        Warp w = this.addWarp(name, loc);
+    protected Warp addWarp(String name, String world, double x, double y, double z, float yaw, float pitch, int price) {
+        Warp w = this.addWarp(name, world, x, y, z, yaw, pitch);
         w.setPrice(price);
         return w;
     }
 
-    protected SignInfo addSign(Location loc) {
-        this.signs.put(loc.getWorld().getName() + ","
-                + loc.getBlockX() + ","
-                + loc.getBlockY() + ","
-                + loc.getBlockZ(), new SignInfo(
-                loc.getWorld().getName(),
-                loc.getBlockX(),
-                loc.getBlockY(),
-                loc.getBlockZ()));
-        return this.getSign(loc);
+    protected SignInfo addSign(String world, int x, int y, int z) {
+        return this.addSign(world + "," + x + "," + y + "," + z);
+    }
+    
+    protected SignInfo addSign(String key) {
+        String[] s = key.split(",");
+        this.signs.put(key, new SignInfo(s[0], Integer.parseInt(s[1]), Integer.parseInt(s[2]), Integer.parseInt(s[3])));
+        return this.getSign(key);
     }
 
     protected UserInfo addUserInfo(String name) {
@@ -301,11 +291,12 @@ public class WarpManager {
         return this.addUserInfo(name);
     }
 
-    protected SignInfo getSign(Location loc) {
-        return this.signs.get(loc.getWorld().getName() + ","
-                + loc.getBlockX() + ","
-                + loc.getBlockY() + ","
-                + loc.getBlockZ());
+    protected SignInfo getSign(String world, int x, int y, int z) {
+        return this.getSign(world + "," + x + "," + y + "," + z);
+    }
+    
+    protected SignInfo getSign(String locationString){
+        return this.signs.get(locationString);
     }
 
     protected Warp removeWarp(String name) {
@@ -320,8 +311,8 @@ public class WarpManager {
         return this.warps.remove(name);
     }
 
-    protected void removeSign(Location loc) {
-        SignInfo s = this.getSign(loc);
+    protected void removeSign(String world, int x, int y, int z) {
+        SignInfo s = this.getSign(world + "," + x + "," + y + "," + z);
         if (s == null) {
             return;
         }
@@ -331,9 +322,13 @@ public class WarpManager {
             s.delete(this.signFile);
         }
     }
-
-    protected boolean hasSignInfo(Location loc) {
-        return this.getSign(loc) == null ? false : true;
+    
+    protected boolean hasSignInfo(String world, double x, double y, double z){
+        return this.hasSignInfo(world + "," + x + "," + y + "," + z);
+    }
+    
+    protected boolean hasSignInfo(String locationInts) {
+        return this.signs.containsKey(locationInts);
     }
 
     protected boolean hasWarp(String name) {
@@ -443,11 +438,7 @@ public class WarpManager {
                         String[] split = str.split("=");
                         warp = split[0];
                         String[] rest = split[1].split(",");
-                        Warp w = this.addWarp(warp, new Location(
-                                this.getPlugin().getServer().getWorld(rest[0]),
-                                Double.parseDouble(rest[1]),
-                                Double.parseDouble(rest[2]),
-                                Double.parseDouble(rest[3])));
+                        Warp w = this.addWarp(warp, rest[0], Double.parseDouble(rest[1]),Double.parseDouble(rest[2]), Double.parseDouble(rest[3]), 0,0);
                         if (rest.length == 5) {
                             //Also has a price
                             w.setPrice(Integer.parseInt(rest[4]));
@@ -489,7 +480,7 @@ public class WarpManager {
                     String[] rest = split[0].split(",");
                     if (rest.length == 3) {
                         if (isInt(rest[0]) && isInt(rest[1]) && isInt(rest[2])) {
-                            SignInfo s = this.addSign(new Location(this.getPlugin().getServer().getWorlds().get(0), Integer.parseInt(rest[0]), Integer.parseInt(rest[1]), Integer.parseInt(rest[2])));
+                            SignInfo s = this.addSign(this.getPlugin().getServer().getWorlds().get(0).getName(), Integer.parseInt(rest[0]), Integer.parseInt(rest[1]), Integer.parseInt(rest[2]));
                             s.setWarp(warp);
                             continue;
                         }
@@ -497,11 +488,11 @@ public class WarpManager {
                     }
                     if (rest.length == 4) {
                         if (isInt(rest[0]) && isInt(rest[1]) && isInt(rest[2])) {
-                            SignInfo s = this.addSign(new Location(this.getPlugin().getServer().getWorld(rest[3]), Integer.parseInt(rest[0]), Integer.parseInt(rest[1]), Integer.parseInt(rest[2])));
+                            SignInfo s = this.addSign(rest[3], Integer.parseInt(rest[0]), Integer.parseInt(rest[1]), Integer.parseInt(rest[2]));
                             s.setWarp(warp);
                             continue;
                         } else if (isInt(rest[3]) && isInt(rest[1]) && isInt(rest[2])) {
-                            SignInfo s = this.addSign(new Location(this.getPlugin().getServer().getWorld(rest[0]), Integer.parseInt(rest[1]), Integer.parseInt(rest[2]), Integer.parseInt(rest[3])));
+                            SignInfo s = this.addSign(rest[0], Integer.parseInt(rest[1]), Integer.parseInt(rest[2]), Integer.parseInt(rest[3]));
                             s.setWarp(warp);
                             continue;
                         } else {
@@ -533,4 +524,8 @@ public class WarpManager {
             return false;
         }
     }
+
+    
+
+    
 }

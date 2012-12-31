@@ -27,6 +27,7 @@ import java.util.logging.Level;
 import net.milkbowl.vault.economy.Economy;
 import nl.lolmewn.sortal.Metrics.Graph;
 import nl.lolmewn.sortal.Metrics.Plotter;
+import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -224,5 +225,21 @@ public class Main extends JavaPlugin{
         }else{
             this.getLogger().info(message);
         }
+    }
+    
+    public String getLocationDoubles(Location loc){
+        return loc.getWorld().getName() + "," + loc.getX() + "," + loc.getY() + "," + loc.getZ();
+    }
+    
+    public String getLocationInts(Location loc){
+        return loc.getWorld().getName() + "," + loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ();
+    }
+    
+    public String getLocationDoublesPY(Location loc){
+        return loc.getWorld().getName() + "," + loc.getX() + "," + loc.getY() + "," + loc.getZ();
+    }
+    
+    public String getLocationIntsPY(Location loc){
+        return loc.getWorld().getName() + "," + loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ();
     }
 }
