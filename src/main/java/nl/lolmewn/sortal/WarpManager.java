@@ -162,6 +162,7 @@ public class WarpManager {
                             added.addPrivateUser(user);
                         }
                     }
+                    this.signs.put(loc, added);
                 }
             } catch (SQLException ex) {
                 this.getPlugin().getLogger().log(Level.SEVERE, null, ex);
@@ -207,6 +208,7 @@ public class WarpManager {
                     s.addPrivateUser(user);
                 }
             }
+            this.signs.put(key, s);
         }
         this.getPlugin().getLogger().log(Level.INFO, String.format("Signs loaded: %s", this.signs.size()));
     }
