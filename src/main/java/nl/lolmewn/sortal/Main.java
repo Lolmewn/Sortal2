@@ -87,7 +87,7 @@ public class Main extends JavaPlugin{
         }
         this.getServer().getScheduler().scheduleAsyncRepeatingTask(this, new Runnable(){
             public void run() {
-                saveData();getLogger().info("Data saved!");
+                saveData();
                 }
         }, 36000L, 36000L);
         this.startMetrics();
@@ -236,10 +236,11 @@ public class Main extends JavaPlugin{
     }
     
     public String getLocationDoublesPY(Location loc){
-        return loc.getWorld().getName() + "," + loc.getX() + "," + loc.getY() + "," + loc.getZ();
+        return loc.getWorld().getName() + "," + loc.getX() + "," + loc.getY() + "," + loc.getZ() + "," + loc.getYaw() + "," + loc.getPitch();
     }
     
     public String getLocationIntsPY(Location loc){
-        return loc.getWorld().getName() + "," + loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ();
+        return loc.getWorld().getName() + "," + loc.getBlockX() + "," + loc.getBlockY() + "," + loc.getBlockZ() + "," + loc.getYaw() + "," + loc.getPitch();
     }
+    
 }
