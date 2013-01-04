@@ -18,6 +18,7 @@
  */
 package nl.lolmewn.sortal;
 
+import java.io.File;
 import java.util.logging.Level;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -330,7 +331,7 @@ public class EventListener implements Listener {
                 if (this.getPlugin().getSettings().useMySQL()) {
                     sign.delete(this.getPlugin().getMySQL(), this.getPlugin().getSignTable());
                 } else {
-                    sign.delete(this.getPlugin().getWarpManager().signFile);
+                    sign.delete(new File(plugin.getDataFolder(), "signs.yml"));
                 }
                 player.sendMessage("Unregistered sign! No data left for sign, removing..");
                 this.getPlugin().unregister.remove(player.getName());
@@ -418,7 +419,7 @@ public class EventListener implements Listener {
                 if (this.getPlugin().getSettings().useMySQL()) {
                     i.delete(this.getPlugin().getMySQL(), this.getPlugin().getSignTable());
                 } else {
-                    i.delete(this.getPlugin().getWarpManager().signFile);
+                    i.delete(new File(plugin.getDataFolder(), "signs.yml"));
                 }
             }
         }

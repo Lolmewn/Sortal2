@@ -37,12 +37,6 @@ import org.bukkit.configuration.file.YamlConfiguration;
 public class WarpManager {
 
     private Main plugin;
-    File warpFile = new File("plugins" + File.separator
-            + "Sortal" + File.separator + "warps.yml");
-    File signFile = new File("plugins" + File.separator
-            + "Sortal" + File.separator + "signs.yml");
-    File userFile = new File("plugins" + File.separator
-            + "Sortal" + File.separator + "users.yml");
     private HashMap<String, Warp> warps = new HashMap<String, Warp>();
     private HashMap<String, SignInfo> signs = new HashMap<String, SignInfo>();
     private HashMap<String, UserInfo> users = new HashMap<String, UserInfo>();
@@ -100,16 +94,17 @@ public class WarpManager {
             this.getPlugin().getLogger().log(Level.INFO, String.format("Warps loaded: %s", this.warps.size()));
             return;
         }
-        if (!this.warpFile.exists()) {
+        File warpFile = new File(plugin.getDataFolder(), "warps.yml");
+        if (!warpFile.exists()) {
             try {
-                this.warpFile.createNewFile();
+                warpFile.createNewFile();
             } catch (IOException ex) {
                 this.getPlugin().getLogger().log(Level.SEVERE, null, ex);
             } finally {
                 return;
             }
         }
-        YamlConfiguration c = YamlConfiguration.loadConfiguration(this.warpFile);
+        YamlConfiguration c = YamlConfiguration.loadConfiguration(warpFile);
         for (String key : c.getConfigurationSection("").getKeys(false)) {
             Warp w = this.addWarp(key, c.getString(key + ".world"), c.getDouble(key + ".x"), c.getDouble(key + ".y"), c.getDouble(key + ".z"),
                     (float) c.getDouble(key + ".yaw"), (float) c.getDouble(key + ".pitch"));
@@ -170,16 +165,17 @@ public class WarpManager {
             this.getPlugin().getLogger().log(Level.INFO, String.format("Signs loaded: %s", this.signs.size()));
             return;
         }
-        if (!this.signFile.exists()) {
+        File signFile = new File(plugin.getDataFolder(), "signs.yml");
+        if (!signFile.exists()) {
             try {
-                this.signFile.createNewFile();
+                signFile.createNewFile();
             } catch (IOException ex) {
                 this.getPlugin().getLogger().log(Level.SEVERE, null, ex);
             } finally {
                 return;
             }
         }
-        YamlConfiguration c = YamlConfiguration.loadConfiguration(this.signFile);
+        YamlConfiguration c = YamlConfiguration.loadConfiguration(signFile);
         for (String key : c.getConfigurationSection("").getKeys(false)) {
             //Key is location
             if (!key.contains(",")) {
@@ -238,7 +234,17 @@ public class WarpManager {
             }
             return;
         }
-        YamlConfiguration c = YamlConfiguration.loadConfiguration(this.userFile);
+        File userFile = new File(plugin.getDataFolder(), "users.yml");
+        if (!userFile.exists()) {
+            try {
+                userFile.createNewFile();
+            } catch (IOException ex) {
+                this.getPlugin().getLogger().log(Level.SEVERE, null, ex);
+            } finally {
+                return;
+            }
+        }
+        YamlConfiguration c = YamlConfiguration.loadConfiguration(userFile);
         for (String player : c.getConfigurationSection("").getKeys(false)) {
             UserInfo info = this.getUserInfo(player);
             for (String key : c.getConfigurationSection(player).getKeys(false)) {
@@ -260,7 +266,7 @@ public class WarpManager {
         if (this.getPlugin().getSettings().useMySQL()) {
             w.save(this.getPlugin().getMySQL(), this.getPlugin().getWarpTable());
         } else {
-            w.save(this.warpFile);
+            w.save(new File(plugin.getDataFolder(), "warps.yml"));
         }
         return w;
     }
@@ -308,7 +314,7 @@ public class WarpManager {
         if (this.getPlugin().getSettings().useMySQL()) {
             this.warps.get(name).delete(this.getPlugin().getMySQL(), this.getPlugin().getWarpTable());
         } else {
-            this.warps.get(name).delete(this.warpFile);
+            this.warps.get(name).delete(new File(plugin.getDataFolder(), "warps.yml"));
         }
         return this.warps.remove(name);
     }
@@ -321,7 +327,7 @@ public class WarpManager {
         if (this.getPlugin().getSettings().useMySQL()) {
             s.delete(this.getPlugin().getMySQL(), this.getPlugin().getSignTable());
         } else {
-            s.delete(this.signFile);
+            s.delete(new File(plugin.getDataFolder(), "signs.yml"));
         }
     }
     
@@ -381,7 +387,7 @@ public class WarpManager {
             if (this.getPlugin().getSettings().useMySQL()) {
                 this.warps.get(name).save(this.getPlugin().getMySQL(), this.getPlugin().getWarpTable());
             } else {
-                this.warps.get(name).save(this.warpFile);
+                this.warps.get(name).save(new File(plugin.getDataFolder(), "warps.yml"));
             }
         }
         for (String loc : this.signs.keySet()) {
@@ -391,7 +397,7 @@ public class WarpManager {
             if (this.getPlugin().getSettings().useMySQL()) {
                 this.signs.get(loc).save(this.getPlugin().getMySQL(), this.getPlugin().getSignTable());
             } else {
-                this.signs.get(loc).save(this.signFile);
+                this.signs.get(loc).save(new File(plugin.getDataFolder(), "signs.yml"));
             }
         }
         for (String user : this.users.keySet()) {
@@ -401,7 +407,7 @@ public class WarpManager {
             if (this.getPlugin().getSettings().useMySQL()) {
                 this.users.get(user).save(this.getPlugin().getMySQL(), this.getPlugin().getUserTable());
             } else {
-                this.users.get(user).save(this.userFile);
+                this.users.get(user).save(new File(plugin.getDataFolder(), "users.yml"));
             }
         }
     }
