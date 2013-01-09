@@ -85,7 +85,7 @@ public class Main extends JavaPlugin{
         }else{
             this.getLogger().info("Hooked into Vault and Economy plugin succesfully!");
         }
-        this.getServer().getScheduler().scheduleAsyncRepeatingTask(this, new Runnable(){
+        this.getServer().getScheduler().runTaskTimerAsynchronously(this, new Runnable(){
             public void run() {
                 saveData();
                 }
