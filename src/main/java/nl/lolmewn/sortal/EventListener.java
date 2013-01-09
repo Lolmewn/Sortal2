@@ -287,19 +287,21 @@ public class EventListener implements Listener {
                 SignInfo sign = this.getPlugin().getWarpManager().getSign(plugin.getLocationInts(s.getLocation()));
                 sign.setPrice(this.getPlugin().setcost.remove(player.getName()));
                 player.sendMessage("Price set to " + sign.getPrice() + " for this sign!");
-                return true;
             }
+            boolean found = false;
             for (String line : s.getLines()) {
                 if (line.toLowerCase().contains("[sortal]") || line.contains(this.getPlugin().getSettings().getSignContains())) {
                     SignInfo sign = this.getPlugin().getWarpManager().addSign(plugin.getLocationInts(s.getLocation()));
                     sign.setPrice(this.getPlugin().setcost.remove(player.getName()));
                     sign.setOwner(player.getName());
                     player.sendMessage("Price set to " + sign.getPrice() + " for this sign!");
-                    return true;
+                    found = true;
                 }
             }
-            player.sendMessage("This is not a valid sortal sign!");
-            return true;
+            if(!found){
+                player.sendMessage("This is not a valid sortal sign!");
+                return true;
+            }
         }
         if (this.getPlugin().register.containsKey(player.getName())) {
             if (this.getPlugin().getWarpManager().hasSignInfo(plugin.getLocationInts(s.getLocation()))) {
@@ -307,14 +309,13 @@ public class EventListener implements Listener {
                 SignInfo sign = this.getPlugin().getWarpManager().getSign(plugin.getLocationInts(s.getLocation()));
                 sign.setWarp(this.getPlugin().register.remove(player.getName()));
                 player.sendMessage("Sign is now pointing to " + sign.getWarp());
-                return true;
+            }else{
+                SignInfo sign = this.getPlugin().getWarpManager().addSign(plugin.getLocationInts(s.getLocation()));
+                String warp = this.getPlugin().register.remove(player.getName());
+                sign.setWarp(warp);
+                sign.setOwner(player.getName());
+                player.sendMessage("Sign is now pointing to " + warp);
             }
-            SignInfo sign = this.getPlugin().getWarpManager().addSign(plugin.getLocationInts(s.getLocation()));
-            String warp = this.getPlugin().register.remove(player.getName());
-            sign.setWarp(warp);
-            sign.setOwner(player.getName());
-            player.sendMessage("Sign is now pointing to " + warp);
-            return true;
         }
         if (this.getPlugin().unregister.contains(player.getName())) {
             if (!this.getPlugin().getWarpManager().hasSignInfo(plugin.getLocationInts(s.getLocation()))) {
