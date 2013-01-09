@@ -53,6 +53,7 @@ public class WarpManager {
             this.loadSigns();
             this.loadUsers();
         } catch (Exception e) {
+            m.getLogger().warning("Exception caught during loading of data: " + e.getMessage());
             //Be ready to do stuff, even if loading fails
         }
     }
@@ -180,6 +181,7 @@ public class WarpManager {
             //Key is location
             if (!key.contains(",")) {
                 //dafuq?
+                this.getPlugin().debug("Key didn't contain comma: " + key);
                 continue;
             }
             SignInfo s = this.addSign(key);
@@ -204,7 +206,6 @@ public class WarpManager {
                     s.addPrivateUser(user);
                 }
             }
-            this.signs.put(key, s);
         }
         this.getPlugin().getLogger().log(Level.INFO, String.format("Signs loaded: %s", this.signs.size()));
     }
@@ -284,6 +285,7 @@ public class WarpManager {
     protected SignInfo addSign(String key) {
         String[] s = key.split(",");
         this.signs.put(key, new SignInfo(s[0], Integer.parseInt(s[1]), Integer.parseInt(s[2]), Integer.parseInt(s[3])));
+        this.getPlugin().debug("New sign created at " + key);
         return this.getSign(key);
     }
 
