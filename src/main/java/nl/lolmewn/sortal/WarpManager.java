@@ -184,21 +184,21 @@ public class WarpManager {
                 continue;
             }
             SignInfo s = this.addSign(key);
-            if(c.contains(key + ".warp")){
+            if(c.isSet(key + ".warp")){
                 s.setWarp(c.getString(key+".warp"));
             }
-            if(c.contains(key + ".price")){
+            if(c.isSet(key + ".price")){
                 s.setPrice(c.getInt(key+".price"));
             }
-            if(c.contains(key+".uses")){
+            if(c.isSet(key+".uses")){
                 s.setUses(c.getInt(key+".uses"));
                 s.setUsed(c.getInt(key+".used"));
                 s.setUsedTotalBased(c.getBoolean(key+".usedTotalBased"));
             }
-            if(c.contains(key + ".owner")){
+            if(c.isSet(key + ".owner")){
                 s.setOwner(c.getString(key+".owner"));
             }
-            if(c.getBoolean(key + ".private", false)){
+            if(c.isSet(key + ".private")){
                 s.setIsPrivate(true);
                 Set<String> userNames = c.getConfigurationSection(key + ".privateUsers").getKeys(false);
                 for(String user : userNames){
