@@ -142,6 +142,9 @@ public class WarpManager {
                             set.getInt("y") + 
                             set.getInt("z");
                     SignInfo added = this.addSign(loc);
+                    if(added == null){
+                        continue;
+                    }
                     added.setWarp(set.getString("warp"));
                     if (set.getInt("price") != -1) {
                         added.setPrice(set.getInt("price"));
@@ -184,6 +187,9 @@ public class WarpManager {
                 continue;
             }
             SignInfo s = this.addSign(key);
+            if(s == null){
+                continue;
+            }
             if(c.isSet(key + ".warp")){
                 s.setWarp(c.getString(key+".warp"));
             }
@@ -283,6 +289,10 @@ public class WarpManager {
     
     protected SignInfo addSign(String key) {
         String[] s = key.split(",");
+        if(s.length != 4){
+            this.getPlugin().getLogger().severe("Failed to load sign with data: " + key + ", too many or too little commas.");
+            return null;
+        }
         this.signs.put(key, new SignInfo(s[0], Integer.parseInt(s[1]), Integer.parseInt(s[2]), Integer.parseInt(s[3])));
         this.getPlugin().debug("New sign created at " + key);
         return this.getSign(key);
