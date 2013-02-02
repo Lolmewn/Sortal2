@@ -281,6 +281,7 @@ public class EventListener implements Listener {
 
     private boolean sortalSign(Sign s, Player player) {
         //checks whether
+        boolean interacted = false;
         if (this.getPlugin().setcost.containsKey(player.getName())) {
             if (this.getPlugin().getWarpManager().hasSignInfo(plugin.getLocationInts(s.getLocation()))) {
                 //It's a registered sign
@@ -300,7 +301,7 @@ public class EventListener implements Listener {
             }
             if(!found){
                 player.sendMessage("This is not a valid sortal sign!");
-                return true;
+                interacted = true;
             }
         }
         if (this.getPlugin().register.containsKey(player.getName())) {
@@ -316,6 +317,7 @@ public class EventListener implements Listener {
                 sign.setOwner(player.getName());
                 player.sendMessage("Sign is now pointing to " + warp);
             }
+            interacted = true;
         }
         if (this.getPlugin().unregister.contains(player.getName())) {
             if (!this.getPlugin().getWarpManager().hasSignInfo(plugin.getLocationInts(s.getLocation()))) {
@@ -341,7 +343,7 @@ public class EventListener implements Listener {
             sign.setWarp(null);
             this.getPlugin().unregister.remove(player.getName());
             player.sendMessage("Sign unregistered!");
-            return true;
+            interacted = true;
         }
         if (this.getPlugin().setuses.containsKey(player.getName())) {
             SignInfo info;
@@ -355,7 +357,7 @@ public class EventListener implements Listener {
             info.setUses(Integer.parseInt(split[1]));
             info.setUsedTotalBased(split[0].equals("total") ? true : false);
             player.sendMessage("Uses set to " + info.getUses() + " for this sign, " + (info.isUsedTotalBased() ? "total based" : "player based") + "!");
-            return true;
+            interacted = true;
         }
         if (this.getPlugin().setPrivate.contains(player.getName())) {
             SignInfo sign;
@@ -372,9 +374,8 @@ public class EventListener implements Listener {
                     sign.addPrivateUser(name);
                 }
                 player.sendMessage(this.getPlugin().setPrivateUsers.remove(player.getName()).size() + " players added!");
-                return true;
             }
-            return true;
+            interacted = true;
         }
         if (this.getPlugin().setPrivateUsers.containsKey(player.getName())) {
             if (!this.getPlugin().getWarpManager().hasSignInfo(plugin.getLocationInts(s.getLocation()))) {
@@ -390,6 +391,9 @@ public class EventListener implements Listener {
                 sign.addPrivateUser(name);
             }
             player.sendMessage(this.getPlugin().setPrivateUsers.remove(player.getName()).size() + " players added!");
+            interacted = true;
+        }
+        if(interacted){
             return true;
         }
         return false;

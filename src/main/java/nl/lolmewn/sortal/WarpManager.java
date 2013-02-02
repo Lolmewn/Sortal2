@@ -260,7 +260,6 @@ public class WarpManager {
             UserInfo info = this.getUserInfo(player);
             for (String key : c.getConfigurationSection(player).getKeys(false)) {
                 if (!key.contains(",")) {
-                    
                     //warp
                     info.addtoUsedWarp(key, c.getInt(player + "." + key));
                     continue;
