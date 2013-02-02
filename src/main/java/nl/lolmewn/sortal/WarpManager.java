@@ -54,6 +54,7 @@ public class WarpManager {
             this.loadUsers();
         } catch (Exception e) {
             m.getLogger().warning("Exception caught during loading of data: " + e.getMessage());
+            e.printStackTrace();
             //Be ready to do stuff, even if loading fails
         }
     }
