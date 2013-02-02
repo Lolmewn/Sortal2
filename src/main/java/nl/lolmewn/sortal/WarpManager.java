@@ -207,6 +207,9 @@ public class WarpManager {
             if(c.isSet(key + ".private")){
                 s.setIsPrivate(true);
                 Set<String> userNames = c.getConfigurationSection(key + ".privateUsers").getKeys(false);
+                if(userNames == null){
+                    continue;
+                }
                 for(String user : userNames){
                     s.addPrivateUser(user);
                 }
