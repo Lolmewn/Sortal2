@@ -27,6 +27,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Level;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 /**
@@ -207,11 +208,11 @@ public class WarpManager {
             }
             if(c.isSet(key + ".private")){
                 s.setIsPrivate(true);
-                Set<String> userNames = c.getConfigurationSection(key + ".privateUsers").getKeys(false);
+                ConfigurationSection userNames = c.getConfigurationSection(key + ".privateUsers");
                 if(userNames == null){
                     continue;
                 }
-                for(String user : userNames){
+                for(String user : userNames.getKeys(false)){
                     s.addPrivateUser(user);
                 }
             }
