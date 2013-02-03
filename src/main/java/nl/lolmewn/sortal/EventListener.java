@@ -288,20 +288,22 @@ public class EventListener implements Listener {
                 SignInfo sign = this.getPlugin().getWarpManager().getSign(plugin.getLocationInts(s.getLocation()));
                 sign.setPrice(this.getPlugin().setcost.remove(player.getName()));
                 player.sendMessage("Price set to " + sign.getPrice() + " for this sign!");
-            }
-            boolean found = false;
-            for (String line : s.getLines()) {
-                if (line.toLowerCase().contains("[sortal]") || line.contains(this.getPlugin().getSettings().getSignContains())) {
-                    SignInfo sign = this.getPlugin().getWarpManager().addSign(plugin.getLocationInts(s.getLocation()));
-                    sign.setPrice(this.getPlugin().setcost.remove(player.getName()));
-                    sign.setOwner(player.getName());
-                    player.sendMessage("Price set to " + sign.getPrice() + " for this sign!");
-                    found = true;
-                }
-            }
-            if(!found){
-                player.sendMessage("This is not a valid sortal sign!");
                 interacted = true;
+            }else{
+                boolean found = false;
+                for (String line : s.getLines()) {
+                    if (line.toLowerCase().contains("[sortal]") || line.contains(this.getPlugin().getSettings().getSignContains())) {
+                        SignInfo sign = this.getPlugin().getWarpManager().addSign(plugin.getLocationInts(s.getLocation()));
+                        sign.setPrice(this.getPlugin().setcost.remove(player.getName()));
+                        sign.setOwner(player.getName());
+                        player.sendMessage("Price set to " + sign.getPrice() + " for this sign!");
+                        found = true;
+                    }
+                }
+                if(!found){
+                    player.sendMessage("This is not a valid sortal sign!");
+                    interacted = true;
+                }
             }
         }
         if (this.getPlugin().register.containsKey(player.getName())) {
