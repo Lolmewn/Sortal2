@@ -23,6 +23,7 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.logging.Level;
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 /**
@@ -83,23 +84,23 @@ public class Localisation {
 
     private void loadFile() {
         YamlConfiguration c = YamlConfiguration.loadConfiguration(this.localisation);
-        this.createNameForgot = this.check(c, "commands.createNameForgotten" , "Please specify a name for this warp!");
-        this.deleteNameForgot = this.check(c, "commands.deleteNameForgotten" , "Please specify the name of the warp!");
-        this.nameInUse = this.check(c, "commands.nameInUse", "Warp $WARP already exists!");
-        this.noMoney = this.check(c, "noMoney", "You need $MONEY to do this!");
-        this.noPerms = this.check(c, "noPermissions", "You don't have permissions to do that!");
-        this.noPlayer = this.check(c, "noPlayer", "You have to be a player to do this!");
-        this.paymentComplete = this.check(c, "paymentComplete", "You've payed $MONEY!");
-        this.warpCreated = this.check(c, "commands.warpCreated", "Warp $WARP created!");
-        this.warpDeleted = this.check(c, "commands.warpDeleted", "Warp $WARP deleted!");
-        this.warpNotFound = this.check(c, "commands.warpNotFound", "Warp $WARP not found!");
-        this.noWarpsFound = this.check(c, "commands.noWarpsFound", "There are no warps yet!");
-        this.errorInSign = this.check(c, "signError", "There's something wrong with this sign!");
-        this.playerTeleported = this.check(c, "playerTeleported", "You've teleported to $DEST!");
-        this.costSet = this.check(c, "commands.costSet", "Cost set to $COST!");
-        this.maxUsesReached = this.check(c, "maxUsesReached", "You can't use this sign anymore!");
-        this.maxUsesSet = this.check(c, "commands.maxUsesSet", "Max Uses set to $AMOUNT!");
-        this.isPrivateSign = this.check(c, "isPrivateSign", "This is a private sign you can't use!");
+        this.createNameForgot = ChatColor.translateAlternateColorCodes('&', this.check(c, "commands.createNameForgotten" , "Please specify a name for this warp!"));
+        this.deleteNameForgot = ChatColor.translateAlternateColorCodes('&', this.check(c, "commands.deleteNameForgotten" , "Please specify the name of the warp!"));
+        this.nameInUse = ChatColor.translateAlternateColorCodes('&', this.check(c, "commands.nameInUse", "Warp $WARP already exists!"));
+        this.noMoney = ChatColor.translateAlternateColorCodes('&', this.check(c, "noMoney", "You need $MONEY to do this!"));
+        this.noPerms = ChatColor.translateAlternateColorCodes('&', this.check(c, "noPermissions", "You don't have permissions to do that!"));
+        this.noPlayer = ChatColor.translateAlternateColorCodes('&', this.check(c, "noPlayer", "You have to be a player to do this!"));
+        this.paymentComplete = ChatColor.translateAlternateColorCodes('&', this.check(c, "paymentComplete", "You've payed $MONEY!"));
+        this.warpCreated = ChatColor.translateAlternateColorCodes('&', this.check(c, "commands.warpCreated", "Warp $WARP created!"));
+        this.warpDeleted = ChatColor.translateAlternateColorCodes('&', this.check(c, "commands.warpDeleted", "Warp $WARP deleted!"));
+        this.warpNotFound = ChatColor.translateAlternateColorCodes('&', this.check(c, "commands.warpNotFound", "Warp $WARP not found!"));
+        this.noWarpsFound = ChatColor.translateAlternateColorCodes('&', this.check(c, "commands.noWarpsFound", "There are no warps yet!"));
+        this.errorInSign = ChatColor.translateAlternateColorCodes('&', this.check(c, "signError", "There's something wrong with this sign!"));
+        this.playerTeleported = ChatColor.translateAlternateColorCodes('&', this.check(c, "playerTeleported", "You've teleported to $DEST!"));
+        this.costSet = ChatColor.translateAlternateColorCodes('&', this.check(c, "commands.costSet", "Cost set to $COST!"));
+        this.maxUsesReached = ChatColor.translateAlternateColorCodes('&', this.check(c, "maxUsesReached", "You can't use this sign anymore!"));
+        this.maxUsesSet = ChatColor.translateAlternateColorCodes('&', this.check(c, "commands.maxUsesSet", "Max Uses set to $AMOUNT!"));
+        this.isPrivateSign = ChatColor.translateAlternateColorCodes('&', this.check(c, "isPrivateSign", "This is a private sign you can't use!"));
         Bukkit.getLogger().info("[Sortal] Localisation loaded!");
     }
 
