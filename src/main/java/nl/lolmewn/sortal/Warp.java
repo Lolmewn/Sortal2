@@ -42,7 +42,7 @@ public class Warp {
     private boolean usedTotalBased;
     private String owner;
 
-    public Warp(String name, String world, double x, double y, double z, float pitch, float yaw) {
+    public Warp(String name, String world, double x, double y, double z, float yaw, float pitch) {
         this.name = name;
         this.world = world;
         this.x = x;
