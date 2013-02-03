@@ -1,7 +1,7 @@
 name: Sortal
 version: 5.0
 author: Lolmewn
-website: http://metrics.griefcraft.com/plugin/Sortal/
+website: http://mcstats.org/plugin/Sortal/
 main: nl.lolmewn.sortal.Main
 softdepend: [Vault]
 description: Sign based teleportation! 

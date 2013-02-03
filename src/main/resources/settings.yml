@@ -28,6 +28,6 @@ signContains: [Sortal]
 
 # Misc #
 update: true
-version: 5.0
+version: 5.1
 debug: false
 
