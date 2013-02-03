@@ -207,7 +207,7 @@ public class WarpManager {
                 s.setOwner(c.getString(key+".owner"));
             }
             if(c.isSet(key + ".private")){
-                s.setIsPrivate(true);
+                s.setIsPrivate(c.getBoolean(key + ".private"));
                 ConfigurationSection userNames = c.getConfigurationSection(key + ".privateUsers");
                 if(userNames == null){
                     continue;
