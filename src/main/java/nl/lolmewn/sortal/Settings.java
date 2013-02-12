@@ -19,7 +19,8 @@
 
 package nl.lolmewn.sortal;
 
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -49,6 +50,7 @@ public class Settings {
     private String createWarp, delWarp, list, unregister, directWarp, setUses, placeSign, warp;
     
     protected File settingsFile;
+    protected YamlConfiguration c;
     
     private Localisation localisation;
 
@@ -170,19 +172,16 @@ public class Settings {
     public Settings(Main main) {
         this.plugin = main;
         this.settingsFile = new File(main.getDataFolder(), "settings.yml");
+        if(!this.settingsFile.exists()){
+            this.extractSettings(YamlConfiguration.loadConfiguration(settingsFile));
+        }
+        this.c = YamlConfiguration.loadConfiguration(settingsFile);
         this.localisation = new Localisation();
-        this.checkFile();
+        
         this.loadSettings();
     }
 
-    private void checkFile() {
-        if (!this.settingsFile.exists()) {
-            this.extractSettings();
-        }
-    }
-
     private void loadSettings() {
-        YamlConfiguration c = YamlConfiguration.loadConfiguration(this.settingsFile);
         if(c.contains("showWhenWarpGetsLoaded")){
             //Old version of config file
             this.convert(c);
@@ -225,28 +224,12 @@ public class Settings {
         }
     }
 
-    private void extractSettings() {
+    private void extractSettings(YamlConfiguration c) {
         try {
-            this.getPlugin().getLogger().info("Trying to create default config...");
-            try {
-                InputStream in = this.getClass().
-                        getClassLoader().getResourceAsStream("settings.yml");
-                OutputStream out = new BufferedOutputStream(
-                        new FileOutputStream(this.settingsFile));
-                int c;
-                while ((c = in.read()) != -1) {
-                    out.write(c);
-                }
-                out.flush();
-                out.close();
-                in.close();
-                this.getPlugin().getLogger().info("Default config created succesfully!");
-            } catch (Exception e) {
-                e.printStackTrace();
-                this.getPlugin().getLogger().warning("Error creating settings file! Using default settings!");
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
+            this.settingsFile.createNewFile();
+            this.addNewDefauls(c);
+        } catch (IOException ex) {
+            Logger.getLogger(Settings.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
@@ -290,26 +273,14 @@ public class Settings {
         
         if(this.settingsFile.delete()){
             this.getPlugin().getLogger().info("Old Config deleted, values stored..");
-            this.extractSettings();
+            this.extractSettings(c);
             this.addSettingsToConfig(settingsFile, values);
         }else{
             this.getPlugin().getLogger().warning("Couldn't delete old settings file! Using all defaults");
-            this.getPlugin().getLogger().warning("Deleting as soon as possible!");
-            new Thread(new Runnable(){
-                public void run() {
-                    while(!settingsFile.delete()){
-                        //keep trying
-                    }
-                    getPlugin().getLogger().info("Old setting file deleted, creating new one..");
-                    extractSettings();
-                    addSettingsToConfig(settingsFile, values);
-                }
-            }).start();
         }
     }
     
     private void addSettingsToConfig(File f, HashMap<String, Object> values){
-        YamlConfiguration c = YamlConfiguration.loadConfiguration(f);
         for(String path : values.keySet()){
             c.set(path, values.get(path));
         }
@@ -322,7 +293,6 @@ public class Settings {
     }
     
     protected void addSettingToConfig(File f, String path, Object value){
-        YamlConfiguration c = YamlConfiguration.loadConfiguration(f);
         c.set(path, value);
         try {
             c.save(f);
