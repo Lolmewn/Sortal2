@@ -488,7 +488,7 @@ public class Updater
             if(title.split("v").length == 2)
             {
                 String remoteVersion = title.split("v")[1].split(" ")[0]; // Get the newest file's version number
-                if(hasTag(version) || version.equalsIgnoreCase(remoteVersion))
+                if(hasTag(version) || version.equalsIgnoreCase(remoteVersion) || Double.parseDouble(remoteVersion) <= plugin.getVersion())
                 {
                     // We already have the latest version, or this build is tagged for no-update
                     result = Updater.UpdateResult.NO_UPDATE;
