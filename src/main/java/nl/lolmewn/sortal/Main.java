@@ -89,7 +89,7 @@ public class Main extends JavaPlugin{
         this.getServer().getScheduler().runTaskTimerAsynchronously(this, new Runnable(){
             public void run() {
                 saveData();
-                }
+            }
         }, 36000L, 36000L);
         this.startMetrics();
         if(this.getSettings().isUpdate()){
