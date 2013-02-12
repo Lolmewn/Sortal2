@@ -19,6 +19,7 @@
 
 package nl.lolmewn.sortal;
 
+import java.text.DecimalFormat;
 import java.util.HashSet;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -498,22 +499,9 @@ public class SortalExecutor implements CommandExecutor {
         return true;
     }
     
-    public double delimite(double input){
-        plugin.debug("Input: " + input);
-        double more = input * 1000;
-        int remove = (int)more;
-        double back = ((double)remove) / 1000;
-        plugin.debug("Output: " + back);
-        return back;
-    }
-    
-    public float delimite(float input){
-        plugin.debug("Input: " + input);
-        float more = input * 1000;
-        int remove = (int)more;
-        float back = ((float)remove) / 1000;
-        plugin.debug("Output: " + back);
-        return back;
+    public String delimite(double input){
+        DecimalFormat d = new DecimalFormat("###0.##");
+        return d.format(input);
     }
 
 }
