@@ -332,6 +332,26 @@ public class Settings {
     }
 
     private void addNewDefauls(YamlConfiguration c) {
+        c.options().header("True to use MySQL, false for flatfiles");
+        c.addDefault("useMySQL", false);
+        c.options().header("If useMySQL is true, enter these details");
+        c.addDefault("MySQL-User", "root");
+        c.addDefault("MySQL-Pass", "herpDerpPassHere");
+        c.addDefault("MySQL-Host", "localhost");
+        c.addDefault("MySQL-Port", 3306);
+        c.addDefault("MySQL-Database", "minecraft");
+        c.addDefault("MySQL-Prefix", "Sortal_");
+        c.options().header("The price you have to pay for creating a warp");
+        c.addDefault("warpCreatePrice", 0);
+        c.options().header("The price you have to pay for using a warp");
+        c.addDefault("warpUsePrice", 0);
+        c.options().header("true for checking permissions per-warp (sortal.warp.<warp>), false for sortal.warp");
+        c.addDefault("perWarpPerm", false);
+        c.options().header("If the sign contains this, it's a Sortal sign");
+        c.addDefault("signContains", "[Sortal]");
+        c.options().header("Allow automatic updating");
+        c.addDefault("update", true);
+        
         c.options().header("These are only used if no permissions plugin is found.");
         c.addDefault("permissions.warp", "true");
         c.addDefault("permissions.createwarp", "op");
