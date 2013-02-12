@@ -487,6 +487,15 @@ public class SortalExecutor implements CommandExecutor {
         if(args[0].equalsIgnoreCase("redeem")){
             
         }
+        if(args[0].equalsIgnoreCase("save")){
+            if(!sender.hasPermission("sortal.save")){
+                sender.sendMessage(this.getLocalisation().getNoPerms());
+                return true;
+            }
+            this.plugin.saveData();
+            sender.sendMessage(ChatColor.GREEN + "All data has been saved!");
+            return true;
+        }
         sender.sendMessage("Unknown syntax, /sortal help for commands");
         return true;
     }
