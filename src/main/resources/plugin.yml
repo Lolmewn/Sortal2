@@ -9,31 +9,3 @@ commands:
   sortal:
     description: Just the Sortal command
     usage: /<command>
-#permissions:
-#  sortal.*:
-#    description: Gives access to all sortal commands and usages
-#    children:
-#      sortal.createwarp: true
-#      sortal.delwarp: true
-#      sortal.list: true
-#      sortal.unregister: true
-#      sortal.directwarp: true
-#      sortal.setuses: true
-#      sortal.placesign: true
-#      sortal.warp: true
-#  sortal.createwarp:
-#    default: op
-#  sortal.delwarp:
-#    default: op
-#  sortal.list:
-#    default: op
-#  sortal.unregister:
-#    default: op
-#  sortal.directwarp:
-#    default: op
-#  sortal.setuses:
-#    default: op
-#  sortal.placesign:
-#    default: op
-#  sortal.warp:
-#    default: true
