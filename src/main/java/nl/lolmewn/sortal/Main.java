@@ -97,7 +97,6 @@ public class Main extends JavaPlugin{
             new Updater(this, "sortal", this.getFile(), Updater.UpdateType.DEFAULT, true);
         }
         this.getServer().getPluginManager().addPermission(new Permission("sortal.warp", PermissionDefault.getByName(this.getSettings().getDefaultWarp())));
-        this.getServer().getPluginManager().addPermission(new Permission("sortal.warp", PermissionDefault.getByName(this.getSettings().getDefaultWarp())));
         this.getServer().getPluginManager().addPermission(new Permission("sortal.createwarp" ,PermissionDefault.getByName(this.getSettings().getDefaultCreateWarp())));
         this.getServer().getPluginManager().addPermission(new Permission("sortal.delwarp", PermissionDefault.getByName(this.getSettings().getDefaultDelWarp())));
         this.getServer().getPluginManager().addPermission(new Permission("sortal.list", PermissionDefault.getByName(this.getSettings().getDefaultList())));
