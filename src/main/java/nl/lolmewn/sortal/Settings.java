@@ -20,10 +20,12 @@
 package nl.lolmewn.sortal;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 /**
@@ -187,6 +189,15 @@ public class Settings {
             this.convert(c);
         }
         addNewDefauls(c);
+        try {
+            c.load(settingsFile);
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(Settings.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(Settings.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvalidConfigurationException ex) {
+            Logger.getLogger(Settings.class.getName()).log(Level.SEVERE, null, ex);
+        }
         
         this.useMySQL = c.getBoolean("useMySQL");
         this.dbUser = c.getString("MySQL-User");
