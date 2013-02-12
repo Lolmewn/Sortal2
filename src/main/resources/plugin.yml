@@ -18,7 +18,7 @@ permissions:
       sortal.list: true
       sortal.unregister: true
       sortal.directwarp: true
-      sortal.setusees: true
+      sortal.setuses: true
       sortal.placesign: true
       sortal.warp: true
   sortal.createwarp:
@@ -29,7 +29,7 @@ permissions:
     default: op
   sortal.unregister:
     default: op
-  sortal.direchtwarp:
+  sortal.directwarp:
     default: op
   sortal.setuses:
     default: op

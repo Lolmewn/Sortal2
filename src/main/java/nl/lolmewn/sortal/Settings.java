@@ -22,6 +22,7 @@ package nl.lolmewn.sortal;
 import java.io.*;
 import java.util.HashMap;
 import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.bukkit.configuration.file.YamlConfiguration;
 
 /**
@@ -45,8 +46,9 @@ public class Settings {
     private boolean perWarpPerm;
     private boolean signCreatorIsPrivateUser;
     
-    protected File settingsFile = new File("plugins" + File.separator + "Sortal"
-            + File.separator + "settings.yml");
+    private String createWarp, delWarp, list, unregister, directWarp, setUses, placeSign, warp;
+    
+    protected File settingsFile;
     
     private Localisation localisation;
 
@@ -128,6 +130,38 @@ public class Settings {
     public void setWarpUsePrice(int warpUsePrice) {
         this.warpUsePrice = warpUsePrice;
     }
+
+    public String getDefaultCreateWarp() {
+        return createWarp;
+    }
+
+    public String getDefaultDelWarp() {
+        return delWarp;
+    }
+
+    public String getDefaultDirectWarp() {
+        return directWarp;
+    }
+
+    public String getDefaultList() {
+        return list;
+    }
+
+    public String getDefaultPlaceSign() {
+        return placeSign;
+    }
+
+    public String getDefaultSetUses() {
+        return setUses;
+    }
+
+    public String getDefaultUnregister() {
+        return unregister;
+    }
+
+    public String getDefaultWarp() {
+        return warp;
+    }
     
     private Main getPlugin(){
         return this.plugin;
@@ -135,6 +169,7 @@ public class Settings {
     
     public Settings(Main main) {
         this.plugin = main;
+        this.settingsFile = new File(main.getDataFolder(), "settings.yml");
         this.localisation = new Localisation();
         this.checkFile();
         this.loadSettings();
@@ -172,6 +207,18 @@ public class Settings {
         if(!c.contains("signCreatorIsPrivateUser")){
             this.addSettingToConfig(settingsFile, "signCreatorIsPrivateUser", true);
         }
+        
+        addNewDefauls(c);
+        
+        this.createWarp = c.getString("permissions.createwarp", "op");
+        this.delWarp = c.getString("permissions.delwarp", "op");
+        this.list = c.getString("permissions.list", "op");
+        this.unregister = c.getString("permissions.unregister", "op");
+        this.directWarp = c.getString("permissions.directwarp", "op");
+        this.setUses = c.getString("permissions.setuses", "op");
+        this.placeSign = c.getString("permissions.placesign", "op");
+        this.warp = c.getString("permissions.warp", "true");
+        
         this.signCreatorIsPrivateUser = c.getBoolean("signCreatorIsPrivateUser", true);
         if(this.isDebug()){
             this.printSettings(YamlConfiguration.loadConfiguration(this.settingsFile)); //re-init file
@@ -281,6 +328,25 @@ public class Settings {
             c.save(f);
         } catch (IOException ex) {
             this.getPlugin().getLogger().log(Level.SEVERE, null, ex);
+        }
+    }
+
+    private void addNewDefauls(YamlConfiguration c) {
+        c.options().header("These are only used if no permissions plugin is found.");
+        c.addDefault("permissions.warp", "true");
+        c.addDefault("permissions.createwarp", "op");
+        c.addDefault("permissions.delwarp", "op");
+        c.addDefault("permissions.list", "op");
+        c.addDefault("permissions.unregister", "op");
+        c.addDefault("permissions.directwarp", "op");
+        c.addDefault("permissions.setuses", "op");
+        c.addDefault("permissions.placesign", "op");
+        
+        c.options().copyDefaults(true);
+        try {
+            c.save(settingsFile);
+        } catch (IOException ex) {
+            Logger.getLogger(Settings.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 }

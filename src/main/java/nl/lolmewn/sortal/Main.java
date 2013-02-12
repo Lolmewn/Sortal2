@@ -29,6 +29,7 @@ import nl.lolmewn.sortal.Metrics.Graph;
 import nl.lolmewn.sortal.Metrics.Plotter;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
+import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -94,6 +95,15 @@ public class Main extends JavaPlugin{
         if(this.getSettings().isUpdate()){
             new Updater(this, "sortal", this.getFile(), Updater.UpdateType.DEFAULT, true);
         }
+        this.getServer().getPluginManager().getPermission("sortal.warp").setDefault(PermissionDefault.getByName(this.getSettings().getDefaultWarp()));
+        this.getServer().getPluginManager().getPermission("sortal.createwarp").setDefault(PermissionDefault.getByName(this.getSettings().getDefaultCreateWarp()));
+        this.getServer().getPluginManager().getPermission("sortal.delwarp").setDefault(PermissionDefault.getByName(this.getSettings().getDefaultDelWarp()));
+        this.getServer().getPluginManager().getPermission("sortal.list").setDefault(PermissionDefault.getByName(this.getSettings().getDefaultList()));
+        this.getServer().getPluginManager().getPermission("sortal.unregister").setDefault(PermissionDefault.getByName(this.getSettings().getDefaultUnregister()));
+        this.getServer().getPluginManager().getPermission("sortal.directwarp").setDefault(PermissionDefault.getByName(this.getSettings().getDefaultDirectWarp()));
+        this.getServer().getPluginManager().getPermission("sortal.placesign").setDefault(PermissionDefault.getByName(this.getSettings().getDefaultPlaceSign()));
+        this.getServer().getPluginManager().getPermission("sortal.setuses").setDefault(PermissionDefault.getByName(this.getSettings().getDefaultSetUses()));
+        
         this.getLogger().log(Level.INFO, String.format("Version %s build %s loaded!", this.getSettings().getVersion(), this.getDescription().getVersion()));
     }
     
