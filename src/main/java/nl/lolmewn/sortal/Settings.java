@@ -186,6 +186,8 @@ public class Settings {
             //Old version of config file
             this.convert(c);
         }
+        addNewDefauls(c);
+        
         this.useMySQL = c.getBoolean("useMySQL");
         this.dbUser = c.getString("MySQL-User");
         this.dbPass = c.getString("MySQL-Pass");
@@ -199,15 +201,7 @@ public class Settings {
         this.update = c.getBoolean("update", true);
         this.version = c.getDouble("version");
         this.debug = c.getBoolean("debug", false);
-        if(!c.contains("perWarpPerm")){
-            this.addSettingToConfig(settingsFile, "perWarpPerm", false);
-        }
         this.perWarpPerm = c.getBoolean("perWarpPerm", false);
-        if(!c.contains("signCreatorIsPrivateUser")){
-            this.addSettingToConfig(settingsFile, "signCreatorIsPrivateUser", true);
-        }
-        
-        addNewDefauls(c);
         
         this.createWarp = c.getString("permissions.createwarp", "op");
         this.delWarp = c.getString("permissions.delwarp", "op");
