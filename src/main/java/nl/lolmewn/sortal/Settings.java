@@ -302,27 +302,23 @@ public class Settings {
     }
 
     private void addNewDefauls(YamlConfiguration c) {
-        c.options().header("True to use MySQL, false for flatfiles");
         c.addDefault("useMySQL", false);
-        c.options().header("If useMySQL is true, enter these details");
         c.addDefault("MySQL-User", "root");
         c.addDefault("MySQL-Pass", "herpDerpPassHere");
         c.addDefault("MySQL-Host", "localhost");
         c.addDefault("MySQL-Port", 3306);
         c.addDefault("MySQL-Database", "minecraft");
         c.addDefault("MySQL-Prefix", "Sortal_");
-        c.options().header("The price you have to pay for creating a warp");
         c.addDefault("warpCreatePrice", 0);
-        c.options().header("The price you have to pay for using a warp");
         c.addDefault("warpUsePrice", 0);
-        c.options().header("true for checking permissions per-warp (sortal.warp.<warp>), false for sortal.warp");
         c.addDefault("perWarpPerm", false);
-        c.options().header("If the sign contains this, it's a Sortal sign");
         c.addDefault("signContains", "[Sortal]");
-        c.options().header("Allow automatic updating");
         c.addDefault("update", true);
         
-        c.options().header("These are only used if no permissions plugin is found.");
+        c.addDefault("version", 5.2);
+        c.addDefault("debug", false);
+        c.addDefault("signCreatorIsPrivateUser", true);
+        
         c.addDefault("permissions.warp", "true");
         c.addDefault("permissions.createwarp", "op");
         c.addDefault("permissions.delwarp", "op");
@@ -332,6 +328,7 @@ public class Settings {
         c.addDefault("permissions.setuses", "op");
         c.addDefault("permissions.placesign", "op");
         
+        c.options().header("Find out what these values mean: http://dev.bukkit.org/server-mods/sortal/pages/settings");
         c.options().copyDefaults(true);
         try {
             c.save(settingsFile);
