@@ -25,15 +25,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.logging.Level;
 import net.milkbowl.vault.economy.Economy;
+import nl.lolmewn.sortal.Metrics.Graph;
+import nl.lolmewn.sortal.Metrics.Plotter;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.mcstats.Metrics;
-import org.mcstats.Metrics.Graph;
-import org.mcstats.Metrics.Plotter;
 
 /**
  *
