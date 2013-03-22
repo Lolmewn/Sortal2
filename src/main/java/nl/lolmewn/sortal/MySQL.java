@@ -211,6 +211,18 @@ public class MySQL {
             this.executeStatement("ALTER TABLE " + table + " ADD COLUMN " + column + " " + type);
             System.out.println("Added column " + column + ",type " + type + " to table " + table + " succesfully");
         }
+        /*
+         * try
+    {
+      DatabaseMetaData d = this.connection.getMetaData();
+      rs = d.getColumns(null, null, table, null);
+
+      while (rs.next()) {
+        col.add(rs.getString("COLUMN_NAME"));
+      }
+      return col;
+    }
+         */
     }
     
     private class JDCConnection implements Connection {
