@@ -21,6 +21,8 @@ package nl.lolmewn.sortal;
 
 import java.text.DecimalFormat;
 import java.util.HashSet;
+import nl.lolmewn.sortal.api.SortalWarpCreateEvent;
+import nl.lolmewn.sortal.api.SortalWarpDeleteEvent;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -71,16 +73,25 @@ public class SortalExecutor implements CommandExecutor {
                 return true;
             }
             if(args.length == 2){
+                if(!(sender instanceof Player)){
+                    sender.sendMessage("This command is for players only!");
+                    return true;
+                }
                 //Just creating a warp
                 String warp = args[1];
                 if(this.getPlugin().getWarpManager().hasWarp(warp)){
                     sender.sendMessage(this.getLocalisation().getNameInUse(warp));
                     return true;
                 }
-                if(sender instanceof Player && !this.getPlugin().pay((Player)sender, this.getPlugin().getSettings().getWarpCreatePrice())){
+                Location loc = ((Player)sender).getLocation();
+                SortalWarpCreateEvent event = new SortalWarpCreateEvent((Player)sender, warp, loc);
+                plugin.getServer().getPluginManager().callEvent(event);
+                if(event.isCancelled()){
+                    return true;
+                }
+                if(!this.getPlugin().pay((Player)sender, this.getPlugin().getSettings().getWarpCreatePrice())){
                     return true; 
                 }
-                Location loc = ((Player)sender).getLocation();
                 Warp w = this.getPlugin().getWarpManager().addWarp(warp, loc.getWorld().getName(), loc.getX(),loc.getY(),loc.getZ(),loc.getYaw(),loc.getPitch());
                 w.setOwner(sender.getName());
                 sender.sendMessage(this.getLocalisation().getWarpCreated(warp));
@@ -101,6 +112,11 @@ public class SortalExecutor implements CommandExecutor {
             for(int i = 1; i < args.length; i++){
                 String warp = args[i];
                 if(this.getPlugin().getWarpManager().hasWarp(warp)){
+                    SortalWarpDeleteEvent event = new SortalWarpDeleteEvent(sender, this.getPlugin().getWarpManager().getWarp(warp));
+                    this.getPlugin().getServer().getPluginManager().callEvent(event);
+                    if(event.isCancelled()){
+                        continue;
+                    }
                     this.getPlugin().getWarpManager().removeWarp(warp);
                     sender.sendMessage(this.getLocalisation().getWarpDeleted(warp));
                     int count = 0;

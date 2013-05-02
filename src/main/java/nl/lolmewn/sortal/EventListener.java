@@ -20,6 +20,11 @@ package nl.lolmewn.sortal;
 
 import java.io.File;
 import java.util.logging.Level;
+import nl.lolmewn.sortal.api.SortalPlayerTeleportEvent;
+import nl.lolmewn.sortal.api.SortalSignDestroyEvent;
+import nl.lolmewn.sortal.api.SortalSignPlaceEvent;
+import nl.lolmewn.sortal.api.SortalSignUpdateEvent;
+import nl.lolmewn.sortal.api.SortalSignUpdateEvent.SortalSignUpdateType;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
@@ -65,6 +70,11 @@ public class EventListener implements Listener {
                     || event.getLine(i).toLowerCase().contains(this.getPlugin().getSettings().getSignContains())) {
                 if (!event.getPlayer().hasPermission("sortal.placesign")) {
                     event.getPlayer().sendMessage(this.getLocalisation().getNoPerms());
+                    return;
+                }
+                SortalSignPlaceEvent ev = new SortalSignPlaceEvent((Sign) event.getBlock(), event.getPlayer());
+                plugin.getServer().getPluginManager().callEvent(ev);
+                if (ev.isCancelled()) {
                     event.setCancelled(true);
                     return;
                 }
@@ -130,7 +140,7 @@ public class EventListener implements Listener {
                             event.setCancelled(true);
                             return;
                         }
-                        if(!w.hasLoadedWorld()){
+                        if (!w.hasLoadedWorld()) {
                             this.getPlugin().debug("[Debug] World not loaded, cancelling");
                             p.sendMessage("World is not loaded, cannot jump!");
                             event.setCancelled(true);
@@ -147,10 +157,18 @@ public class EventListener implements Listener {
                             event.setCancelled(true);
                             return;
                         }
+                        SortalPlayerTeleportEvent ev = new SortalPlayerTeleportEvent(p, sign, w);
+                        plugin.getServer().getPluginManager().callEvent(ev);
+                        if (ev.isCancelled()) {
+                            event.setCancelled(true);
+                            return;
+                        }
                         this.getPlugin().debug(String.format("[Debug] Player is paying.."));
                         this.getPlugin().pay(p, this.getPrice(w, sign));
                         Location loc = w.getLocation();
-                        if(!loc.getChunk().isLoaded()){loc.getChunk().load();}
+                        if (!loc.getChunk().isLoaded()) {
+                            loc.getChunk().load();
+                        }
                         if (loc.getYaw() == 0 && loc.getPitch() == 0) {
                             loc.setYaw(p.getLocation().getYaw());
                             loc.setPitch(p.getLocation().getPitch());
@@ -206,11 +224,11 @@ public class EventListener implements Listener {
                             return;
                         }
                     }
-                    if(!w.hasLoadedWorld()){
-                            this.getPlugin().debug("[Debug] World not loaded, cancelling");
-                            p.sendMessage("World is not loaded, cannot jump!");
-                            event.setCancelled(true);
-                            return;
+                    if (!w.hasLoadedWorld()) {
+                        this.getPlugin().debug("[Debug] World not loaded, cancelling");
+                        p.sendMessage("World is not loaded, cannot jump!");
+                        event.setCancelled(true);
+                        return;
                     }
                     if (!canPay(w, sign, p)) {
                         p.sendMessage(this.getLocalisation().getNoMoney(Integer.toString(getPrice(w, sign))));
@@ -222,7 +240,15 @@ public class EventListener implements Listener {
                         event.setCancelled(true);
                         return;
                     }
-                    if(!w.getLocation().getChunk().isLoaded()){w.getLocation().getChunk().load();}
+                    SortalPlayerTeleportEvent ev = new SortalPlayerTeleportEvent(p, sign, w);
+                    plugin.getServer().getPluginManager().callEvent(ev);
+                    if (ev.isCancelled()) {
+                        event.setCancelled(true);
+                        return;
+                    }
+                    if (!w.getLocation().getChunk().isLoaded()) {
+                        w.getLocation().getChunk().load();
+                    }
                     this.getPlugin().pay(p, this.getPrice(w, sign));
                     p.teleport(w.getLocation(), TeleportCause.PLUGIN);
                     p.sendMessage(this.getLocalisation().getPlayerTeleported(warp));
@@ -262,11 +288,19 @@ public class EventListener implements Listener {
                         event.setCancelled(true);
                         return;
                     }
+                    SortalPlayerTeleportEvent ev = new SortalPlayerTeleportEvent(p, sign, null);
+                    plugin.getServer().getPluginManager().callEvent(ev);
+                    if (ev.isCancelled()) {
+                        event.setCancelled(true);
+                        return;
+                    }
                     this.getPlugin().pay(p, this.getPrice(null, sign));
                     int x = Integer.parseInt(split[0 + add]), y = Integer.parseInt(split[1 + add]),
                             z = Integer.parseInt(split[2 + add]);
                     Location dest = new Location(w, x, y, z, p.getLocation().getYaw(), p.getLocation().getPitch());
-                    if(!dest.getChunk().isLoaded()){dest.getChunk().load();}
+                    if (!dest.getChunk().isLoaded()) {
+                        dest.getChunk().load();
+                    }
                     p.teleport(dest, TeleportCause.PLUGIN);
                     p.sendMessage(this.getLocalisation().getPlayerTeleported(
                             dest.getBlockX() + ", " + dest.getBlockY() + ", " + dest.getBlockZ()));
@@ -286,39 +320,62 @@ public class EventListener implements Listener {
             if (this.getPlugin().getWarpManager().hasSignInfo(plugin.getLocationInts(s.getLocation()))) {
                 //It's a registered sign
                 SignInfo sign = this.getPlugin().getWarpManager().getSign(plugin.getLocationInts(s.getLocation()));
+                SortalSignUpdateEvent ev = new SortalSignUpdateEvent(SortalSignUpdateType.COST, player, sign, plugin.setcost.get(player.getName()));
+                plugin.getServer().getPluginManager().callEvent(ev);
+                if (ev.isCancelled()) {
+                    return true;
+                }
                 sign.setPrice(this.getPlugin().setcost.remove(player.getName()));
                 player.sendMessage("Price set to " + sign.getPrice() + " for this sign!");
                 interacted = true;
-            }else{
+            } else {
                 boolean found = false;
                 for (String line : s.getLines()) {
                     if (line.toLowerCase().contains("[sortal]") || line.contains(this.getPlugin().getSettings().getSignContains())) {
                         SignInfo sign = this.getPlugin().getWarpManager().addSign(plugin.getLocationInts(s.getLocation()));
+                        SortalSignUpdateEvent ev = new SortalSignUpdateEvent(SortalSignUpdateType.COST, player, sign, plugin.setcost.get(player.getName()));
+                        plugin.getServer().getPluginManager().callEvent(ev);
+                        if (ev.isCancelled()) {
+                            return true;
+                        }
                         sign.setPrice(this.getPlugin().setcost.remove(player.getName()));
+                        SortalSignUpdateEvent ev2 = new SortalSignUpdateEvent(SortalSignUpdateType.OWNER, player, sign, player.getName());
+                        plugin.getServer().getPluginManager().callEvent(ev2);
+                        if (ev2.isCancelled()) {
+                            return true;
+                        }
                         sign.setOwner(player.getName());
                         player.sendMessage("Price set to " + sign.getPrice() + " for this sign!");
                         found = true;
                     }
                 }
-                if(!found){
+                if (!found) {
                     player.sendMessage("This is not a valid sortal sign!");
                     interacted = true;
                 }
             }
         }
         if (this.getPlugin().register.containsKey(player.getName())) {
+            SignInfo sign;
             if (this.getPlugin().getWarpManager().hasSignInfo(plugin.getLocationInts(s.getLocation()))) {
                 //It's a registered sign
-                SignInfo sign = this.getPlugin().getWarpManager().getSign(plugin.getLocationInts(s.getLocation()));
-                sign.setWarp(this.getPlugin().register.remove(player.getName()));
-                player.sendMessage("Sign is now pointing to " + sign.getWarp());
-            }else{
-                SignInfo sign = this.getPlugin().getWarpManager().addSign(plugin.getLocationInts(s.getLocation()));
-                String warp = this.getPlugin().register.remove(player.getName());
-                sign.setWarp(warp);
+                sign = this.getPlugin().getWarpManager().getSign(plugin.getLocationInts(s.getLocation()));
+            } else {
+                sign = this.getPlugin().getWarpManager().addSign(plugin.getLocationInts(s.getLocation()));
+                SortalSignUpdateEvent ev2 = new SortalSignUpdateEvent(SortalSignUpdateType.OWNER, player, sign, player.getName());
+                plugin.getServer().getPluginManager().callEvent(ev2);
+                if (ev2.isCancelled()) {
+                    return true;
+                }
                 sign.setOwner(player.getName());
-                player.sendMessage("Sign is now pointing to " + warp);
             }
+            SortalSignUpdateEvent ev = new SortalSignUpdateEvent(SortalSignUpdateType.WARP_REGISTER, player, sign, plugin.register.get(player.getName()));
+            plugin.getServer().getPluginManager().callEvent(ev);
+            if (ev.isCancelled()) {
+                return true;
+            }
+            sign.setWarp(this.getPlugin().register.remove(player.getName()));
+            player.sendMessage("Sign is now pointing to " + sign.getWarp());
             interacted = true;
         }
         if (this.getPlugin().unregister.contains(player.getName())) {
@@ -329,6 +386,11 @@ public class EventListener implements Listener {
             SignInfo sign = this.getPlugin().getWarpManager().getSign(plugin.getLocationInts(s.getLocation()));
             if (!sign.hasWarp()) {
                 player.sendMessage("This sign isn't pointing to a warp!");
+                return true;
+            }
+            SortalSignUpdateEvent ev = new SortalSignUpdateEvent(SortalSignUpdateType.WARP_UNREGISTER, player, sign, sign.getWarp());
+            plugin.getServer().getPluginManager().callEvent(ev);
+            if (ev.isCancelled()) {
                 return true;
             }
             if (!sign.hasPrice()) {
@@ -354,6 +416,11 @@ public class EventListener implements Listener {
             } else {
                 info = this.getPlugin().getWarpManager().addSign(plugin.getLocationInts(s.getLocation()));
             }
+            SortalSignUpdateEvent ev = new SortalSignUpdateEvent(SortalSignUpdateType.USES, player, info, plugin.setuses.get(player.getName()));
+            plugin.getServer().getPluginManager().callEvent(ev);
+            if (ev.isCancelled()) {
+                return true;
+            }
             String uses = this.getPlugin().setuses.remove(player.getName());
             String[] split = uses.split(",");
             info.setUses(Integer.parseInt(split[1]));
@@ -368,10 +435,20 @@ public class EventListener implements Listener {
             } else {
                 sign = this.getPlugin().getWarpManager().addSign(plugin.getLocationInts(s.getLocation()));
             }
+            SortalSignUpdateEvent ev = new SortalSignUpdateEvent(SortalSignUpdateType.PRIVATE, player, sign, !sign.isPrivate());
+            plugin.getServer().getPluginManager().callEvent(ev);
+            if (ev.isCancelled()) {
+                return true;
+            }
             sign.setIsPrivate(!sign.isPrivate());
             player.sendMessage("This sign is now " + (sign.isPrivate() ? "private" : "public"));
             this.getPlugin().setPrivate.remove(player.getName());
             if (this.getPlugin().setPrivateUsers.containsKey(player.getName())) {
+                SortalSignUpdateEvent ev2 = new SortalSignUpdateEvent(SortalSignUpdateType.PRIVATE_USERS, player, sign, plugin.setPrivateUsers.get(player.getName()));
+                plugin.getServer().getPluginManager().callEvent(ev2);
+                if (ev2.isCancelled()) {
+                    return true;
+                }
                 for (String name : this.getPlugin().setPrivateUsers.get(player.getName())) {
                     sign.addPrivateUser(name);
                 }
@@ -389,13 +466,18 @@ public class EventListener implements Listener {
                 player.sendMessage("Please hit a private sign!");
                 return true;
             }
+            SortalSignUpdateEvent ev2 = new SortalSignUpdateEvent(SortalSignUpdateType.PRIVATE_USERS, player, sign, plugin.setPrivateUsers.get(player.getName()));
+            plugin.getServer().getPluginManager().callEvent(ev2);
+            if (ev2.isCancelled()) {
+                return true;
+            }
             for (String name : this.getPlugin().setPrivateUsers.get(player.getName())) {
                 sign.addPrivateUser(name);
             }
             player.sendMessage(this.getPlugin().setPrivateUsers.remove(player.getName()).size() + " players added!");
             interacted = true;
         }
-        if(interacted){
+        if (interacted) {
             return true;
         }
         return false;
@@ -423,6 +505,12 @@ public class EventListener implements Listener {
                     event.setCancelled(true);
                 }
                 SignInfo i = this.getPlugin().getWarpManager().getSign(plugin.getLocationInts(s.getLocation()));
+                SortalSignDestroyEvent ev = new SortalSignDestroyEvent(event.getPlayer(), s, i);
+                plugin.getServer().getPluginManager().callEvent(ev);
+                if(ev.isCancelled()){
+                    event.setCancelled(true);
+                    return;
+                }
                 if (this.getPlugin().getSettings().useMySQL()) {
                     i.delete(this.getPlugin().getMySQL(), this.getPlugin().getSignTable());
                 } else {
@@ -625,7 +713,7 @@ public class EventListener implements Listener {
     }
 
     private boolean isPrivateUser(SignInfo sign, Player p) {
-        if(!sign.isPrivate()){
+        if (!sign.isPrivate()) {
             return true;
         }
         this.getPlugin().debug("[Debug] Sign is private");
@@ -636,7 +724,7 @@ public class EventListener implements Listener {
                 this.getPlugin().debug("[Debug] Setting is true, checking owner");
                 if (sign.hasOwner()) {
                     this.getPlugin().debug("[Debug] Sign has owner!");
-                    if(sign.getOwner().equals(p.getName())){
+                    if (sign.getOwner().equals(p.getName())) {
                         this.getPlugin().debug("[Debug] Wow! They're the same!");
                         return true;
                     }
