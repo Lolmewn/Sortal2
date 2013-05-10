@@ -5,11 +5,11 @@
 
     <groupId>nl.lolmewn.Sortal</groupId>
     <artifactId>Sortal</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>5.5-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Sortal2</name>
-    <url>http://metrics.griefcraft.com/plugin/Sortal</url>
+    <url>http://mcstats.org/plugin/Sortal</url>
     <ciManagement>
         <system>hudson</system>
         <url>http://localhost:8080/job/Sortal2/</url>
@@ -31,7 +31,7 @@
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.4.6-R0.3-SNAPSHOT</version>
+            <version>1.5.1-R0.3-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>net.milkbowl.vault</groupId>
