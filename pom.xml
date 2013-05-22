@@ -5,7 +5,7 @@
 
     <groupId>nl.lolmewn.Sortal</groupId>
     <artifactId>Sortal</artifactId>
-    <version>5.5-SNAPSHOT</version>
+    <version>5.5</version>
     <packaging>jar</packaging>
 
     <name>Sortal2</name>
@@ -19,24 +19,24 @@
     </properties>
     <repositories>
         <repository>
-            <id>spout-repo</id>
-            <url>http://nexus.spout.org/content/groups/public/</url>
+            <id>bukkit-repo</id>
+            <url>http://repo.bukkit.org/content/groups/public/</url>
         </repository>
         <repository>
-            <id>vault-repo</id>
-            <url>http://ci.herocraftonline.com/plugin/repository/everything</url>
+            <id>plugin-repo</id>
+            <url>http://bukkit.jacekk.co.uk/plugin_repo/repo/</url>
         </repository>
     </repositories>
     <dependencies>
         <dependency>
             <groupId>org.bukkit</groupId>
             <artifactId>bukkit</artifactId>
-            <version>1.5.1-R0.3-SNAPSHOT</version>
+            <version>1.5.2-R0.2-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>net.milkbowl.vault</groupId>
-            <artifactId>Vault</artifactId>
-            <version>1.2.17-SNAPSHOT</version>
+            <groupId>dev.bukkit.org.server-mods</groupId>
+            <artifactId>vault</artifactId>
+            <version>1.2.25</version>
         </dependency>
     </dependencies>
     <build>
