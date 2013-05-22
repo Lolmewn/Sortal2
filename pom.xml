@@ -5,7 +5,7 @@
 
     <groupId>nl.lolmewn.Sortal</groupId>
     <artifactId>Sortal</artifactId>
-    <version>5.5</version>
+    <version>5.6-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <name>Sortal2</name>
