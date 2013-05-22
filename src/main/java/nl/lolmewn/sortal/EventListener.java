@@ -70,6 +70,7 @@ public class EventListener implements Listener {
                     || event.getLine(i).toLowerCase().contains(this.getPlugin().getSettings().getSignContains())) {
                 if (!event.getPlayer().hasPermission("sortal.placesign")) {
                     event.getPlayer().sendMessage(this.getLocalisation().getNoPerms());
+                    event.setLine(i, "");
                     return;
                 }
                 SortalSignPlaceEvent ev = new SortalSignPlaceEvent((Sign) event.getBlock(), event.getPlayer());
